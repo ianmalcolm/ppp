@@ -16,9 +16,12 @@ public class Sim {
 			displayPPP(map);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
+		
 	}
 	
 	public static void displayPPP(PPP ppp){
