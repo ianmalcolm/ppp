@@ -786,7 +786,7 @@ public class PPP{
 		    writer.write(bestStateValue().getMove()+"\n");
 		    
 		    for(short i=0; i<nDes; i++){
-				writer.write(arrayDes[i].toString());
+				writer.write(arrayDes[i].write());
 				if(i!=(short)(nDes-1)){
 					writer.write(", ");
 				}

@@ -131,4 +131,9 @@ public class Descriptor {
 		result = "("+(y-1)/2+","+(x-1)+","+l+","+t+")";
 		return result;
 	}
+	
+	public String write(){
+		String result = "("+ x + "," + y + "," + l +","+ t+")";
+		return result;
+	}
 }

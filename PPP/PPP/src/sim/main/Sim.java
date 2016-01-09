@@ -11,9 +11,9 @@ import ppp.Descriptor;
 public class Sim {
 	
 	public static void main(String[] args) {
-		System.out.println("Loading PPP");
 		try {
-			loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP1.ppp", false);
+			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP1.ppp", false);
+			displayPPP(map);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -21,11 +21,22 @@ public class Sim {
 		}
 	}
 	
-	public static void loadPPP(String file) throws FileNotFoundException, IOException{
-		loadPPP(file, false);
+	public static void displayPPP(PPP ppp){
+		ppp.displayDes();
+		ppp.drawMap();
+		ppp.displayPPP();
 	}
 	
-	public static void loadPPP(String file, boolean verbose) throws FileNotFoundException, IOException {
+	/*
+	 * Map Loader
+	 */
+
+	public static PPP loadPPP(String file) throws FileNotFoundException, IOException{
+		return loadPPP(file, false);
+	}
+	
+	public static PPP loadPPP(String file, boolean verbose) throws FileNotFoundException, IOException {
+		System.out.println("Loading PPP");
 		String line;
 		String[] dimensions;
 		String[] descriptors;
@@ -59,8 +70,6 @@ public class Sim {
 				pos ++;
 			}
 			ret.updatePPP();
-			ret.drawMap();
-			ret.displayPPP();
 			
 			// Read map from remaining lines
 			if (verbose) {
@@ -73,6 +82,7 @@ public class Sim {
 			reader.close();
 			fileReader.close();
 			System.out.println("Done");
+			return ret;
 
 		} catch (FileNotFoundException ex) {
 			throw ex;
