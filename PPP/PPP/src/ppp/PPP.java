@@ -27,7 +27,7 @@ import state.StateValue;
  */
 
 public class PPP{
-	private short size;	// the size of the PPP
+	public short size;	// the size of the PPP
 	private short nDes;	// the number of descriptors
 	private short maxObs;	// the maximum number of obstructions allowed
 	private short row;	// the number of chars in one column
@@ -59,6 +59,7 @@ public class PPP{
 		col = (short)(size*2+2);
 		map = new char[row][col];
 		occ = new short[row][col];
+		arrayDes = new Descriptor[nDes];
 		availability = false;
 		createPPP();
 	}
@@ -356,6 +357,17 @@ public class PPP{
 			System.out.println();
 		}
 	}
+	
+	public void displayOcc(){
+		for (int i = 0; i<row; i++){
+			for(int j=0; j<col; j++){
+				System.out.print(occ[i][j]);
+			}
+			System.out.println();
+		}
+		
+	}
+	
 	/*
 	 * 	Get the number of non-occupied cells
 	 */
@@ -767,23 +779,35 @@ public class PPP{
 
 		try {
 		    writer = new BufferedWriter(new OutputStreamWriter(
-		          new FileOutputStream("PPP"+number+".pbm"), "utf-8"));
+		          new FileOutputStream("PPP"+number+".ppp"), "utf-8"));
 		    writer.write("PPP\n");
 		    writer.write("#.\n");
-		    writer.write((size+2)+" "+(size+2)+"\n");
+		    writer.write((size+2)+" "+(size+2)+" "+(maxObs)+ "\n");
 		    writer.write(bestStateValue().getMove()+"\n");
+		    
+		    for(short i=0; i<nDes; i++){
+				writer.write(arrayDes[i].toString());
+				if(i!=(short)(nDes-1)){
+					writer.write(", ");
+				}
+			}
+		    writer.write("\n");
+		    
 		    for (short i = 0; i<row; i++){
 				for (short j = 0; j<col; j++){
+					// Boundary wall
 					if(occ[i][j]==1){
 						writer.write("2 ");
 						if(j!=0&j!=col-1){
 							j++;
 						}
 					}
+					//Empty space or goal / initial position
 					if(occ[i][j]==0||occ[i][j]==2){
 						writer.write("0 ");
 						j++;
 					}
+					// Left side of obstacle
 					if(occ[i][j]==3){
 						writer.write("1 ");
 						j++;
