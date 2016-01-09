@@ -1,12 +1,15 @@
 package main;
 
+import java.io.IOException;
+
 import ppp.PPP;
 import ppp.PPPManager;
 
 public class Main {
 
 	public static void main(String[] args){
-		tournament();
+		//tournament();
+		singlePPP();
 	}
 	
 	public static void singlePPP() {
@@ -20,6 +23,13 @@ public class Main {
 		ppp.drawMap();
 		ppp.displayPPP();
 		ppp.displayDes();
+		ppp.displayOcc();
+		try {
+			ppp.writePPP(1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("Done: Exiting");
 	}
 	
