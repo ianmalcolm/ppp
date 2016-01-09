@@ -22,6 +22,14 @@ public class Descriptor {
 		this.l = l;
 		this.t = t;
 	}
+	
+	public Descriptor(int x, int y, int l, int t){
+		this.x = (short) x;
+		this.y = (short) y;
+		this.l = (short) l;
+		this.t = (short) t;
+	}
+	
 	/*
 	 * 	Constructor by given a Descriptor
 	 */
