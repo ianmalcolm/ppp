@@ -72,9 +72,8 @@ public class Node {
 		return this.heading;
 	}
 	
-	//TODO
 	public boolean equalPos(Node n){
-		return false;
+		return this.isPos(n.getX(), n.getY());
 	}
 	
 }

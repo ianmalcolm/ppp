@@ -58,6 +58,7 @@ public class OmniscientBot extends Bot{
 			successors.add(new Node(best_open_node, best_pos_x+1, best_pos_y, 'r'));
 			for (Node s: successors){
 				if (s.isPos(goalX, goalY)){
+					//TODO
 					//Stop, found goal
 					//Return list of nodes to travel via
 				}
@@ -71,15 +72,25 @@ public class OmniscientBot extends Bot{
 					to_reach = best_open_node.getCost()+2;
 				}
 				s.setCost(to_reach, this.evaluatePosition(s.getX(), s.getY(), goalX, goalY));
-//				if a node with the same position as successor is in the OPEN list \
-//	            	which has a lower f than successor, skip this successor
-//	        	if a node with the same position as successor is in the CLOSED list \ 
-//	            	which has a lower f than successor, skip this successor
-//	        	otherwise, add the node to the open list	
+				for (Node o: open){
+					if (o.equalPos(s)){
+						if (o.getCost() < s.getCost()) {
+							continue;
+						}
+					}
+				}
+				
+				for (Node o: closed){
+					if (o.equalPos(s)){
+						if (o.getCost() < s.getCost()) {
+							continue;
+						}
+					}
+				}
+				open.add(s);
 			}
 			closed.add(best_open_node);
 		}
-
 	}
 
 	@Override 
