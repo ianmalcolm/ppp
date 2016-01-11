@@ -402,9 +402,13 @@ public class PPP{
 		//System.out.println(arraySize);
 		short n = 0;
 		asArray = new AgentState[asSize];
+		//for each column
 		for(short i = 0; i<size; i++){
+			//for each row
 			for(short j = 0; j<size; j++){
+				//For each free grid sq. in Occ grid:
 				if(occ[j+1][i*2+1]==0||occ[j+1][i*2+1]==2){
+					System.out.printf("%d %d %s %d  ::  ", i, j, "", n);
 					asArray[n*4] = new AgentState((short)i,(short)j,'r');
 					asArray[n*4+1] = new AgentState((short)i,(short)j,'u');
 					asArray[n*4+2] = new AgentState((short)i,(short)j,'d');
@@ -412,6 +416,7 @@ public class PPP{
 					n++;
 				}
 			}
+			System.out.print("\n");
 		}
 		//System.out.println(n);
 		asArray[0].setStateValue((short)0, (short)0, (short)0);
@@ -821,5 +826,9 @@ public class PPP{
 		} finally {
 		   try {writer.close();} catch (Exception ex) {}
 		}
+	}
+	
+	public short[][] getOccGrid(){
+		return this.occ;
 	}
 }

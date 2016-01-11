@@ -28,6 +28,7 @@ public class Sim {
 		ppp.displayDes();
 		ppp.drawMap();
 		ppp.displayPPP();
+		ppp.displayOcc();
 	}
 	
 	/*
