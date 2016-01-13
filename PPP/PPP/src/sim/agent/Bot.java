@@ -6,16 +6,17 @@ import state.AgentState;
 import state.StateValue;
 import ppp.PPP;
 
+
 public abstract class Bot {
 	protected AgentState state;
-	protected ArrayList<short[][]> planned_route;
-	protected ArrayList<short[][]> route_taken;
+	protected ArrayList<Node> planned_route;
+	protected ArrayList<Node> route_taken;
 	
 	//(Partial) views on the PPP, developed via exploration and movement.
 	// A priori map information
-	protected Memory apriori;
+	public Memory apriori;
 	// Current knowledge of map
-	protected Memory current;
+	public Memory current;
 	
 	public int sensorRange = 1;
 	
@@ -45,11 +46,11 @@ public abstract class Bot {
 		this.sensorRange = sensor_range;
 		
 		//init state
-		this.state = new AgentState((short)0, (short)0,'r');
+		this.state = new AgentState((short)1, (short)1,'r');
 		//zero the count of moves made so far
 		this.state.setStateValue((short)0, (short)0, (short) 0);
-		this.planned_route = new ArrayList<short[][]>();
-		this.route_taken = new ArrayList<short[][]>();
+		this.planned_route = new ArrayList<Node>();
+		this.route_taken = new ArrayList<Node>();
 	}
 	
 	/*
@@ -67,14 +68,14 @@ public abstract class Bot {
 	/*
 	 * Plan
 	 */
-	abstract void AprioriPlan(short goalX, short goalY);
-	abstract void plan(short goalX, short goalY);
-	abstract int evaluatePosition(short x, short y, short goalX, short goalY);
+	abstract public void aprioriPlan(short goalX, short goalY);
+	abstract public void plan(short goalX, short goalY);
+	abstract protected int evaluatePosition(short x, short y, short goalX, short goalY);
 	
 	/*
 	 * Execution
 	 */
-	abstract void execute();
+	abstract public void execute();
 	
 	/*
 	 * Positioning
@@ -122,6 +123,13 @@ public abstract class Bot {
 	public boolean atGoalPos(short goalX, short goalY){
 		if (goalX == this.getX() && (goalY == this.getY())) return true;
 		return false;
+	}
+	
+	public void printRoute(){
+		for (Node n: this.planned_route){
+			System.out.print(n.toString()+", ");
+		}
+		System.out.print("\n");
 	}
 	
 }

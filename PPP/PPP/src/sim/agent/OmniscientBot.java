@@ -20,10 +20,29 @@ public class OmniscientBot extends Bot{
 	}
 	
 	@Override
-	void AprioriPlan(short goalX, short goalY){
+	public void aprioriPlan(short goalX, short goalY){
 		/*
-		 * Plan via A* a complete route from initial position to the goal specified.
-		 * Initial Pos: 0,0
+		 * Plan via A* a complete route from a priori position to the goal specified.
+		 * OPEN = priority queue containing START
+			CLOSED = empty set
+			while lowest rank in OPEN is not the GOAL:
+			  current = remove lowest rank item from OPEN
+			  add current to CLOSED
+			  for neighbors of current:
+			    cost = g(current) + movementcost(current, neighbor)
+			    if neighbor in OPEN and cost less than g(neighbor):
+			      remove neighbor from OPEN, because new path is better
+			    if neighbor in CLOSED and cost less than g(neighbor): ⁽²⁾
+			      remove neighbor from CLOSED
+			    if neighbor not in OPEN and neighbor not in CLOSED:
+			      set g(neighbor) to cost
+			      add neighbor to OPEN
+			      set priority queue rank to g(neighbor) + h(neighbor)
+			      set neighbor's parent to current
+			
+			reconstruct reverse path from goal to start
+			by following parent pointers
+			http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html
 		 */
 		
 		//Pos stores current location and cost so far
@@ -48,70 +67,90 @@ public class OmniscientBot extends Bot{
 			ArrayList<Node> successors = new ArrayList<Node>();
 			int best_pos_x = best_open_node.getX();
 			int best_pos_y = best_open_node.getY();
+			
 			//up
-			successors.add(new Node(best_open_node, best_pos_x, best_pos_y-1, 'u'));
+			if (this.apriori.validPosition(best_pos_x, best_pos_y-1)){
+				successors.add(new Node(best_open_node, best_pos_x, best_pos_y-1, 'u'));
+			}
 			//down
-			successors.add(new Node(best_open_node, best_pos_x, best_pos_y+1, 'd'));
+			if (this.apriori.validPosition(best_pos_x, best_pos_y+1)){
+				successors.add(new Node(best_open_node, best_pos_x, best_pos_y+1, 'd'));
+			}
 			//left
-			successors.add(new Node(best_open_node, best_pos_x-1, best_pos_y, 'l'));
+			if (this.apriori.validPosition(best_pos_x-1, best_pos_y)){
+				successors.add(new Node(best_open_node, best_pos_x-1, best_pos_y, 'l'));
+			}
 			//right
-			successors.add(new Node(best_open_node, best_pos_x+1, best_pos_y, 'r'));
+			if (this.apriori.validPosition(best_pos_x+1, best_pos_y)){
+				successors.add(new Node(best_open_node, best_pos_x+1, best_pos_y, 'r'));
+			}
+			
 			for (Node s: successors){
 				if (s.isPos(goalX, goalY)){
-					//TODO
 					//Stop, found goal
-					//Return list of nodes to travel via
+					closed.add(s);
+					open.clear();
+					break;
 				}
 				
-				int to_reach = 0;
-				if (s.getHeading() == pos.getDirection()){
-					//Advance
-					to_reach = best_open_node.getCost()+1;
-				} else {
-					//Advance plus turn
-					to_reach = best_open_node.getCost()+2;
-				}
+				//cost so far + turn cost + advance to new pos
+				int to_reach = best_open_node.getCostToReach()+s.turnCost(pos.getDirection())+1;
 				s.setCost(to_reach, this.evaluatePosition(s.getX(), s.getY(), goalX, goalY));
+				
+				boolean dont_add=false;
 				for (Node o: open){
+					//better equal node on open list
 					if (o.equalPos(s)){
 						if (o.getCost() < s.getCost()) {
-							continue;
+							dont_add = true;
+							break;
 						}
 					}
 				}
 				
 				for (Node o: closed){
+					//better equal node already visited
 					if (o.equalPos(s)){
 						if (o.getCost() < s.getCost()) {
-							continue;
+							dont_add = true;
+							break;
 						}
 					}
 				}
-				open.add(s);
+				if (dont_add){
+					continue;
+				} else {
+					open.add(s);
+				}
 			}
 			closed.add(best_open_node);
+			System.out.println(best_open_node.toString());
 		}
+		this.planned_route = closed;
 	}
 
 	@Override 
-	void plan(short goalX, short goalY) {}
+	public void plan(short goalX, short goalY) {}
 	
 	@Override
 	/**
 	 * Returns cost to goal from position tested
 	 */
-	int evaluatePosition(short x, short y, short goalX, short goalY){
+	protected int evaluatePosition(short x, short y, short goalX, short goalY){
 		int dist_x = goalX - x;
 		int dist_y = goalY - y;
 		return dist_x+dist_y;
 	}
 	
-	int evaluatePosition(int x, int y, short goalX, short goalY){
-		return evaluatePosition((short)x, (short)y, goalX, goalY);
+	//FIXME can't plan ahead to go around obstacles
+	protected int evaluatePosition(int x, int y, short goalX, short goalY){
+		int dist_x = goalX - x;
+		int dist_y = goalY - y;
+		return dist_x+dist_y;
 	}
 
 	@Override 
-	void execute() {
+	public void execute() {
 		// TODO Auto-generated method stub
 		
 	}

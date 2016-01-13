@@ -7,13 +7,22 @@ import java.io.FileNotFoundException;
 
 import ppp.PPP;
 import ppp.Descriptor;
+import sim.agent.Bot;
+import sim.agent.OmniscientBot;
+import sim.agent.Memory;
 
 public class Sim {
 	
 	public static void main(String[] args) {
 		try {
 			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP1.ppp", false);
+			Bot bot = new OmniscientBot(new Memory(map), 1);
 			displayPPP(map);
+			bot.aprioriPlan((short)20, (short)40);
+			bot.apriori.prettyPrint();
+			//bot.printRoute();
+			
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -21,14 +30,12 @@ public class Sim {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
 	}
 	
 	public static void displayPPP(PPP ppp){
 		ppp.displayDes();
 		ppp.drawMap();
 		ppp.displayPPP();
-		ppp.displayOcc();
 	}
 	
 	/*

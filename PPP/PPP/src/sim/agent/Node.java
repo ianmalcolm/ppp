@@ -27,9 +27,23 @@ public class Node {
 		this.parent = parent;
 		this.pos_x  = x;
 		this.pos_y  = y;
+		this.heading = heading;
 		this.cost_to_reach = cost_to_reach;
 		this.cost_to_goal  = cost_to_goal;
 		this.cost = cost_to_reach + cost_to_goal;
+	}
+	
+	private char oppositeHeading(char h){
+		switch(h){
+			case 'u':
+				return 'd';
+			case 'd':
+				return 'u';
+			case 'l':
+				return 'r';
+			default:
+				return 'l';
+		}			
 	}
 	
 	public boolean isPos(int x, int y){
@@ -60,6 +74,10 @@ public class Node {
 		return this.cost;
 	}
 	
+	public int getCostToReach(){
+		return this.cost_to_reach;
+	}
+	
 	public int getX(){
 		return this.pos_x;
 	}
@@ -74,6 +92,23 @@ public class Node {
 	
 	public boolean equalPos(Node n){
 		return this.isPos(n.getX(), n.getY());
+	}
+	
+	public int turnCost(char heading){
+		//no turn
+		if (heading == this.heading){
+			return 0;
+		}
+		//about turn
+		if (heading == this.oppositeHeading(this.heading)){
+			return 2;
+		}
+		//one turn
+		return 1;
+	}
+	
+	public String toString(){
+		return String.format("Node: %d,%d, cost: %d", this.pos_x, this.pos_y, this.cost);
 	}
 	
 }
