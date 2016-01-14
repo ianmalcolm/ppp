@@ -1,8 +1,9 @@
 package sim.agent;
 
 import java.util.ArrayList;
-
-import state.AgentState;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 
 public class OmniscientBot extends Bot{
 
@@ -46,87 +47,110 @@ public class OmniscientBot extends Bot{
 		 */
 		
 		//Pos stores current location and cost so far
-		AgentState pos = new AgentState(this.state);
-		
 		ArrayList<Node> open   = new ArrayList<Node>();
-		open.add(new Node(this.state.getX(), this.state.getY(), this.state.getDirection()));
 		ArrayList<Node> closed = new ArrayList<Node>();
 		
-		while (open.size() != 0){
-			//Find best node
-			int min_open_cost = 99999;
-			Node best_open_node = null;
-			for (Node n: open){
-				if (n.getCost() < min_open_cost){
-					best_open_node = n;
-					min_open_cost = n.getCost();
+		open.add(new Node(this.state.getX(), this.state.getY(), this.state.getDirection()));
+		Comparator<Node> comparator = new Comparator<Node>(){
+			@Override
+			public int compare(Node o1, Node o2) {
+				if (o1.getCost() < o2.getCost()){
+					return -1;
+				} else if (o1.getCost() == o2.getCost()) {
+					if (o1.getCostToGoal() < o2.getCostToGoal()){
+						return -1;
+					} else if (o1.getCostToGoal() > o2.getCostToGoal()){
+						return 1;
+					}
+					return 0;
+				} else {
+					return 1;
 				}
 			}
-			open.remove(open.indexOf(best_open_node));
+		};
+		
+		Node goal = null;
+		while (!open.isEmpty()){
+			Node current = open.remove(0);
+			closed.add(current);
+			if (current.isPos(goalX, goalY)){
+				goal = current;
+				break;
+			}
+			
 			//generate successors of best node
 			ArrayList<Node> successors = new ArrayList<Node>();
-			int best_pos_x = best_open_node.getX();
-			int best_pos_y = best_open_node.getY();
+			int currentX = current.getX();
+			int currentY = current.getY();
 			
 			//up
-			if (this.apriori.validPosition(best_pos_x, best_pos_y-1)){
-				successors.add(new Node(best_open_node, best_pos_x, best_pos_y-1, 'u'));
+			if (this.apriori.validPosition(currentX, currentY-1)){
+				successors.add(new Node(current, currentX, currentY-1, 'u'));
 			}
 			//down
-			if (this.apriori.validPosition(best_pos_x, best_pos_y+1)){
-				successors.add(new Node(best_open_node, best_pos_x, best_pos_y+1, 'd'));
+			if (this.apriori.validPosition(currentX, currentY+1)){
+				successors.add(new Node(current, currentX, currentY+1, 'd'));
 			}
 			//left
-			if (this.apriori.validPosition(best_pos_x-1, best_pos_y)){
-				successors.add(new Node(best_open_node, best_pos_x-1, best_pos_y, 'l'));
+			if (this.apriori.validPosition(currentX-1, currentY)){
+				successors.add(new Node(current, currentX-1, currentY, 'l'));
 			}
 			//right
-			if (this.apriori.validPosition(best_pos_x+1, best_pos_y)){
-				successors.add(new Node(best_open_node, best_pos_x+1, best_pos_y, 'r'));
+			if (this.apriori.validPosition(currentX+1, currentY)){
+				successors.add(new Node(current, currentX+1, currentY, 'r'));
 			}
 			
 			for (Node s: successors){
-				if (s.isPos(goalX, goalY)){
-					//Stop, found goal
-					closed.add(s);
-					open.clear();
-					break;
-				}
+				//cost so far + turn cost + advance cost
+				int to_reach = current.getCostToReach()+s.turnCost(current.getHeading())+1;
+				//int tentative_cost = to_reach + this.evaluatePosition(s.getX(), s.getY(), goalX, goalY);
 				
-				//cost so far + turn cost + advance to new pos
-				int to_reach = best_open_node.getCostToReach()+s.turnCost(pos.getDirection())+1;
 				s.setCost(to_reach, this.evaluatePosition(s.getX(), s.getY(), goalX, goalY));
-				
-				boolean dont_add=false;
-				for (Node o: open){
-					//better equal node on open list
-					if (o.equalPos(s)){
-						if (o.getCost() < s.getCost()) {
-							dont_add = true;
-							break;
+
+				if (open.contains(s)){
+					Iterator<Node> iter = open.iterator();
+					while (iter.hasNext()){
+						Node o = iter.next();
+						if (o.equalPos(s)){
+							if (s.getCost() < o.getCost()) {
+								//s is a better path than currently possible to this node
+								//removes current item
+								iter.remove();
+							}
 						}
 					}
 				}
 				
-				for (Node o: closed){
-					//better equal node already visited
-					if (o.equalPos(s)){
-						if (o.getCost() < s.getCost()) {
-							dont_add = true;
-							break;
+				//For if we have an inadmissible heuristic:
+				if (closed.contains(s)){
+					Iterator<Node> iter = closed.iterator();
+					while (iter.hasNext()){
+						Node o = iter.next();
+						if (o.equalPos(s)){
+							if (s.getCost() < o.getCost()) {
+								//s is better path than previously taken to this node
+								//removes current item
+								iter.remove();
+							}
 						}
 					}
 				}
-				if (dont_add){
-					continue;
-				} else {
+				
+				//Checking for equal pos. nodes in open and closed via node.equals
+				if ((!open.contains(s)) && (!closed.contains(s))){
 					open.add(s);
 				}
+				Collections.sort(open, comparator);
 			}
-			closed.add(best_open_node);
-			System.out.println(best_open_node.toString());
 		}
-		this.planned_route = closed;
+		ArrayList<Node> route = new ArrayList<Node>();
+		route.add(0, goal);
+		while (goal.getParent() != null){
+			route.add(0, goal.getParent());
+			goal = goal.getParent();
+		}
+		this.planned_route = route;
+		System.out.printf("Planned route to goal %d,%d in %d moves\n", goalX, goalY, route.size());
 	}
 
 	@Override 
@@ -137,21 +161,12 @@ public class OmniscientBot extends Bot{
 	 * Returns cost to goal from position tested
 	 */
 	protected int evaluatePosition(short x, short y, short goalX, short goalY){
-		int dist_x = goalX - x;
-		int dist_y = goalY - y;
-		return dist_x+dist_y;
+		return this.evaluatePosition((int)x, (int)y, goalX, goalY);
 	}
 	
-	//FIXME can't plan ahead to go around obstacles
 	protected int evaluatePosition(int x, int y, short goalX, short goalY){
-		int dist_x = goalX - x;
-		int dist_y = goalY - y;
-		return dist_x+dist_y;
-	}
-
-	@Override 
-	public void execute() {
-		// TODO Auto-generated method stub
-		
+		int dist_x = Math.abs(goalX - x);
+		int dist_y = Math.abs(goalY - y);
+		return (dist_x+dist_y);
 	}
 }

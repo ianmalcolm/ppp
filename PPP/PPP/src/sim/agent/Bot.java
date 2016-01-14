@@ -6,6 +6,14 @@ import state.AgentState;
 import state.StateValue;
 import ppp.PPP;
 
+class InvalidMoveError extends Exception {
+	private static final long serialVersionUID = 9203487744481552202L;
+
+	public InvalidMoveError() {}
+	
+	public InvalidMoveError(String msg) { super(msg); }
+	
+}
 
 public abstract class Bot {
 	protected AgentState state;
@@ -16,7 +24,7 @@ public abstract class Bot {
 	// A priori map information
 	public Memory apriori;
 	// Current knowledge of map
-	public Memory current;
+	public Memory currentMem;
 	
 	public int sensorRange = 1;
 	
@@ -42,7 +50,7 @@ public abstract class Bot {
 	 */
 	public Bot(Memory apriori, Memory mem, int sensor_range){
 		this.apriori = apriori;
-		this.current = mem;
+		this.currentMem = mem;
 		this.sensorRange = sensor_range;
 		
 		//init state
@@ -57,12 +65,29 @@ public abstract class Bot {
 	 * Sense
 	 */
 	public void sense(PPP ppp){
-		//accept PPP as input
 		short[] centre_pos = this.getPos();
-		char[][] reading = new char[sensorRange][sensorRange];
-		//this.current.update(reading, centre_pos);
-		//collect info on surrounding area via sensor
-		//update current knowledge
+		int x_left = centre_pos[0] - this.sensorRange;
+		int x_right = centre_pos[0] + this.sensorRange;
+		int y_top = centre_pos[1] - this.sensorRange;
+		int y_bottom = centre_pos[1] + this.sensorRange;
+		
+		//FIXME readings overflow PPP occupancy grid, check bounds
+		if(y_top < 0) { y_top = 0;}
+		if(x_left < 0){ x_left = 0;}
+		if(x_right > ppp.size+2){x_right = ppp.size;}
+		if(y_bottom > ppp.size+2){y_bottom=ppp.size;}
+		
+		short[][] reading = new short[2*sensorRange+1][2*sensorRange+1];
+		for (int y=y_top; y<=y_bottom; y++){
+			for (int x=x_left; x<=x_right; x++){
+				boolean occ = ppp.isOccupied(x, y);
+				if (occ) {
+					this.currentMem.setCell(x, y, (short)1);
+				} else {
+					this.currentMem.setCell(x, y, (short)0);
+				}
+			}
+		}
 	}
 	
 	/*
@@ -75,7 +100,65 @@ public abstract class Bot {
 	/*
 	 * Execution
 	 */
-	abstract public void execute();
+	public void run(PPP ppp){
+		this.run(ppp, false);
+	}
+	
+	public void run(PPP ppp, boolean verbose){
+		short goalX = (short)(ppp.size*2);
+		short goalY = ppp.size;
+		int moves = 0;
+		int maxMoves = 300;
+		this.aprioriPlan(goalX, goalY);
+		
+		if (verbose){
+			System.out.println("\nPlanned route via A Priori knowledge");
+			this.apriori.prettyPrintRoute(this.planned_route);
+			System.out.println();
+		}
+		
+		while (!this.state.isPos(goalX, goalY)){
+			this.sense(ppp);
+			this.plan(goalX, goalY);
+			try {
+				this.move(ppp);
+			} catch (InvalidMoveError e) {
+				System.err.print(e);
+				e.printStackTrace();
+				System.exit(1);
+			}
+			moves++;
+			if (moves > maxMoves) { break; }
+		}
+		
+		if(this.state.isPos(goalX, goalY)){
+			System.out.printf("Reached Goal in %d moves\n", moves);
+		} else {
+			System.out.printf("Failed to reach goal in %d moves\n", moves);
+		}
+		
+		if(verbose){
+			System.out.println("\nRoute Taken");
+			this.currentMem.prettyPrintRoute(route_taken);
+		}
+	}
+	
+	public void move(PPP ppp) throws InvalidMoveError{
+		Node move_to = this.planned_route.remove(0);
+		this.route_taken.add(move_to);
+		
+		if (ppp.isOccupied(move_to.getX(), move_to.getY())){
+			// Invalid move made!
+			throw new InvalidMoveError("Invalid move - " + move_to.toString()+" is Occupied");
+		}
+		
+		short turns = (short)(this.state.getStateValue().getTurn()+move_to.turnCost(this.getHeading()));
+		short adv = (short)(this.state.getStateValue().getAdvance()+1);
+		short moves = (short)(turns+adv);
+		
+		this.state.setStateValue(turns, adv, moves);
+		this.state.setAgentState(move_to.getX(), move_to.getY(), move_to.getHeading());
+	}
 	
 	/*
 	 * Positioning
@@ -125,11 +208,18 @@ public abstract class Bot {
 		return false;
 	}
 	
-	public void printRoute(){
+	public void printPlannedRoute(){
+		System.out.printf("Route planned in %d steps\n", this.planned_route.size());
+		System.out.printf("Start: %s, End: %s\n", this.planned_route.get(0).toString(), 
+												this.planned_route.get(this.planned_route.size()-1).toString());
 		for (Node n: this.planned_route){
-			System.out.print(n.toString()+", ");
+			System.out.println(n.toString());
 		}
 		System.out.print("\n");
+	}
+	
+	public ArrayList<Node> getPlannedRoute(){
+		return this.planned_route;
 	}
 	
 }

@@ -23,9 +23,9 @@ public class Main {
 		ppp.drawMap();
 		ppp.displayPPP();
 		ppp.displayDes();
-		ppp.displayOcc();
+		//ppp.displayOcc();
 		try {
-			ppp.writePPP(1);
+			ppp.writePPP(2);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

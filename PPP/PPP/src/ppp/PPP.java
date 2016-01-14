@@ -356,6 +356,19 @@ public class PPP{
 			}
 			System.out.println();
 		}
+		System.out.printf("%d x %d squares \n", this.size*2, this.size);
+	}
+	
+	public boolean isOccupied(int x, int y){
+		short o = occ[y][x];
+		switch (o){
+		case 1:
+		case 3:
+		case 4:
+			return true;
+		default:
+			return false;
+		}
 	}
 	
 	public void displayOcc(){

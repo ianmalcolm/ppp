@@ -46,6 +46,12 @@ public class AgentState{
 		this.sv = sv;
 	}
 	
+	public void setAgentState(int x, int y, char h){
+		this.x = (short)x;
+		this.y = (short)y;
+		this.direction = h;
+	}
+	
 	/*
 	 * 	Return the state value for the current position and heading
 	 */
@@ -65,6 +71,13 @@ public class AgentState{
 	 */
 	public short getY(){
 		return y;
+	}
+	
+	public boolean isPos(short x, short y){
+		if ((this.x == x) && (this.y == y)) {
+			return true;
+		}
+		return false;
 	}
 	
 	/*

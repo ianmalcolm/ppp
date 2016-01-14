@@ -78,6 +78,10 @@ public class Node {
 		return this.cost_to_reach;
 	}
 	
+	public int getCostToGoal(){
+		return this.cost_to_goal;
+	}
+	
 	public int getX(){
 		return this.pos_x;
 	}
@@ -93,7 +97,7 @@ public class Node {
 	public boolean equalPos(Node n){
 		return this.isPos(n.getX(), n.getY());
 	}
-	
+		
 	public int turnCost(char heading){
 		//no turn
 		if (heading == this.heading){
@@ -111,4 +115,11 @@ public class Node {
 		return String.format("Node: %d,%d, cost: %d", this.pos_x, this.pos_y, this.cost);
 	}
 	
+	@Override
+	public boolean equals(Object n){
+		if ((n != null) && n instanceof Node){
+			return this.equalPos((Node)n);
+		}
+		return false;
+	}
 }
