@@ -4,6 +4,89 @@ import java.util.ArrayList;
 
 import ppp.PPP;
 
+enum Occupancy {
+	EMPTY(0,      ' '),
+	BOUNDARY(1,   '#'),
+	GOAL(2,       '@'),
+	OBS_LEFT(3,   '['),
+	OBS_RIGHT(4,  ']'),
+	MOVE_UP(5,    '^'),
+	MOVE_DOWN(6,  'v'),
+	MOVE_LEFT(7,  '<'),
+	MOVE_RIGHT(8, '>'),
+	POI(9,        '*'),//Point of Interest, for debugging
+	UNKNOWN(99,   '?');
+	
+	public int code;
+	public char symbol;
+	private Occupancy(int o, char s){
+		this.code = o;
+		this.symbol = s;
+	}
+	
+	public static Occupancy getType(int o){
+		switch (o){
+		case 0:
+			return EMPTY;
+		case 1:
+			return BOUNDARY;
+		case 2:
+			return GOAL;
+		case 3:
+			return OBS_LEFT;
+		case 4:
+			return OBS_RIGHT;
+		case 5:
+			return MOVE_UP;
+		case 6:
+			return MOVE_DOWN;
+		case 7:
+			return MOVE_LEFT;
+		case 8:
+			return MOVE_RIGHT;
+		case 9:
+			return POI;
+		default:
+			return UNKNOWN;
+		}
+	}
+	
+	public static Occupancy getType(short o){
+		return Occupancy.getType((int)o);
+	}
+	
+	public static boolean isObstalce(short o){
+		return Occupancy.isObstalce((int)o);
+	}
+	
+	public static boolean isObstalce(int o){
+		switch(Occupancy.getType(o)){
+		case BOUNDARY:
+		case OBS_LEFT:
+		case OBS_RIGHT:
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	public static Occupancy getHeading(char h){
+		switch (h){
+		case 'u':
+			return MOVE_UP;
+		case 'd':
+			return MOVE_DOWN;
+		case 'l':
+			return MOVE_LEFT;
+		case 'r':
+			return MOVE_RIGHT;
+		default:
+			return UNKNOWN;
+		}
+	}
+
+}
+
 /**
  * Memory storage for exploring agents
  * @author slw546
@@ -13,8 +96,14 @@ public class Memory {
 	public int mem_width;
 	public int mem_height;
 	
+	//Constructor Populated via Occ grid
 	public Memory(PPP ppp){
 		this(ppp.getOccGrid());
+	}
+	
+	//Empty grid constructors
+	public Memory(int w, int h){
+		this(new short[h][w]);
 	}
 	
 	public Memory(short[][] map) {
@@ -23,21 +112,29 @@ public class Memory {
 		this.mem_height = map.length;
 	}
 	
-	public Memory(int w, int h){
-		this.map = new short[h][w];
-		this.mem_width = w;
-		this.mem_height = h;
+	//Set all squares to 9, which rendes as ? when the memory is printed.
+	//Useful for seeing which empty squares were unknown or which were sensed as empty.
+	public void setUnsensed(){
+		for (int i = 0; i < this.mem_height; i++){
+			for (int j=0; j< this.mem_width; j++){
+				this.map[i][j]=(short) Occupancy.UNKNOWN.code;
+			}
+		}
 	}
-	
+		
 	public short readSquare(int x, int y){
 		return map[y][x];
 	}
 	
 	public boolean occupied(int x, int y){
-		if((map[y][x] == 0) || (map[y][x] == 2)){
-			return false;
+		return Occupancy.isObstalce(map[y][x]);
+	}
+	
+	public boolean isGoal(int x, int y){
+		if(Occupancy.getType(map[y][x]) == Occupancy.GOAL){
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	public void printMemory(){
@@ -78,57 +175,14 @@ public class Memory {
 		for (int i = 0; i < this.mem_height; i++){
 			for (int j=0; j< this.mem_width; j++){
 				short s = this.map[i][j];
+				Occupancy o = Occupancy.getType(s);
 
 				for (Node n: route){
 					if (n.isPos(j, i)){
-						switch(n.getHeading()){
-							case 'u':
-								s=5;
-								break;
-							case 'd':
-								s=6;
-								break;
-							case 'l':
-								s=7;
-								break;
-							case 'r':
-								s=8;
-								break;
-						}
+						o = Occupancy.getHeading(n.getHeading());
 					}
 				}
-				switch(s){
-					case 0:
-						System.out.print(".");
-						break;
-					case 1:
-						System.out.print("#");
-						break;
-					case 2:
-						System.out.print("G");
-						break;
-					case 3:
-						System.out.print("#");
-						break;
-					case 4:
-						System.out.print("#");
-						break;
-					case 5:
-						System.out.print("^");
-						break;
-					case 6:
-						System.out.print("v");
-						break;
-					case 7:
-						System.out.print("<");
-						break;
-					case 8:
-						System.out.print(">");
-						break;
-					default:
-						System.out.print("?");
-						break;
-				}
+				System.out.print(o.symbol);
 			}
 			System.out.print("\n");
 		}

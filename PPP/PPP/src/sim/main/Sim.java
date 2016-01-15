@@ -9,17 +9,26 @@ import ppp.PPP;
 import ppp.Descriptor;
 import sim.agent.Bot;
 import sim.agent.OmniscientBot;
+import sim.agent.WallFollowerBot;
 import sim.agent.Memory;
 
 public class Sim {
 	
 	public static void main(String[] args) {
 		try {
+			int test_runs = 1000;
 			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP2.ppp", false);
-			Bot bot = new OmniscientBot(new Memory(map), 10);
-			//displayPPP(map);
+			displayPPP(map);
 			
-			bot.run(map, true);
+			Bot ob = new OmniscientBot(new Memory(map), 1);
+			
+			//Remember to account for walls in the memory size
+			Bot wfl = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), 1, 'l');
+			Bot wfr = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), 1, 'r');
+			
+			test(map, ob,  test_runs);
+			test(map, wfl, test_runs);
+			test(map, wfr, test_runs);
 			
 			System.out.println("Simulator exiting");
 			
@@ -33,8 +42,26 @@ public class Sim {
 		}
 	}
 	
+	public static void test(PPP map, Bot bot, int tests){
+		System.out.println("\nTesting " + bot.getName());
+		int t = 0;
+		int dot = 0;
+		while(t < tests){
+			bot.run(map, false);
+			bot.reset();
+			t++;
+			dot++;
+			if (dot == tests/10){
+				System.out.print("...");
+				dot = 0;
+			}
+		}
+		System.out.print("\n");
+		bot.testResults();
+	}
+	
 	public static void displayPPP(PPP ppp){
-		ppp.displayDes();
+		//ppp.displayDes();
 		ppp.drawMap();
 		ppp.displayPPP();
 	}

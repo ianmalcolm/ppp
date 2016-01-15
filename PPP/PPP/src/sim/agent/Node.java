@@ -7,6 +7,7 @@ public class Node {
 	private int cost;
 	private int cost_to_reach;
 	private int cost_to_goal;
+	private int visits;
 	
 	//Heading of the robot when it enters this node
 	//Influences cost of leaving it (robot may have to turn)
@@ -31,6 +32,7 @@ public class Node {
 		this.cost_to_reach = cost_to_reach;
 		this.cost_to_goal  = cost_to_goal;
 		this.cost = cost_to_reach + cost_to_goal;
+		this.visits = 0;
 	}
 	
 	private char oppositeHeading(char h){
@@ -121,5 +123,17 @@ public class Node {
 			return this.equalPos((Node)n);
 		}
 		return false;
+	}
+	
+	public void incVisits(){
+		this.visits ++;
+	}
+	
+	public void setVisits(int v){
+		this.visits = v;
+	}
+	
+	public int getVisits(){
+		return this.visits;
 	}
 }

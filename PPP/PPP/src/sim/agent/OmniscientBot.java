@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 public class OmniscientBot extends Bot{
+	private final String BOT_NAME = "OMNISCIENT BOT";
 
 	/*
 	 * A bot which has full knowledge of the map and therefore finds the perfect route.
@@ -150,13 +151,11 @@ public class OmniscientBot extends Bot{
 			goal = goal.getParent();
 		}
 		this.planned_route = route;
-		System.out.printf("Planned route to goal %d,%d in %d moves\n", goalX, goalY, route.size());
 	}
 
 	@Override 
 	public void plan(short goalX, short goalY) {}
 	
-	@Override
 	/**
 	 * Returns cost to goal from position tested
 	 */
@@ -168,5 +167,10 @@ public class OmniscientBot extends Bot{
 		int dist_x = Math.abs(goalX - x);
 		int dist_y = Math.abs(goalY - y);
 		return (dist_x+dist_y);
+	}
+	
+	@Override
+	public String getName(){
+		return this.BOT_NAME;
 	}
 }

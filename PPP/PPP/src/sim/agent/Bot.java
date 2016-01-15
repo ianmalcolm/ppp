@@ -16,9 +16,15 @@ class InvalidMoveError extends Exception {
 }
 
 public abstract class Bot {
+	private final String BOT_NAME = "BOT";
 	protected AgentState state;
 	protected ArrayList<Node> planned_route;
 	protected ArrayList<Node> route_taken;
+	private int successes;
+	private int fails;
+	private int testRuns;
+	private int totalMoves;
+	private float avgMoves;
 	
 	//(Partial) views on the PPP, developed via exploration and movement.
 	// A priori map information
@@ -37,8 +43,8 @@ public abstract class Bot {
 	 * @param mem Memory space for exploration
 	 * @param sensor_range Range of sensor sweep
 	 */
-	public Bot(Memory mem, int sensor_range){
-		this(null, mem, sensor_range);
+	public Bot(Memory currentMem, int sensor_range){
+		this(null, currentMem, sensor_range);
 	}
 	
 	// A priori Knowledge
@@ -48,10 +54,15 @@ public abstract class Bot {
 	 * @param mem Memory space for exploration
 	 * @param sensor_range Range of sensor sweep
 	 */
-	public Bot(Memory apriori, Memory mem, int sensor_range){
-		this.apriori = apriori;
-		this.currentMem = mem;
+	public Bot(Memory apriori, Memory currentMem, int sensor_range){
+		this.apriori     = apriori;
+		this.currentMem  = currentMem;
 		this.sensorRange = sensor_range;
+		this.successes   = 0;
+		this.fails       = 0;
+		this.avgMoves    = 0;
+		this.testRuns    = 0;
+		this.currentMem.setUnsensed();
 		
 		//init state
 		this.state = new AgentState((short)1, (short)1,'r');
@@ -59,6 +70,14 @@ public abstract class Bot {
 		this.state.setStateValue((short)0, (short)0, (short) 0);
 		this.planned_route = new ArrayList<Node>();
 		this.route_taken = new ArrayList<Node>();
+	}
+	
+	public void reset(){
+		this.currentMem.setUnsensed();
+		this.state = new AgentState((short)1, (short)1,'r');
+		this.state.setStateValue((short)0, (short)0, (short) 0);
+		this.planned_route.clear();
+		this.route_taken.clear();
 	}
 	
 	/*
@@ -71,18 +90,18 @@ public abstract class Bot {
 		int y_top = centre_pos[1] - this.sensorRange;
 		int y_bottom = centre_pos[1] + this.sensorRange;
 		
-		//FIXME readings overflow PPP occupancy grid, check bounds
 		if(y_top < 0) { y_top = 0;}
 		if(x_left < 0){ x_left = 0;}
-		if(x_right > ppp.size+2){x_right = ppp.size;}
-		if(y_bottom > ppp.size+2){y_bottom=ppp.size;}
+		if(x_right > 2*ppp.size+1){x_right = 2*ppp.size+1;}
+		if(y_bottom > ppp.size+1){y_bottom=ppp.size+1;}
 		
 		short[][] reading = new short[2*sensorRange+1][2*sensorRange+1];
+		
 		for (int y=y_top; y<=y_bottom; y++){
 			for (int x=x_left; x<=x_right; x++){
 				boolean occ = ppp.isOccupied(x, y);
 				if (occ) {
-					this.currentMem.setCell(x, y, (short)1);
+					this.currentMem.setCell(x, y, ppp.getOccCell(x,y));
 				} else {
 					this.currentMem.setCell(x, y, (short)0);
 				}
@@ -95,7 +114,6 @@ public abstract class Bot {
 	 */
 	abstract public void aprioriPlan(short goalX, short goalY);
 	abstract public void plan(short goalX, short goalY);
-	abstract protected int evaluatePosition(short x, short y, short goalX, short goalY);
 	
 	/*
 	 * Execution
@@ -113,7 +131,9 @@ public abstract class Bot {
 		
 		if (verbose){
 			System.out.println("\nPlanned route via A Priori knowledge");
-			this.apriori.prettyPrintRoute(this.planned_route);
+			if (this.planned_route.size() > 0){
+				this.apriori.prettyPrintRoute(this.planned_route);
+			}
 			System.out.println();
 		}
 		
@@ -130,11 +150,19 @@ public abstract class Bot {
 			moves++;
 			if (moves > maxMoves) { break; }
 		}
+		//Sense around goal pos to tidy up the map
+		this.sense(ppp);
 		
 		if(this.state.isPos(goalX, goalY)){
-			System.out.printf("Reached Goal in %d moves\n", moves);
+			if (verbose) {
+				System.out.printf("Reached Goal %d,%d in %d moves\n", goalX, goalY, moves);
+			}
+			this.finished(moves, true);
 		} else {
-			System.out.printf("Failed to reach goal in %d moves\n", moves);
+			if (verbose) {
+				System.out.printf("Failed to reach goal in %d moves\n", moves);
+			}
+			this.finished(moves, false);
 		}
 		
 		if(verbose){
@@ -143,8 +171,26 @@ public abstract class Bot {
 		}
 	}
 	
+	private void finished(int movesMade, boolean success){
+		if (success){
+			this.successes++;
+		} else {
+			this.fails++;
+		}
+		this.testRuns++;
+		this.totalMoves += movesMade;
+		this.avgMoves = (float)this.totalMoves / (float)this.testRuns;
+	}
+	
+	public void testResults(){
+		System.out.printf("Bot: %s\n", this.getName());
+		System.out.printf("    Successes: %d Fails: %d Runs: %d\n", this.successes, this.fails, this.testRuns);
+		System.out.printf("    Total Moves: %d Avg Moves: %.2f\n", this.totalMoves, this.avgMoves);
+	}
+	
 	public void move(PPP ppp) throws InvalidMoveError{
 		Node move_to = this.planned_route.remove(0);
+		move_to.incVisits();
 		this.route_taken.add(move_to);
 		
 		if (ppp.isOccupied(move_to.getX(), move_to.getY())){
@@ -220,6 +266,10 @@ public abstract class Bot {
 	
 	public ArrayList<Node> getPlannedRoute(){
 		return this.planned_route;
+	}
+	
+	public String getName(){
+		return this.BOT_NAME;
 	}
 	
 }
