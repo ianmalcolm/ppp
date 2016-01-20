@@ -79,31 +79,66 @@ public abstract class Bot {
 		this.planned_route.clear();
 		this.route_taken.clear();
 	}
+		
+	/*
+	 * Line of Sight Helpers
+	 */
+	protected double lerp(int start, int end, double dist){
+		return Math.round(start+dist *(end-start));
+	}
+	
+	protected int diag_dist(int x1, int y1, int x2, int y2){
+		int distX = x1-x2;
+		int distY = y1-y2;
+		return Math.max(Math.abs(distX), Math.abs(distY));
+	}
+	
+	protected ArrayList<short[]> line(int x1, int y1, int x2, int y2){
+		ArrayList<short[]> points = new ArrayList<short[]>();
+		int nPoints = this.diag_dist(x1, y1, x2, y2);
+		for (int step = 0; step<=nPoints; step++){
+			double t = nPoints == 0? 0.0 : (double)step/(double)nPoints;
+			short x = (short)this.lerp(x1, x2, t);
+			short y = (short)this.lerp(y1, y2, t);
+			short[] point = {x,y};
+			points.add(point);
+		}
+		return points;
+	}
 	
 	/*
 	 * Sense
 	 */
 	public void sense(PPP ppp){
 		short[] centre_pos = this.getPos();
-		int x_left = centre_pos[0] - this.sensorRange;
-		int x_right = centre_pos[0] + this.sensorRange;
-		int y_top = centre_pos[1] - this.sensorRange;
+		// Sense along lines from robot to fringe of sight, given by sensorRange
+		int x_left   = centre_pos[0] - this.sensorRange;
+		int x_right  = centre_pos[0] + this.sensorRange;
+		int y_top    = centre_pos[1] - this.sensorRange;
 		int y_bottom = centre_pos[1] + this.sensorRange;
 		
-		if(y_top < 0) { y_top = 0;}
-		if(x_left < 0){ x_left = 0;}
-		if(x_right > 2*ppp.size+1){x_right = 2*ppp.size+1;}
-		if(y_bottom > ppp.size+1){y_bottom=ppp.size+1;}
-		
-		short[][] reading = new short[2*sensorRange+1][2*sensorRange+1];
-		
-		for (int y=y_top; y<=y_bottom; y++){
-			for (int x=x_left; x<=x_right; x++){
-				boolean occ = ppp.isOccupied(x, y);
-				if (occ) {
-					this.currentMem.setCell(x, y, ppp.getOccCell(x,y));
-				} else {
-					this.currentMem.setCell(x, y, (short)0);
+		if(y_top < 0)              { y_top = 0;}
+		if(x_left < 0)             { x_left = 0;}
+		if(x_right > 2*ppp.size+1) {x_right = 2*ppp.size+1;}
+		if(y_bottom > ppp.size+1)  {y_bottom=ppp.size+1;}
+
+		for(int y=y_top; y<=y_bottom; y++){
+			//At the sides of the fringe, we only need to check the edge points
+			//not every point in between - they'll make up part of a LoS
+			int[] endPoints = new int[x_right-x_left+1];
+			for(int i=0; i<x_right-x_left+1; i++){
+				endPoints[i]=x_left+i;
+			}
+			
+			for(int x: endPoints){
+				ArrayList<short[]> LoS = this.line(centre_pos[0], centre_pos[1], x, y);
+				//Sense along the LoS
+				for (short[] p : LoS){
+					this.currentMem.setCell(p[0], p[1],  ppp.getOccCell(p[0], p[1]));
+					//Can't see through walls, rest of the line ignored.
+					if (ppp.isOccupied(p[0], p[1])){
+						break;
+					}
 				}
 			}
 		}
@@ -123,16 +158,23 @@ public abstract class Bot {
 	}
 	
 	public void run(PPP ppp, boolean verbose){
+		this.run(ppp, verbose, false);
+	}
+	
+	public void run(PPP ppp, boolean verbose, boolean showSteps){
 		short goalX = (short)(ppp.size*2);
 		short goalY = ppp.size;
-		int moves = 0;
+		int moves = this.route_taken.size();
 		int maxMoves = 300;
 		this.aprioriPlan(goalX, goalY);
 		
 		if (verbose){
 			System.out.println("\nPlanned route via A Priori knowledge");
 			if (this.planned_route.size() > 0){
-				this.apriori.prettyPrintRoute(this.planned_route);
+				if (this.apriori != null) {
+					this.apriori.prettyPrintRoute(this.planned_route);
+					//this.printPlannedRoute();
+				}
 			}
 			System.out.println();
 		}
@@ -142,10 +184,17 @@ public abstract class Bot {
 			this.plan(goalX, goalY);
 			try {
 				this.move(ppp);
+				if(showSteps){
+					this.currentMem.prettyPrintRoute(route_taken);
+					System.out.println();
+					Thread.sleep(500);
+				}
 			} catch (InvalidMoveError e) {
 				System.err.print(e);
 				e.printStackTrace();
 				System.exit(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			moves++;
 			if (moves > maxMoves) { break; }
@@ -168,6 +217,7 @@ public abstract class Bot {
 		if(verbose){
 			System.out.println("\nRoute Taken");
 			this.currentMem.prettyPrintRoute(route_taken);
+			//this.printTakenRoute();
 		}
 	}
 	
@@ -226,6 +276,30 @@ public abstract class Bot {
 		return this.state.getDirection();
 	}
 	
+	public ArrayList<Node> getSuccessors(Node n, Memory mem){
+		ArrayList<Node> successors = new ArrayList<Node>();
+		int currentX = n.getX();
+		int currentY = n.getY();
+		
+		//up
+		if (mem.validPosition(currentX, currentY-1)){
+			successors.add(new Node(n, currentX, currentY-1, 'u'));
+		}
+		//down
+		if (mem.validPosition(currentX, currentY+1)){
+			successors.add(new Node(n, currentX, currentY+1, 'd'));
+		}
+		//left
+		if (mem.validPosition(currentX-1, currentY)){
+			successors.add(new Node(n, currentX-1, currentY, 'l'));
+		}
+		//right
+		if (mem.validPosition(currentX+1, currentY)){
+			successors.add(new Node(n, currentX+1, currentY, 'r'));
+		}
+		return successors;
+	}
+	
 	/*
 	 * Movement
 	 */
@@ -256,9 +330,18 @@ public abstract class Bot {
 	
 	public void printPlannedRoute(){
 		System.out.printf("Route planned in %d steps\n", this.planned_route.size());
-		System.out.printf("Start: %s, End: %s\n", this.planned_route.get(0).toString(), 
-												this.planned_route.get(this.planned_route.size()-1).toString());
-		for (Node n: this.planned_route){
+		this.printRoute(this.planned_route);
+	}
+	
+	public void printTakenRoute(){
+		System.out.printf("Route of %d steps\n", this.route_taken.size());
+		this.printRoute(this.route_taken);
+	}
+	
+	private void printRoute(ArrayList<Node> route){
+		System.out.printf("Start: %s :: End: %s\n", route.get(0).toString(), 
+				route.get(route.size()-1).toString());
+		for (Node n: route){
 			System.out.println(n.toString());
 		}
 		System.out.print("\n");

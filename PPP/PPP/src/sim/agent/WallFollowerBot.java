@@ -17,6 +17,11 @@ public class WallFollowerBot extends Bot{
 	public WallFollowerBot(Memory mem, int sensor_range, char wallFollowSide) {
 		super(mem, sensor_range);
 		this.wallFollowSide = wallFollowSide;
+		
+		//char initialDir = wallFollowSide == 'l' ? 'r' : 'l';
+		//this.state = new AgentState((short)1, (short)1, initialDir);
+		//zero the count of moves made so far
+		//this.state.setStateValue((short)0, (short)0, (short) 0);
 	}
 	
 	@Override
@@ -93,7 +98,7 @@ public class WallFollowerBot extends Bot{
 		char wallSide = this.keepWallOnSide(n.getHeading());
 		//Cost == Cost of about turn - higher encourages cycles
 		//Too low encourages movement away from the wall if a turn is required
-		int cost = 2;
+		int cost = 10;
 		switch (wallSide){
 			case 'u':
 				if (this.currentMem.occupied(n.getX(), n.getY()-1)){
@@ -119,8 +124,8 @@ public class WallFollowerBot extends Bot{
 				break;
 		}
 		if (this.currentMem.isGoal(n.getX(), n.getY())){
-			//heavily subsidise the goal position
-			cost = -100;
+			//subsidise the goal position
+			cost = 0;
 		}
 		
 		//FIXME weighting=2 not enough to guarantee success, is this working properly
@@ -130,8 +135,8 @@ public class WallFollowerBot extends Bot{
 			p.incVisits();
 			n.setVisits(p.getVisits());
 		}
-		
-		return cost+2*n.getVisits();
+		int c = cost+(2*n.getVisits());
+		return c;
 	}
 	
 	private char keepWallOnSide(char currentHeading){

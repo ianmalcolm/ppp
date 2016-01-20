@@ -114,7 +114,7 @@ public class Node {
 	}
 	
 	public String toString(){
-		return String.format("Node: %d,%d, cost: %d", this.pos_x, this.pos_y, this.cost);
+		return String.format("Node: %d,%d, heading:%s, cost: %d", this.pos_x, this.pos_y, this.heading, this.cost);
 	}
 	
 	@Override

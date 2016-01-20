@@ -80,27 +80,7 @@ public class OmniscientBot extends Bot{
 			}
 			
 			//generate successors of best node
-			ArrayList<Node> successors = new ArrayList<Node>();
-			int currentX = current.getX();
-			int currentY = current.getY();
-			
-			//up
-			if (this.apriori.validPosition(currentX, currentY-1)){
-				successors.add(new Node(current, currentX, currentY-1, 'u'));
-			}
-			//down
-			if (this.apriori.validPosition(currentX, currentY+1)){
-				successors.add(new Node(current, currentX, currentY+1, 'd'));
-			}
-			//left
-			if (this.apriori.validPosition(currentX-1, currentY)){
-				successors.add(new Node(current, currentX-1, currentY, 'l'));
-			}
-			//right
-			if (this.apriori.validPosition(currentX+1, currentY)){
-				successors.add(new Node(current, currentX+1, currentY, 'r'));
-			}
-			
+			ArrayList<Node> successors = this.getSuccessors(current, this.apriori);
 			for (Node s: successors){
 				//cost so far + turn cost + advance cost
 				int to_reach = current.getCostToReach()+s.turnCost(current.getHeading())+1;
@@ -146,7 +126,10 @@ public class OmniscientBot extends Bot{
 		}
 		ArrayList<Node> route = new ArrayList<Node>();
 		route.add(0, goal);
-		while (goal.getParent() != null){
+		//Start on 1,1 so we actually want to cut off the plan
+		//the node ahead of that spot; ie. our plan is to move off 1,1
+		//not move to 1,1 and move off (since we start there)
+		while (goal.getParent().getParent() != null){
 			route.add(0, goal.getParent());
 			goal = goal.getParent();
 		}

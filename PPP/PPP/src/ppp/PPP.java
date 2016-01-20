@@ -143,8 +143,8 @@ public class PPP{
 	 * 	initialize destination for createDescriptors
 	 */
 	private void iniDestination(){
-		occ[row-2][col-2] = 2;
-		occ[row-2][col-3] = 2;
+		occ[row-2][col-2] = 10;
+		occ[row-2][col-3] = 10;
 	}
 	/*
 	 * 	initialize all the descriptors
@@ -161,7 +161,7 @@ public class PPP{
 				rRow = (short)(generator.nextInt(size)+1);
 				// the y position of the descriptor
 				rCol = (short)(generator.nextInt(size)*2+1);
-			}while(occ[rRow][rCol]==2);
+			}while(occ[rRow][rCol]==2||occ[rRow][rCol]==10);
 			// the type of the descriptor, totally six.
 			short type = (short)generator.nextInt(6);
 			short currentLength = 0;	// the length of the current descriptor
@@ -392,7 +392,7 @@ public class PPP{
 		short result = 0;
 		for(short i = 0; i<row; i++){
 			for(short j = 0; j<col; j++){
-				if(occ[i][j]==0||occ[i][j]==2) result++;
+				if(occ[i][j]==0||occ[i][j]==2||occ[i][j]==10) result++;
 			}
 		}
 		return (short)(result/2);
@@ -424,7 +424,7 @@ public class PPP{
 			//for each row
 			for(short j = 0; j<size; j++){
 				//For each free grid sq. in Occ grid:
-				if(occ[j+1][i*2+1]==0||occ[j+1][i*2+1]==2){
+				if(occ[j+1][i*2+1]==0||occ[j+1][i*2+1]==2||occ[j+1][i*2+1]==10){
 					asArray[n*4] = new AgentState((short)i,(short)j,'r');
 					asArray[n*4+1] = new AgentState((short)i,(short)j,'u');
 					asArray[n*4+2] = new AgentState((short)i,(short)j,'d');
@@ -823,7 +823,7 @@ public class PPP{
 						}
 					}
 					//Empty space or goal / initial position
-					if(occ[i][j]==0||occ[i][j]==2){
+					if(occ[i][j]==0||occ[i][j]==2||occ[i][j]==10){
 						writer.write("0 ");
 						j++;
 					}

@@ -17,18 +17,20 @@ public class Sim {
 	public static void main(String[] args) {
 		try {
 			int test_runs = 1000;
-			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP2.ppp", false);
+			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP3.ppp", false);
 			displayPPP(map);
 			
-			Bot ob = new OmniscientBot(new Memory(map), 1);
+			int sensorRange = 2;
+			Bot ob = new OmniscientBot(new Memory(map), sensorRange);
 			
 			//Remember to account for walls in the memory size
-			Bot wfl = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), 1, 'l');
-			Bot wfr = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), 1, 'r');
-			
-			test(map, ob,  test_runs);
-			test(map, wfl, test_runs);
-			test(map, wfr, test_runs);
+			Bot wfl = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
+			Bot wfr = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'r');
+			//singleTest(map, ob, true);
+			singleTest(map, wfr, true);
+			//test(map, ob,  test_runs);
+			//test(map, wfl, test_runs);
+			//test(map, wfr, test_runs);
 			
 			System.out.println("Simulator exiting");
 			
@@ -40,6 +42,12 @@ public class Sim {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public static void singleTest(PPP map, Bot bot, boolean verbose){
+		bot.run(map, verbose, true);
+		bot.testResults();
+		bot.reset();
 	}
 	
 	public static void test(PPP map, Bot bot, int tests){

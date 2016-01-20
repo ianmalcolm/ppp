@@ -7,7 +7,7 @@ import ppp.PPP;
 enum Occupancy {
 	EMPTY(0,      ' '),
 	BOUNDARY(1,   '#'),
-	GOAL(2,       '@'),
+	START(2,       '@'),
 	OBS_LEFT(3,   '['),
 	OBS_RIGHT(4,  ']'),
 	MOVE_UP(5,    '^'),
@@ -15,6 +15,7 @@ enum Occupancy {
 	MOVE_LEFT(7,  '<'),
 	MOVE_RIGHT(8, '>'),
 	POI(9,        '*'),//Point of Interest, for debugging
+	GOAL(10,      'G'),
 	UNKNOWN(99,   '?');
 	
 	public int code;
@@ -31,7 +32,7 @@ enum Occupancy {
 		case 1:
 			return BOUNDARY;
 		case 2:
-			return GOAL;
+			return START;
 		case 3:
 			return OBS_LEFT;
 		case 4:
@@ -46,6 +47,8 @@ enum Occupancy {
 			return MOVE_RIGHT;
 		case 9:
 			return POI;
+		case 10:
+			return GOAL;
 		default:
 			return UNKNOWN;
 		}
@@ -135,6 +138,18 @@ public class Memory {
 			return true;
 		}
 		return false;
+	}
+	
+	public int unknownCells(){
+		int count = 0;
+		for (int i = 0; i < this.mem_height; i++){
+			for (int j=0; j< this.mem_width; j++){
+				if (Occupancy.getType(map[i][j]) == Occupancy.UNKNOWN){
+					count ++;
+				}
+			}
+		}
+		return count;
 	}
 	
 	public void printMemory(){
