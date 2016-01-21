@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 public class OmniscientBot extends Bot{
-	private final String BOT_NAME = "OMNISCIENT BOT";
+	private final String BOT_NAME = "Omniscient Bot";
 
 	/*
 	 * A bot which has full knowledge of the map and therefore finds the perfect route.

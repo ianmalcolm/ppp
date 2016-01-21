@@ -31,42 +31,20 @@ public class WallFollowerBot extends Bot{
 	@Override
 	public void plan(short goalX, short goalY) {
 		short[] currentPos = this.getPos();
-		ArrayList<Node> successors = new ArrayList<Node>();
-		int currentX = currentPos[0];
-		int currentY = currentPos[1];
 		
 		Node parent = null;
-		if (this.route_taken.size() != 0){
-			parent = this.route_taken.get(this.route_taken.size()-1);
-		}
-		
-		//up
-		if (this.currentMem.validPosition(currentX, currentY-1)){
-			successors.add(new Node(parent, currentX, currentY-1, 'u'));
-		}
-		//down
-		if (this.currentMem.validPosition(currentX, currentY+1)){
-			successors.add(new Node(parent, currentX, currentY+1, 'd'));
-		}
-		//left
-		if (this.currentMem.validPosition(currentX-1, currentY)){
-			successors.add(new Node(parent, currentX-1, currentY, 'l'));
-		}
-		//right
-		if (this.currentMem.validPosition(currentX+1, currentY)){
-			successors.add(new Node(parent, currentX+1, currentY, 'r'));
-		}
-		
-		int cheapest_seen = 999999;
-		Node cheapest = null;
 		int parent_to_reach = 0;
 		char parent_heading = 'r';
-		Random rand = new Random();
-		if (parent != null){
+		if (this.route_taken.size() != 0){
+			parent = this.route_taken.get(this.route_taken.size()-1);
 			parent_to_reach = parent.getCostToReach();
 			parent_heading  = parent.getHeading();
 		}
-
+		ArrayList<Node> successors = this.getSuccessors(parent, currentPos[0], currentPos[1], currentMem);
+		
+		int cheapest_seen = 999999;
+		Node cheapest = null;
+		Random rand = new Random();
 		for (Node s: successors){
 			int to_reach = parent_to_reach+s.turnCost(parent_heading)+1;
 			s.setCost(to_reach, this.evaluatePosition(s));
@@ -129,6 +107,7 @@ public class WallFollowerBot extends Bot{
 		}
 		
 		//FIXME weighting=2 not enough to guarantee success, is this working properly
+		//FIXME this stops cycles, so this bot pretty much never fails - turn off?
 		if (this.route_taken.contains(n)){
 			//Previously been at this position
 			Node p = this.route_taken.get(this.route_taken.indexOf(n));

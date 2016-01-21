@@ -144,7 +144,7 @@ public class PPP{
 	 */
 	private void iniDestination(){
 		occ[row-2][col-2] = 10;
-		occ[row-2][col-3] = 10;
+		//occ[row-2][col-3] = 10;
 	}
 	/*
 	 * 	initialize all the descriptors

@@ -20,18 +20,26 @@ public abstract class Bot {
 	protected AgentState state;
 	protected ArrayList<Node> planned_route;
 	protected ArrayList<Node> route_taken;
+	private int unknown_cells;
 	private int successes;
 	private int fails;
 	private int testRuns;
 	private int totalMoves;
+	private int totalTurns;
+	private int totalAdv;
+	private int totalUnknownCells;
 	private float avgMoves;
+	private float avgTurns;
+	private float avgAdv;
+	private float avgUnknownCells;
 	
-	//(Partial) views on the PPP, developed via exploration and movement.
+	//Memory - (Partial) views on the PPP, developed via exploration and movement.
 	// A priori map information
 	public Memory apriori;
 	// Current knowledge of map
 	public Memory currentMem;
-	
+	public Boolean goal_found;
+	public short[] goal_pos;
 	public int sensorRange = 1;
 	
 	/*
@@ -58,30 +66,40 @@ public abstract class Bot {
 		this.apriori     = apriori;
 		this.currentMem  = currentMem;
 		this.sensorRange = sensor_range;
-		this.successes   = 0;
-		this.fails       = 0;
-		this.avgMoves    = 0;
-		this.testRuns    = 0;
-		this.currentMem.setUnsensed();
-		
-		//init state
-		this.state = new AgentState((short)1, (short)1,'r');
-		//zero the count of moves made so far
-		this.state.setStateValue((short)0, (short)0, (short) 0);
 		this.planned_route = new ArrayList<Node>();
 		this.route_taken = new ArrayList<Node>();
+		this.successes   = 0;
+		this.fails       = 0;
+		this.totalMoves  = 0;
+		this.totalTurns  = 0;
+		this.totalAdv    = 0;
+		this.avgMoves    = 0;
+		this.avgTurns    = 0;
+		this.avgAdv      = 0;
+		this.testRuns    = 0;
+		this.setUpBot();
 	}
 	
-	public void reset(){
+	public void setUpBot(){
+		this.goal_found  = false;
+		this.goal_pos    = null;
 		this.currentMem.setUnsensed();
+		//init state
+		//zero the count of moves made so far
 		this.state = new AgentState((short)1, (short)1,'r');
 		this.state.setStateValue((short)0, (short)0, (short) 0);
+		//int apriori_unknown = this.apriori == null? 0 : this.apriori.unknownCells();
+		this.unknown_cells = this.currentMem == null ? 0: this.currentMem.unknownCells();
 		this.planned_route.clear();
 		this.route_taken.clear();
 	}
+	
+	public void reset(){
+		this.setUpBot();
+	}
 		
 	/*
-	 * Line of Sight Helpers
+	 * Line of Sight
 	 */
 	protected double lerp(int start, int end, double dist){
 		return Math.round(start+dist *(end-start));
@@ -134,10 +152,19 @@ public abstract class Bot {
 				ArrayList<short[]> LoS = this.line(centre_pos[0], centre_pos[1], x, y);
 				//Sense along the LoS
 				for (short[] p : LoS){
+					if (Occupancy.getType(this.currentMem.readSquare(p[0], p[1])) == Occupancy.UNKNOWN){
+						this.unknown_cells--;
+					}
+					
 					this.currentMem.setCell(p[0], p[1],  ppp.getOccCell(p[0], p[1]));
 					//Can't see through walls, rest of the line ignored.
 					if (ppp.isOccupied(p[0], p[1])){
 						break;
+					}
+					
+					if(this.currentMem.isGoal(p[0], p[1])){
+						this.goal_found = true;
+						this.goal_pos = p;
 					}
 				}
 			}
@@ -183,12 +210,12 @@ public abstract class Bot {
 			this.sense(ppp);
 			this.plan(goalX, goalY);
 			try {
-				this.move(ppp);
 				if(showSteps){
 					this.currentMem.prettyPrintRoute(route_taken);
 					System.out.println();
-					Thread.sleep(500);
+					Thread.sleep(250);
 				}
+				this.move(ppp);
 			} catch (InvalidMoveError e) {
 				System.err.print(e);
 				e.printStackTrace();
@@ -228,24 +255,28 @@ public abstract class Bot {
 			this.fails++;
 		}
 		this.testRuns++;
-		this.totalMoves += movesMade;
+		this.totalMoves += this.state.getStateValue().getMove();
+		this.totalTurns += this.state.getStateValue().getTurn();
+		this.totalAdv   += this.state.getStateValue().getAdvance();
+		this.totalUnknownCells += this.unknown_cells;
+		
 		this.avgMoves = (float)this.totalMoves / (float)this.testRuns;
-	}
-	
-	public void testResults(){
-		System.out.printf("Bot: %s\n", this.getName());
-		System.out.printf("    Successes: %d Fails: %d Runs: %d\n", this.successes, this.fails, this.testRuns);
-		System.out.printf("    Total Moves: %d Avg Moves: %.2f\n", this.totalMoves, this.avgMoves);
+		this.avgTurns = (float)this.totalTurns / (float)this.testRuns;
+		this.avgAdv   = (float)this.totalAdv   / (float)this.testRuns;
+		this.avgUnknownCells = (float)this.totalUnknownCells / (float)this.testRuns;
 	}
 	
 	public void move(PPP ppp) throws InvalidMoveError{
 		Node move_to = this.planned_route.remove(0);
 		move_to.incVisits();
+		if (this.route_taken.contains(move_to)){
+			this.route_taken.get(this.route_taken.indexOf(move_to)).incVisits();
+		}
 		this.route_taken.add(move_to);
 		
 		if (ppp.isOccupied(move_to.getX(), move_to.getY())){
 			// Invalid move made!
-			throw new InvalidMoveError("Invalid move - " + move_to.toString()+" is Occupied");
+			throw new InvalidMoveError("Invalid move - " + move_to.toString()+" is Occupied\n");
 		}
 		
 		short turns = (short)(this.state.getStateValue().getTurn()+move_to.turnCost(this.getHeading()));
@@ -277,25 +308,27 @@ public abstract class Bot {
 	}
 	
 	public ArrayList<Node> getSuccessors(Node n, Memory mem){
+		return this.getSuccessors(n, n.getX(), n.getY(), mem);
+	}
+	
+	public ArrayList<Node> getSuccessors(Node parent, int nX, int nY, Memory mem){
 		ArrayList<Node> successors = new ArrayList<Node>();
-		int currentX = n.getX();
-		int currentY = n.getY();
 		
 		//up
-		if (mem.validPosition(currentX, currentY-1)){
-			successors.add(new Node(n, currentX, currentY-1, 'u'));
+		if (mem.validPosition(nX, nY-1)){
+			successors.add(new Node(parent, nX, nY-1, 'u'));
 		}
 		//down
-		if (mem.validPosition(currentX, currentY+1)){
-			successors.add(new Node(n, currentX, currentY+1, 'd'));
+		if (mem.validPosition(nX, nY+1)){
+			successors.add(new Node(parent, nX, nY+1, 'd'));
 		}
 		//left
-		if (mem.validPosition(currentX-1, currentY)){
-			successors.add(new Node(n, currentX-1, currentY, 'l'));
+		if (mem.validPosition(nX-1, nY)){
+			successors.add(new Node(parent, nX-1, nY, 'l'));
 		}
 		//right
-		if (mem.validPosition(currentX+1, currentY)){
-			successors.add(new Node(n, currentX+1, currentY, 'r'));
+		if (mem.validPosition(nX+1, nY)){
+			successors.add(new Node(parent, nX+1, nY, 'r'));
 		}
 		return successors;
 	}
@@ -345,6 +378,14 @@ public abstract class Bot {
 			System.out.println(n.toString());
 		}
 		System.out.print("\n");
+	}
+	
+	public void testResults(){
+		System.out.printf("Bot: %s\n", this.getName());
+		System.out.printf("    Successes: %d Fails: %d Runs: %d\n", this.successes, this.fails, this.testRuns);
+		System.out.printf("    Total Moves: %d Avg Moves: %.2f\n", this.totalMoves, this.avgMoves);
+		System.out.printf("    Avg Advances: %.2f, Avg Turns: %.2f\n", this.avgAdv, this.avgTurns);
+		System.out.printf("    Avg Unknown Cells: %.2f\n", this.avgUnknownCells);
 	}
 	
 	public ArrayList<Node> getPlannedRoute(){

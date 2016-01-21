@@ -25,6 +25,10 @@ enum Occupancy {
 		this.symbol = s;
 	}
 	
+	public String toString(){
+		return Character.toString(this.symbol);
+	}
+	
 	public static Occupancy getType(int o){
 		switch (o){
 		case 0:
