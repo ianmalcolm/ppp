@@ -207,9 +207,9 @@ public abstract class Bot {
 		this.aprioriPlan(goalX, goalY);
 		
 		if (verbose){
-			System.out.println("\nPlanned route via A Priori knowledge");
 			if (this.planned_route.size() > 0){
 				if (this.apriori != null) {
+					System.out.println("\nPlanned route via A Priori knowledge");
 					this.apriori.prettyPrintRoute(this.planned_route);
 					//this.printPlannedRoute();
 				}
