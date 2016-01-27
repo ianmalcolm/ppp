@@ -1,6 +1,7 @@
 package sim.agent;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import state.AgentState;
 import state.StateValue;
@@ -25,6 +26,8 @@ public abstract class Bot {
 	private int fails;
 	private int testRuns;
 	private int totalMoves;
+	private int maxMoves;
+	private int minMoves;
 	private int totalTurns;
 	private int totalAdv;
 	private int totalUnknownCells;
@@ -71,6 +74,8 @@ public abstract class Bot {
 		this.successes   = 0;
 		this.fails       = 0;
 		this.totalMoves  = 0;
+		this.maxMoves    = 0;
+		this.minMoves    = 99999;
 		this.totalTurns  = 0;
 		this.totalAdv    = 0;
 		this.avgMoves    = 0;
@@ -189,6 +194,12 @@ public abstract class Bot {
 	}
 	
 	public void run(PPP ppp, boolean verbose, boolean showSteps){
+		short[] pos = this.getPos();
+		if ((pos[0] > (ppp.size*2)) || (pos[1] > ppp.size)) {
+			System.err.println("Bot started on an invalid Position!");
+			System.err.printf("Position: %d,%d :: PPP is %dx%d, ignoring the boundary wall\n", pos[0], pos[1], 2*ppp.size, ppp.size);
+			System.exit(1);
+		}
 		short goalX = (short)(ppp.size*2);
 		short goalY = ppp.size;
 		int moves = this.route_taken.size();
@@ -210,12 +221,12 @@ public abstract class Bot {
 			this.sense(ppp);
 			this.plan(goalX, goalY);
 			try {
+				this.move(ppp);
 				if(showSteps){
 					this.currentMem.prettyPrintRoute(route_taken);
 					System.out.println();
-					Thread.sleep(250);
+					Thread.sleep(500);
 				}
-				this.move(ppp);
 			} catch (InvalidMoveError e) {
 				System.err.print(e);
 				e.printStackTrace();
@@ -224,7 +235,7 @@ public abstract class Bot {
 				e.printStackTrace();
 			}
 			moves++;
-			if (moves > maxMoves) { break; }
+			if (moves >= maxMoves) { break; }
 		}
 		//Sense around goal pos to tidy up the map
 		this.sense(ppp);
@@ -259,6 +270,9 @@ public abstract class Bot {
 		this.totalTurns += this.state.getStateValue().getTurn();
 		this.totalAdv   += this.state.getStateValue().getAdvance();
 		this.totalUnknownCells += this.unknown_cells;
+		
+		this.maxMoves = movesMade > this.maxMoves ? movesMade : this.maxMoves;
+		this.minMoves = movesMade < this.minMoves ? movesMade : this.minMoves;
 		
 		this.avgMoves = (float)this.totalMoves / (float)this.testRuns;
 		this.avgTurns = (float)this.totalTurns / (float)this.testRuns;
@@ -333,6 +347,30 @@ public abstract class Bot {
 		return successors;
 	}
 	
+	public Node getCheapestSuccessor(ArrayList<Node> succ){
+		return this.getCheapestSuccessor(succ, true);
+	}
+	
+	public Node getCheapestSuccessor(ArrayList<Node> succ, Boolean tiebreak){
+		int cheapest_cost = 99999;
+		Node cheapest = null;
+		Random rand = new Random();
+		for (Node s: succ){
+			if (s.getCost() < cheapest_cost){
+				cheapest_cost = s.getCost();
+				cheapest = s;
+			} else if ((s.getCost() == cheapest_cost) && (tiebreak)){
+				//Tie breaker
+				int  n = rand.nextInt(10);
+				if (n <= 4){
+					cheapest_cost = s.getCost();
+					cheapest = s;
+				}
+			}
+		}
+		return cheapest;
+	}
+	
 	/*
 	 * Movement
 	 */
@@ -382,8 +420,10 @@ public abstract class Bot {
 	
 	public void testResults(){
 		System.out.printf("Bot: %s\n", this.getName());
-		System.out.printf("    Successes: %d Fails: %d Runs: %d\n", this.successes, this.fails, this.testRuns);
-		System.out.printf("    Total Moves: %d Avg Moves: %.2f\n", this.totalMoves, this.avgMoves);
+		System.out.printf("    Successes: %d Fails: %d\n", this.successes, this.fails);
+		System.out.printf("    Success Rate: %.2f%%\n", 100*((float)this.successes / (float)this.testRuns));
+		System.out.printf("    Total Moves: %d, Avg Moves: %.2f\n",  this.totalMoves, this.avgMoves);
+		System.out.printf("    Max Moves: %d, Min Moves: %d\n",      this.maxMoves, this.minMoves);
 		System.out.printf("    Avg Advances: %.2f, Avg Turns: %.2f\n", this.avgAdv, this.avgTurns);
 		System.out.printf("    Avg Unknown Cells: %.2f\n", this.avgUnknownCells);
 	}

@@ -1,7 +1,6 @@
 package sim.agent;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class WallFollowerBot extends Bot{
 	private final String BOT_NAME = "WallFollower";
@@ -42,25 +41,13 @@ public class WallFollowerBot extends Bot{
 		}
 		ArrayList<Node> successors = this.getSuccessors(parent, currentPos[0], currentPos[1], currentMem);
 		
-		int cheapest_seen = 999999;
-		Node cheapest = null;
-		Random rand = new Random();
 		for (Node s: successors){
 			int to_reach = parent_to_reach+s.turnCost(parent_heading)+1;
 			s.setCost(to_reach, this.evaluatePosition(s));
+		};
+		
+		Node cheapest = this.getCheapestSuccessor(successors);
 			
-			if (s.getCost() < cheapest_seen){
-				cheapest_seen = s.getCost();
-				cheapest = s;
-			} else if (s.getCost() == cheapest_seen){
-				//Tie breaker
-				int  n = rand.nextInt(10);
-				if (n <= 4){
-					cheapest_seen = s.getCost();
-					cheapest = s;
-				}
-			}
-		}
 		this.planned_route.add(cheapest);
 	}
 	
@@ -106,15 +93,14 @@ public class WallFollowerBot extends Bot{
 			cost = 0;
 		}
 		
-		//FIXME weighting=2 not enough to guarantee success, is this working properly
-		//FIXME this stops cycles, so this bot pretty much never fails - turn off?
-		if (this.route_taken.contains(n)){
-			//Previously been at this position
-			Node p = this.route_taken.get(this.route_taken.indexOf(n));
-			p.incVisits();
-			n.setVisits(p.getVisits());
-		}
-		int c = cost+(2*n.getVisits());
+		//Intended fault: This bot will happily be trapped in a cycle.
+//		if (this.route_taken.contains(n)){
+//			//Previously been at this position
+//			Node p = this.route_taken.get(this.route_taken.indexOf(n));
+//			p.incVisits();
+//			n.setVisits(p.getVisits());
+//		}
+		int c = cost;//+(2*n.getVisits());
 		return c;
 	}
 	

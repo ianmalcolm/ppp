@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import ppp.PPP;
 
 enum Occupancy {
-	EMPTY(0,      ' '),
+	EMPTY(0,      '.'),
 	BOUNDARY(1,   '#'),
 	START(2,       '@'),
 	OBS_LEFT(3,   '['),
@@ -16,7 +16,7 @@ enum Occupancy {
 	MOVE_RIGHT(8, '>'),
 	POI(9,        '*'),//Point of Interest, for debugging
 	GOAL(10,      'G'),
-	UNKNOWN(99,   '?');
+	UNKNOWN(99,   '~');
 	
 	public int code;
 	public char symbol;
@@ -188,13 +188,27 @@ public class Memory {
 	}
 	
 	public void prettyPrintRoute(ArrayList<Node> route){
+		Node currentNode = null;
+		int nodeIndex = 0;
+		
 		if (route == null){
 			route = new ArrayList<Node>();
+		} else if (route.size() > 0){
+			currentNode = route.get(nodeIndex);
 		}
+		
 		for (int i = 0; i < this.mem_height; i++){
 			for (int j=0; j< this.mem_width; j++){
 				short s = this.map[i][j];
 				Occupancy o = Occupancy.getType(s);
+				
+//				if (currentNode != null){
+//					if(currentNode.isPos(j, i)){
+//						o = Occupancy.getHeading(currentNode.getHeading());
+//						nodeIndex = nodeIndex + 1 < route.size() ? nodeIndex+1 : nodeIndex;
+//						currentNode = route.get(nodeIndex);
+//					}
+//				}
 
 				for (Node n: route){
 					if (n.isPos(j, i)){

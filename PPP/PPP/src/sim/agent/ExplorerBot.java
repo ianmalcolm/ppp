@@ -13,15 +13,14 @@ public class ExplorerBot extends Bot {
 	private final String BOT_NAME = "Explorer";
 	
 	/*
-	 * Store an entropy level of the map
-	 * Weight movements by change in entropy; prefer cells with the bigger change
-	 * Initially this will favour it moving right, but once an obstacle is spotted,
-	 * cells beyond the obstacle will be hidden
-	 * Therefore, continuing in that direction will reduce the reward
-	 * Hence it will prefer to turn away and check another direction.
-	 * If it exposes the goal, it must be reachable directly as it is in LoS
-	 * At that point, it should simply move directly towards it.
+	 * Explorer tries to maximise the number of new cells sensed when it makes a move.
+	 * It likes to stay it's sensor distance away from walls to sense the widest area possible (given LoS)
+	 * So will move quickly away from the boundary wall if starting at 1,1.
+	 * When the goal is found, it paths directly towards it.
+	 * Turning off the weighting of cell costs by prev visits makes it fail more
+	 * This is because it will spend longer trapped in dead end cavernous areas.
 	 */
+	
 	private Set<List<Short>> cellsSeen;
 	public ExplorerBot(Memory currentMem, int sensor_range) {
 		super(currentMem, sensor_range);
@@ -60,9 +59,11 @@ public class ExplorerBot extends Bot {
 			}
 			
 			if (this.goal_found) {
-				s.setCost(to_reach, this.evaluatePositionDistance(s)+s.getVisits());
+				s.setCost(to_reach, this.evaluatePositionDistance(s));//+s.getVisits());
 			} else {
-				s.setCost(to_reach, this.evaluatePositionReveals(visible)+s.getVisits());
+				int vis = this.evaluatePositionReveals(visible);
+				int visits = s.getVisits();
+				s.setCost(to_reach, vis+visits);
 			}
 			
 			if (s.getCost() < cheapest_cost){
@@ -94,7 +95,6 @@ public class ExplorerBot extends Bot {
 	/*
 	 * Using LoS algorithm from Bot.sense
 	 */
-	//FIXME out of bounds for sensorRange=4
 	private ArrayList<short[]> getVisibleCells(Node n){
 		Set<List<Short>> visible = new HashSet<List<Short>>();
 		int nX = n.getX();
@@ -107,23 +107,41 @@ public class ExplorerBot extends Bot {
 		
 		if(y_top < 0) { y_top = 0;}
 		if(x_left < 0){ x_left = 0;}
-		if(x_right >  this.currentMem.mem_width+1){x_right=this.currentMem.mem_width;}
-		if(y_bottom > this.currentMem.mem_height+1){y_bottom=this.currentMem.mem_height;}
+		if(x_right >=  this.currentMem.mem_width){x_right=this.currentMem.mem_width-1;}
+		if(y_bottom >= this.currentMem.mem_height){y_bottom=this.currentMem.mem_height-1;}
 		
 		for(int y=y_top; y<=y_bottom; y++){
-			//At the sides of the fringe, we only need to check the edge points
-			//not every point in between - they'll make up part of a LoS
 			int[] endPoints = new int[x_right-x_left+1];
-			for(int i=0; i<x_right-x_left+1; i++){
-				endPoints[i]=x_left+i;
+			for(int i=0; i<endPoints.length; i++){
+				int coord = x_left+i;
+				if (coord >= this.currentMem.mem_width){
+					coord = this.currentMem.mem_width-1;
+				}
+				endPoints[i]=coord;
 			}
 			
+			int i =0;
 			for(int x: endPoints){
+				i++;
 				ArrayList<short[]> LoS = this.line(nX, nY, x, y);
 				for (short[] cell : LoS){
 					visible.add(Arrays.asList(cell[0], cell[1]));
-					if (this.currentMem.occupied(cell[0], cell[1])){
-						break;
+					try {
+						if (this.currentMem.occupied(cell[0], cell[1])){
+							break;
+						}
+					} catch (ArrayIndexOutOfBoundsException e) {
+						System.out.printf("Visible From %d,%d\n", nX, nY);
+						System.out.printf("cell %d,%d i=%d\n", cell[0], cell[1], i);
+						System.out.printf("End Points: %d, current End Point: %d\n", endPoints.length, x);
+						System.out.printf("x_left:%d x_right:  %d\n", x_left, x_right);
+						System.out.printf("y_top:%d  y_bottom: %d\n", y_top, y_bottom);
+						System.out.printf("mem_w:%d, mem_h:%d\n", this.currentMem.mem_width, this.currentMem.mem_height);
+						System.out.printf("Bot pos %d,%d\n", this.state.getX(), this.state.getY());
+						System.out.printf("Current Y: %d\n", y);
+						this.currentMem.prettyPrintRoute(this.route_taken);
+						e.printStackTrace();
+						System.exit(1);
 					}
 				}
 			}
@@ -140,14 +158,11 @@ public class ExplorerBot extends Bot {
 	
 	private int evaluatePositionReveals(ArrayList<short[]> visible){
 		int reveals = 0;
-		int seen = 0;
 		for(short[] cell : visible){
 			if (!this.cellsSeen.contains(Arrays.asList(cell[0], cell[1]))){
 				if (Occupancy.getType(this.currentMem.readSquare(cell[0], cell[1])) == Occupancy.UNKNOWN){
 					reveals++;
 				}
-			} else {
-				seen++;
 			}
 		}
 		return 0-reveals;
