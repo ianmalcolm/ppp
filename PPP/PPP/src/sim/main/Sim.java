@@ -13,6 +13,7 @@ import sim.agent.OmniscientBot;
 import sim.agent.RandomBot;
 import sim.agent.WallFollowerBot;
 import sim.agent.Memory;
+import sim.agent.LimitedMemory;
 
 public class Sim {
 	
@@ -22,7 +23,8 @@ public class Sim {
 			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP2.ppp", false);
 			displayPPP(map);
 			
-			int sensorRange = 2;
+			int sensorRange = 1;
+			int LimitedMemRange = (2*sensorRange)+1;
 			Bot ob = new OmniscientBot(new Memory(map), sensorRange);
 			
 			//Remember to account for walls in the memory size
@@ -30,16 +32,22 @@ public class Sim {
 			Bot wfr = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'r');
 			Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 			Bot rnd = new RandomBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+			Bot wflLim = new WallFollowerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange, 'l');
+			Bot expLim = new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange);
 			//singleTest(map, ob, true, false);
 			//singleTest(map, wfr, true, true);
 			//singleTest(map, wfl, true, true);
 			//singleTest(map, exp, true, false);
 			//singleTest(map, rnd, true, false);
+			//singleTest(map, wflLim, true, true);
+			//singleTest(map, expLim, true, true);
 			//test(map, ob,  test_runs);
 			//test(map, wfl, test_runs);
 			//test(map, wfr, test_runs);
 			//test(map, exp, test_runs);
 			//test(map, rnd, test_runs);
+			//test(map, expLim, test_runs);
+			//test(map, wflLim, test_runs);
 			
 			System.out.println("Simulator exiting");
 			

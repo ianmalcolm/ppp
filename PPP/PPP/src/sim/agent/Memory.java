@@ -99,7 +99,7 @@ enum Occupancy {
  * @author slw546
  */
 public class Memory {
-	private short[][] map;
+	protected short[][] map;
 	public int mem_width;
 	public int mem_height;
 	
@@ -119,9 +119,13 @@ public class Memory {
 		this.mem_height = map.length;
 	}
 	
+	public void setUnsensed(int x, int y){
+		this.map[y][x]=(short) Occupancy.UNKNOWN.code;
+	}
+	
 	//Set all squares to 9, which rendes as ? when the memory is printed.
 	//Useful for seeing which empty squares were unknown or which were sensed as empty.
-	public void setUnsensed(){
+	public void setAllUnsensed(){
 		for (int i = 0; i < this.mem_height; i++){
 			for (int j=0; j< this.mem_width; j++){
 				this.map[i][j]=(short) Occupancy.UNKNOWN.code;
@@ -165,6 +169,13 @@ public class Memory {
 		}
 	}
 	
+	
+	/*
+	 * For limited memory subclass
+	 * Re-plot limited memory bots given the new location
+	 */
+	public void rePlot(short[] newPos){}
+	
 	public void prettyPrint(){
 		this.prettyPrintRoute(null);
 	}
@@ -177,7 +188,7 @@ public class Memory {
 		if ((x>this.mem_width) || (y>this.mem_height)){
 			return false;
 		}
-		if (occupied(x,y)){
+		if (Occupancy.isObstalce(map[y][x])){
 			return false;
 		}
 		return true;
@@ -219,5 +230,6 @@ public class Memory {
 			}
 			System.out.print("\n");
 		}
+		System.out.print("\n");
 	}
 }

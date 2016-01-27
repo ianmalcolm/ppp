@@ -88,7 +88,7 @@ public abstract class Bot {
 	public void setUpBot(){
 		this.goal_found  = false;
 		this.goal_pos    = null;
-		this.currentMem.setUnsensed();
+		this.currentMem.setAllUnsensed();
 		//init state
 		//zero the count of moves made so far
 		this.state = new AgentState((short)1, (short)1,'r');
@@ -218,7 +218,11 @@ public abstract class Bot {
 		}
 		
 		while (!this.state.isPos(goalX, goalY)){
+			if (this.currentMem instanceof LimitedMemory){
+				this.currentMem.rePlot(this.getPos());
+			}
 			this.sense(ppp);
+			//this.currentMem.prettyPrintRoute(route_taken);
 			this.plan(goalX, goalY);
 			try {
 				this.move(ppp);
@@ -238,6 +242,9 @@ public abstract class Bot {
 			if (moves >= maxMoves) { break; }
 		}
 		//Sense around goal pos to tidy up the map
+		if (this.currentMem instanceof LimitedMemory){
+			this.currentMem.rePlot(this.getPos());
+		}
 		this.sense(ppp);
 		
 		if(this.state.isPos(goalX, goalY)){

@@ -105,8 +105,13 @@ public class ExplorerBot extends Bot {
 		int y_top    = nY - this.sensorRange;
 		int y_bottom = nY + this.sensorRange;
 		
+		//Lower bounding in case we are on the left/top map edge
 		if(y_top < 0) { y_top = 0;}
 		if(x_left < 0){ x_left = 0;}
+		//Lower bounding in case we have a limited memory space
+		if(x_left >= this.currentMem.mem_width){x_left=this.currentMem.mem_width-1;}
+		if(y_top >= this.currentMem.mem_height){y_top=this.currentMem.mem_height-1;}
+		//Upper bounding in case we have limited memory / are on the right/bottom map edge
 		if(x_right >=  this.currentMem.mem_width){x_right=this.currentMem.mem_width-1;}
 		if(y_bottom >= this.currentMem.mem_height){y_bottom=this.currentMem.mem_height-1;}
 		
