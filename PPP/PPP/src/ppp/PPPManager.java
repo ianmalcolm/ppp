@@ -1,4 +1,6 @@
 package ppp;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 /*
  * 	Author:	Hao Wei
@@ -87,26 +89,40 @@ public class PPPManager {
 	/*
 	 * 	Two point crossover, from 0 to length-1
 	 */
-	private PairPPP twoCrossover(PPP pp1, PPP pp2){
-		PPP ppp1 = new PPP(pp1);
-		PPP ppp2 = new PPP(pp2);
-		Random generator = new Random();
-		short p1, p2;
-		p1 = (short)generator.nextInt(nDes);
-		p2 = (short)generator.nextInt(nDes);
-		if(p1>p2){
-			short temp = p1;
-			p1 = p2;
-			p2 = temp;
+	private PairPPP twoCrossover(PPP parent1, PPP parent2){
+		boolean both_reachable = false;
+		int iterations=1;
+		PPP child1;
+		PPP child2;
+		while (!both_reachable){
+			child1 = new PPP(parent1);
+			child2 = new PPP(parent2);
+			Random generator = new Random();
+			short p1, p2;
+			p1 = (short)generator.nextInt(nDes);
+			p2 = (short)generator.nextInt(nDes);
+			if(p1>p2){
+				short temp = p1;
+				p1 = p2;
+				p2 = temp;
+			}
+			for(short i=p1;i<=p2;i++){
+				Descriptor temp = child1.getDescriptor(i);
+				child1.setDescriptor(child2.getDescriptor(i), i);
+				child2.setDescriptor(temp, i);
+			}
+			child1.updatePPP();
+			child2.updatePPP();
+			if((child1.checkAvailable()) && (child2.checkAvailable())){
+				both_reachable = true;
+				return new PairPPP(child1, child2);
+			} else {
+				//System.out.println("Mating event generated unreachable offspring: Retrying");
+				iterations++;
+				//System.out.printf("Iteration: %d\n", iterations);
+			}
 		}
-		for(short i=p1;i<=p2;i++){
-			Descriptor temp = ppp1.getDescriptor(i);
-			ppp1.setDescriptor(ppp2.getDescriptor(i), i);
-			ppp2.setDescriptor(temp, i);
-		}
-		ppp1.updatePPP();
-		ppp2.updatePPP();
-		return new PairPPP(ppp1, ppp2);
+		return null;
 	}
 	/*
 	 *  Find the PPP which has the highest turns
@@ -223,6 +239,15 @@ public class PPPManager {
 			System.out.print(population[i].getTurn()+" ");
 		}
 		System.out.println();
+	}
+	
+	public void writePopulation(String folder){
+		File f = new File(folder);
+		f.mkdir();
+		for (int i =0; i<population.length; i++){
+				population[i].writePPP(folder, i);
+		}
+		System.out.println("Population saved to /"+ folder);
 	}
 	/*
 	 * 	average turn for population

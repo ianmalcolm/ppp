@@ -23,7 +23,7 @@ public class Sim {
 			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP2.ppp", false);
 			displayPPP(map);
 			
-			int sensorRange = 1;
+			int sensorRange = 2;
 			int LimitedMemRange = (2*sensorRange)+1;
 			Bot ob = new OmniscientBot(new Memory(map), sensorRange);
 			
@@ -35,16 +35,16 @@ public class Sim {
 			Bot wflLim = new WallFollowerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange, 'l');
 			Bot expLim = new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange);
 			//singleTest(map, ob, true, false);
-			//singleTest(map, wfr, true, true);
-			//singleTest(map, wfl, true, true);
-			//singleTest(map, exp, true, false);
+			//singleTest(map, wfr, true, false);
+			//singleTest(map, wfl, true, false);
+			//singleTest(map, exp, true, true);
 			//singleTest(map, rnd, true, false);
 			//singleTest(map, wflLim, true, true);
 			//singleTest(map, expLim, true, true);
 			//test(map, ob,  test_runs);
 			//test(map, wfl, test_runs);
 			//test(map, wfr, test_runs);
-			//test(map, exp, test_runs);
+			test(map, exp, test_runs);
 			//test(map, rnd, test_runs);
 			//test(map, expLim, test_runs);
 			//test(map, wflLim, test_runs);

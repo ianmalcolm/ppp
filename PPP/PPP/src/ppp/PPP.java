@@ -709,10 +709,18 @@ public class PPP{
 	 * 	to generate a reachable PPP
 	 */
 	private void createPPP(){
-		iniPPP();
-		iniAgentState();
-		dPA();
-		checkPPP();
+		int i = 1;
+		while (!this.availability){
+			//System.out.printf("Creating PPP: iteration %d\n", i);
+			iniPPP();
+			iniAgentState();
+			dPA();
+			checkPPP();
+//			if (!this.availability){
+//				//System.out.println("Created unreachable PPP - retrying");
+//			}
+			i++;
+		}
 	}
 	/*
 	 * 	This function is used for copy the PPP
@@ -794,12 +802,16 @@ public class PPP{
 	/*
 	 * 	write the PPP to a file, named PPP
 	 */
-	public void writePPP (int number) throws IOException{
+	public void writePPP(int number){
+		this.writePPP("", number);
+	}
+	
+	public void writePPP (String folder, int number) {
 		Writer writer = null;
 
 		try {
 		    writer = new BufferedWriter(new OutputStreamWriter(
-		          new FileOutputStream("PPP"+number+".ppp"), "utf-8"));
+		          new FileOutputStream(folder+"/PPP"+number+".ppp"), "utf-8"));
 		    writer.write("PPP\n");
 		    writer.write("#.\n");
 		    writer.write((size+2)+" "+(size+2)+" "+(maxObs)+ "\n");
@@ -836,8 +848,8 @@ public class PPP{
 				writer.write("\n");
 			}
 		} catch (IOException ex){
-			throw ex;
-		  // report
+			ex.printStackTrace();
+			System.exit(1);
 		} finally {
 		   try {writer.close();} catch (Exception ex) {}
 		}

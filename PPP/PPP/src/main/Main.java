@@ -8,8 +8,8 @@ import ppp.PPPManager;
 public class Main {
 
 	public static void main(String[] args){
-		//tournament();
-		singlePPP();
+		tournament();
+		//singlePPP();
 	}
 	
 	public static void singlePPP() {
@@ -24,19 +24,16 @@ public class Main {
 		ppp.displayPPP();
 		ppp.displayDes();
 		//ppp.displayOcc();
-		try {
-			ppp.writePPP(4);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ppp.writePPP(99);
 		System.out.println("Done: Exiting");
 	}
 	
 	public static void tournament() {
 		PPPManager manager = new PPPManager((short) 20, (short)8, (short) 50);
-		manager.oneRun();
+		//manager.oneRun();
+		manager.hundredME();
 		manager.displayTour();
+		manager.writePopulation("ppp");
 	}
 
 }

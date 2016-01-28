@@ -225,12 +225,13 @@ public abstract class Bot {
 			//this.currentMem.prettyPrintRoute(route_taken);
 			this.plan(goalX, goalY);
 			try {
-				this.move(ppp);
+				//this.move(ppp);
 				if(showSteps){
 					this.currentMem.prettyPrintRoute(route_taken);
 					System.out.println();
 					Thread.sleep(500);
 				}
+				this.move(ppp);
 			} catch (InvalidMoveError e) {
 				System.err.print(e);
 				e.printStackTrace();
