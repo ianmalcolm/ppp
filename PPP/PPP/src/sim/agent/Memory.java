@@ -232,4 +232,8 @@ public class Memory {
 		}
 		System.out.print("\n");
 	}
+	
+	public String toString(){
+		return "Memory: " + this.mem_width + "x" + this.mem_height;
+	}
 }

@@ -1,7 +1,5 @@
 package main;
 
-import java.io.IOException;
-
 import ppp.PPP;
 import ppp.PPPManager;
 

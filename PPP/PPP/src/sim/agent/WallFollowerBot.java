@@ -16,6 +16,7 @@ public class WallFollowerBot extends Bot{
 	public WallFollowerBot(Memory mem, int sensor_range, char wallFollowSide) {
 		super(mem, sensor_range);
 		this.wallFollowSide = wallFollowSide;
+		this.name_suffixes.add(Character.toString(wallFollowSide));
 		
 		//char initialDir = wallFollowSide == 'l' ? 'r' : 'l';
 		//this.state = new AgentState((short)1, (short)1, initialDir);
@@ -28,7 +29,7 @@ public class WallFollowerBot extends Bot{
 	public void aprioriPlan(short goalX, short goalY) {}
 	
 	@Override
-	public void plan(short goalX, short goalY) {
+	public void plan() {
 		short[] currentPos = this.getPos();
 		
 		Node parent = null;
@@ -63,7 +64,8 @@ public class WallFollowerBot extends Bot{
 		char wallSide = this.keepWallOnSide(n.getHeading());
 		//Cost == Cost of about turn - higher encourages cycles
 		//Too low encourages movement away from the wall if a turn is required
-		int cost = 10;
+		
+		int cost = 10;		
 		switch (wallSide){
 			case 'u':
 				if (this.currentMem.occupied(n.getX(), n.getY()-1)){
@@ -88,6 +90,12 @@ public class WallFollowerBot extends Bot{
 			default:
 				break;
 		}
+		
+		if (n.isPos(this.getX(), this.getY())){
+			//Discourage not moving
+			cost = 100;
+		}
+		
 		if (this.currentMem.isGoal(n.getX(), n.getY())){
 			//subsidise the goal position
 			cost = 0;
@@ -150,7 +158,7 @@ public class WallFollowerBot extends Bot{
 	
 	@Override
 	public String getName(){
-		return this.BOT_NAME + " " + Character.toString(this.wallFollowSide).toUpperCase();
+		return this.BOT_NAME + " " + super.getSuffix();
 	}
 
 }

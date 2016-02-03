@@ -21,7 +21,7 @@ public class ExplorerBot extends Bot {
 	 * This is because it will spend longer trapped in dead end cavernous areas.
 	 */
 	
-	private Set<List<Short>> cellsSeen;
+	protected Set<List<Short>> cellsSeen;
 	public ExplorerBot(Memory currentMem, int sensor_range) {
 		super(currentMem, sensor_range);
 		this.cellsSeen = new HashSet<List<Short>>();
@@ -31,7 +31,7 @@ public class ExplorerBot extends Bot {
 	public void aprioriPlan(short goalX, short goalY) {}
 
 	@Override
-	public void plan(short goalX, short goalY) {
+	public void plan() {
 		short[] currentPos = this.getPos();
 		Node parent = null;
 		int parent_to_reach = 0;
@@ -59,7 +59,7 @@ public class ExplorerBot extends Bot {
 			}
 			
 			if (this.goal_found) {
-				s.setCost(to_reach, this.evaluatePositionDistance(s));//+s.getVisits());
+				s.setCost(to_reach, this.evaluatePositionDistance(s, this.goal_pos));//+s.getVisits());
 			} else {
 				int vis = this.evaluatePositionReveals(visible);
 				int visits = s.getVisits();
@@ -95,7 +95,7 @@ public class ExplorerBot extends Bot {
 	/*
 	 * Using LoS algorithm from Bot.sense
 	 */
-	private ArrayList<short[]> getVisibleCells(Node n){
+	protected ArrayList<short[]> getVisibleCells(Node n){
 		Set<List<Short>> visible = new HashSet<List<Short>>();
 		int nX = n.getX();
 		int nY = n.getY();
@@ -161,7 +161,7 @@ public class ExplorerBot extends Bot {
 		return ret;
 	}
 	
-	private int evaluatePositionReveals(ArrayList<short[]> visible){
+	protected int evaluatePositionReveals(ArrayList<short[]> visible){
 		int reveals = 0;
 		for(short[] cell : visible){
 			if (!this.cellsSeen.contains(Arrays.asList(cell[0], cell[1]))){
@@ -177,14 +177,14 @@ public class ExplorerBot extends Bot {
 	 * Evaluate cell via distance to goal
 	 * Use once the goal is found to path the bot towards it.
 	 */
-	private int evaluatePositionDistance(Node n){
+	protected int evaluatePositionDistance(Node n, short[] goalPos){
 		if (!this.goal_found){
 			return 0;
 		}
 		int nX = n.getX();
 		int nY = n.getY();
-		int gX = this.goal_pos[0];
-		int gY = this.goal_pos[1];
+		int gX = goalPos[0];
+		int gY = goalPos[1];
 		
 		int dist_x = Math.abs(gX - nX);
 		int dist_y = Math.abs(gY - nY);
@@ -193,7 +193,7 @@ public class ExplorerBot extends Bot {
 	
 	@Override
 	public String getName(){
-		return this.BOT_NAME;
+		return this.BOT_NAME + super.getSuffix();
 	}
 	
 }

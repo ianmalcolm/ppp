@@ -105,4 +105,9 @@ public class LimitedMemory extends Memory {
 	public boolean isGoal(int x, int y){
 		return super.isGoal(x-this.xLeft, y-this.yTop);
 	}
+	
+	@Override
+	public String toString(){
+		return "Limited Memory: " + this.mem_width + "x" + this.mem_height;
+	}
 }

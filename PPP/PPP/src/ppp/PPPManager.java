@@ -1,6 +1,5 @@
 package ppp;
 import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 /*
  * 	Author:	Hao Wei
@@ -91,7 +90,6 @@ public class PPPManager {
 	 */
 	private PairPPP twoCrossover(PPP parent1, PPP parent2){
 		boolean both_reachable = false;
-		int iterations=1;
 		PPP child1;
 		PPP child2;
 		while (!both_reachable){
@@ -116,10 +114,6 @@ public class PPPManager {
 			if((child1.checkAvailable()) && (child2.checkAvailable())){
 				both_reachable = true;
 				return new PairPPP(child1, child2);
-			} else {
-				//System.out.println("Mating event generated unreachable offspring: Retrying");
-				iterations++;
-				//System.out.printf("Iteration: %d\n", iterations);
 			}
 		}
 		return null;

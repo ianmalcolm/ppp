@@ -709,17 +709,11 @@ public class PPP{
 	 * 	to generate a reachable PPP
 	 */
 	private void createPPP(){
-		int i = 1;
 		while (!this.availability){
-			//System.out.printf("Creating PPP: iteration %d\n", i);
 			iniPPP();
 			iniAgentState();
 			dPA();
 			checkPPP();
-//			if (!this.availability){
-//				//System.out.println("Created unreachable PPP - retrying");
-//			}
-			i++;
 		}
 	}
 	/*

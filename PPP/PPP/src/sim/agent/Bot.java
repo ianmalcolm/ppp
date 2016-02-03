@@ -17,24 +17,33 @@ class InvalidMoveError extends Exception {
 }
 
 public abstract class Bot {
-	private final String BOT_NAME = "BOT";
+	private final String BOT_NAME = "Bot";
+	private final int STEP_TIME = 1000;
+
+	protected ArrayList<String> name_suffixes;
 	protected AgentState state;
 	protected ArrayList<Node> planned_route;
 	protected ArrayList<Node> route_taken;
 	private int unknown_cells;
+	private int invalidMoves;
 	private int successes;
 	private int fails;
 	private int testRuns;
 	private int totalMoves;
 	private int maxMoves;
 	private int minMoves;
+	private int minInvalidMoves;
+	private int maxInvalidMoves;
 	private int totalTurns;
 	private int totalAdv;
 	private int totalUnknownCells;
+	private int totalInvalidMoves;
 	private float avgMoves;
 	private float avgTurns;
 	private float avgAdv;
 	private float avgUnknownCells;
+	private float avgInvalidMoves;
+	private double sensorNoise;
 	
 	//Memory - (Partial) views on the PPP, developed via exploration and movement.
 	// A priori map information
@@ -66,8 +75,12 @@ public abstract class Bot {
 	 * @param sensor_range Range of sensor sweep
 	 */
 	public Bot(Memory apriori, Memory currentMem, int sensor_range){
+		this.name_suffixes = new ArrayList<String>();
 		this.apriori     = apriori;
 		this.currentMem  = currentMem;
+		if (this.currentMem instanceof LimitedMemory){
+			this.name_suffixes.add(this.currentMem.toString());
+		}
 		this.sensorRange = sensor_range;
 		this.planned_route = new ArrayList<Node>();
 		this.route_taken = new ArrayList<Node>();
@@ -82,6 +95,7 @@ public abstract class Bot {
 		this.avgTurns    = 0;
 		this.avgAdv      = 0;
 		this.testRuns    = 0;
+		this.sensorNoise = 0.0;
 		this.setUpBot();
 	}
 	
@@ -101,6 +115,11 @@ public abstract class Bot {
 	
 	public void reset(){
 		this.setUpBot();
+	}
+	
+	public void setSensorNoise(double noise){
+		this.sensorNoise = noise;
+		this.name_suffixes.add("Noisy");
 	}
 		
 	/*
@@ -144,7 +163,8 @@ public abstract class Bot {
 		if(x_left < 0)             { x_left = 0;}
 		if(x_right > 2*ppp.size+1) {x_right = 2*ppp.size+1;}
 		if(y_bottom > ppp.size+1)  {y_bottom=ppp.size+1;}
-
+		
+		Random rand = new Random();
 		for(int y=y_top; y<=y_bottom; y++){
 			//At the sides of the fringe, we only need to check the edge points
 			//not every point in between - they'll make up part of a LoS
@@ -157,19 +177,45 @@ public abstract class Bot {
 				ArrayList<short[]> LoS = this.line(centre_pos[0], centre_pos[1], x, y);
 				//Sense along the LoS
 				for (short[] p : LoS){
-					if (Occupancy.getType(this.currentMem.readSquare(p[0], p[1])) == Occupancy.UNKNOWN){
-						this.unknown_cells--;
-					}
-					
-					this.currentMem.setCell(p[0], p[1],  ppp.getOccCell(p[0], p[1]));
-					//Can't see through walls, rest of the line ignored.
-					if (ppp.isOccupied(p[0], p[1])){
-						break;
-					}
-					
+					boolean true_reading = true;
+					boolean is_goal = false;
+					short cell_value = 0;
 					if(this.currentMem.isGoal(p[0], p[1])){
 						this.goal_found = true;
 						this.goal_pos = p;
+						is_goal = true;
+					}
+					
+					if ((this.sensorNoise != 0.0) && (!is_goal)) {
+						//Never incorrectly sense the goal position
+						double n = rand.nextDouble();
+						if (n < this.sensorNoise){
+							//sensor returns true occupancy
+							true_reading = false;
+						}
+					}
+
+					if (true_reading) {
+						if (Occupancy.getType(this.currentMem.readSquare(p[0], p[1])) == Occupancy.UNKNOWN){
+							this.unknown_cells--;
+						}
+						cell_value = ppp.getOccCell(p[0], p[1]);
+					} else {
+						//sensor returns noisy value
+						int n = rand.nextInt(2);
+						switch (n) {
+						case 0:
+							cell_value = (short)Occupancy.BOUNDARY.code;
+							break;
+						case 1:
+							cell_value = (short)Occupancy.EMPTY.code;
+							break;
+						}
+					}
+					this.currentMem.setCell(p[0], p[1],  cell_value);
+					//Can't see through walls, rest of the line ignored.
+					if (ppp.isOccupied(p[0], p[1])){
+						break;
 					}
 				}
 			}
@@ -180,7 +226,13 @@ public abstract class Bot {
 	 * Plan
 	 */
 	abstract public void aprioriPlan(short goalX, short goalY);
-	abstract public void plan(short goalX, short goalY);
+	abstract public void plan();
+	
+	public int cartesianDistance(int x1, int y1, int x2, int y2){		
+		int dist_x = Math.abs(x1 - x2);
+		int dist_y = Math.abs(y1 - y2);
+		return (dist_x+dist_y);
+	}
 	
 	/*
 	 * Execution
@@ -223,19 +275,19 @@ public abstract class Bot {
 			}
 			this.sense(ppp);
 			//this.currentMem.prettyPrintRoute(route_taken);
-			this.plan(goalX, goalY);
+			this.plan();
 			try {
 				//this.move(ppp);
 				if(showSteps){
 					this.currentMem.prettyPrintRoute(route_taken);
 					System.out.println();
-					Thread.sleep(500);
+					Thread.sleep(this.STEP_TIME);
 				}
 				this.move(ppp);
 			} catch (InvalidMoveError e) {
-				System.err.print(e);
-				e.printStackTrace();
-				System.exit(1);
+				if (verbose) {
+					System.err.println(e+" -- replanning");
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -278,28 +330,39 @@ public abstract class Bot {
 		this.totalTurns += this.state.getStateValue().getTurn();
 		this.totalAdv   += this.state.getStateValue().getAdvance();
 		this.totalUnknownCells += this.unknown_cells;
+		this.totalInvalidMoves += this.invalidMoves;
 		
 		this.maxMoves = movesMade > this.maxMoves ? movesMade : this.maxMoves;
 		this.minMoves = movesMade < this.minMoves ? movesMade : this.minMoves;
+		this.maxInvalidMoves = this.invalidMoves > this.maxInvalidMoves ? this.invalidMoves : this.maxInvalidMoves;
+		this.minInvalidMoves = this.invalidMoves < this.minInvalidMoves ? this.invalidMoves : this.minInvalidMoves;
 		
 		this.avgMoves = (float)this.totalMoves / (float)this.testRuns;
 		this.avgTurns = (float)this.totalTurns / (float)this.testRuns;
 		this.avgAdv   = (float)this.totalAdv   / (float)this.testRuns;
 		this.avgUnknownCells = (float)this.totalUnknownCells / (float)this.testRuns;
+		this.avgInvalidMoves = (float)this.totalInvalidMoves / (float)this.testRuns;
 	}
 	
 	public void move(PPP ppp) throws InvalidMoveError{
 		Node move_to = this.planned_route.remove(0);
+		
+		boolean invalid = false;
+		if (ppp.isOccupied(move_to.getX(), move_to.getY())){
+			// Invalid move made!
+			invalid = true;
+			this.invalidMoves++;
+			throw new InvalidMoveError("Invalid move - " + move_to.toString()+" is Occupied\n");
+		}
+		if (invalid) {
+			System.out.println("invalid move beyond throw");
+		}
+		
 		move_to.incVisits();
 		if (this.route_taken.contains(move_to)){
 			this.route_taken.get(this.route_taken.indexOf(move_to)).incVisits();
 		}
 		this.route_taken.add(move_to);
-		
-		if (ppp.isOccupied(move_to.getX(), move_to.getY())){
-			// Invalid move made!
-			throw new InvalidMoveError("Invalid move - " + move_to.toString()+" is Occupied\n");
-		}
 		
 		short turns = (short)(this.state.getStateValue().getTurn()+move_to.turnCost(this.getHeading()));
 		short adv = (short)(this.state.getStateValue().getAdvance()+1);
@@ -352,6 +415,9 @@ public abstract class Bot {
 		if (mem.validPosition(nX+1, nY)){
 			successors.add(new Node(parent, nX+1, nY, 'r'));
 		}
+		//Stay still
+		successors.add(new Node(parent, nX, nY, this.getHeading()));
+		
 		return successors;
 	}
 	
@@ -434,6 +500,11 @@ public abstract class Bot {
 		System.out.printf("    Max Moves: %d, Min Moves: %d\n",      this.maxMoves, this.minMoves);
 		System.out.printf("    Avg Advances: %.2f, Avg Turns: %.2f\n", this.avgAdv, this.avgTurns);
 		System.out.printf("    Avg Unknown Cells: %.2f\n", this.avgUnknownCells);
+		
+		if (this.sensorNoise != 0.0){
+			System.out.printf("    Sensor Noise: %.2f\n", this.sensorNoise);
+			System.out.printf("    Total invalid moves: %d, Avg invalid moves: %.2f\n", this.totalInvalidMoves, this.avgInvalidMoves);
+		}
 	}
 	
 	public ArrayList<Node> getPlannedRoute(){
@@ -442,6 +513,13 @@ public abstract class Bot {
 	
 	public String getName(){
 		return this.BOT_NAME;
+	}
+	
+	public String getSuffix(){
+		if (this.name_suffixes.size() > 0) {
+			return " " + this.name_suffixes.toString();
+		}
+		return "";
 	}
 	
 }

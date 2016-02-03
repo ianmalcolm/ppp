@@ -137,7 +137,7 @@ public class OmniscientBot extends Bot{
 	}
 
 	@Override 
-	public void plan(short goalX, short goalY) {}
+	public void plan() {}
 	
 	/**
 	 * Returns cost to goal from position tested
@@ -154,6 +154,6 @@ public class OmniscientBot extends Bot{
 	
 	@Override
 	public String getName(){
-		return this.BOT_NAME;
+		return this.BOT_NAME + super.getSuffix();
 	}
 }
