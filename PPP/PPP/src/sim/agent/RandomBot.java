@@ -3,6 +3,14 @@ package sim.agent;
 import java.util.ArrayList;
 import java.util.Random;
 
+import sim.agent.represenation.Memory;
+import sim.agent.represenation.Node;
+import sim.agent.represenation.PathPlanner;
+
+/**
+ * Bot which moves randomly
+ * @author slw546
+ */
 public class RandomBot extends Bot{
 	private final String BOT_NAME = "Random Bot";
 
@@ -49,17 +57,7 @@ public class RandomBot extends Bot{
 	 * Use once the goal is found to path the bot towards it.
 	 */
 	private int evaluatePositionDistance(Node n){
-		if (!this.goal_found){
-			return 0;
-		}
-		int nX = n.getX();
-		int nY = n.getY();
-		int gX = this.goal_pos[0];
-		int gY = this.goal_pos[1];
-		
-		int dist_x = Math.abs(gX - nX);
-		int dist_y = Math.abs(gY - nY);
-		return (dist_x+dist_y);
+		return PathPlanner.cartesianDistance(n.getX(), n.getY(), this.goal_pos[0], this.goal_pos[1]);
 	}
 	
 	public int evaluatePosition(Node s){

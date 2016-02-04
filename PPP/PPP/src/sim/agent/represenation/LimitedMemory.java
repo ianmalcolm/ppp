@@ -1,5 +1,11 @@
-package sim.agent;
+package sim.agent.represenation;
 
+/**
+ * Limited Size memory, providing finite window onto the PPP
+ * This class maps functions back onto Memory within the constrained view
+ * Also provides rePlot to handle moving the view window when the bot moves
+ * @author slw546
+ */
 public class LimitedMemory extends Memory {
 
 	//Bounds of this memory's viewpoint onto the map

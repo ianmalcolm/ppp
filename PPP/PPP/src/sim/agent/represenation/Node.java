@@ -1,5 +1,11 @@
-package sim.agent;
+package sim.agent.represenation;
 
+import java.util.ArrayList;
+
+/**
+ * Class representing a (potential) point on a bot's route
+ * @author slw546
+ */
 public class Node {
 	private Node parent;
 	private int pos_x;
@@ -8,6 +14,7 @@ public class Node {
 	private int cost_to_reach;
 	private int cost_to_goal;
 	private int visits;
+	private ArrayList<short[]> lineOfSight;
 	
 	//Heading of the robot when it enters this node
 	//Influences cost of leaving it (robot may have to turn)
@@ -135,5 +142,13 @@ public class Node {
 	
 	public int getVisits(){
 		return this.visits;
+	}
+	
+	public void setLoS(ArrayList<short[]> los){
+		this.lineOfSight = los;
+	}
+	
+	public ArrayList<short[]> getLoS(){
+		return this.lineOfSight;
 	}
 }

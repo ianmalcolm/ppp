@@ -12,8 +12,8 @@ import sim.agent.ExplorerBot;
 import sim.agent.OmniscientBot;
 import sim.agent.RandomBot;
 import sim.agent.WallFollowerBot;
-import sim.agent.Memory;
-import sim.agent.LimitedMemory;
+import sim.agent.represenation.LimitedMemory;
+import sim.agent.represenation.Memory;
 import sim.agent.LongTermExplorer;
 
 public class Sim {
@@ -21,7 +21,7 @@ public class Sim {
 	public static void main(String[] args) {
 		try {
 			int test_runs = 1000;
-			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP2.ppp", false);
+			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP4.ppp", false);
 			displayPPP(map);
 			
 			int sensorRange = 2;
@@ -35,17 +35,17 @@ public class Sim {
 			Bot rnd = new RandomBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 			Bot expLim = new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange);
 			Bot expNoisy = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
-			expNoisy.setSensorNoise(0.05);
+			expNoisy.setSensorNoise(0.1);
 			Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 			//singleTest(map, ob, true, false);
 			//singleTest(map, wfr, true, false);
-			//singleTest(map, wfl, true, true);
-			//singleTest(map, exp, true, false);
+			//singleTest(map, wfl, true, false);
+			//singleTest(map, exp, true, true);
 			//singleTest(map, rnd, true, false);
 			//singleTest(map, wflLim, true, true);
 			//singleTest(map, expLim, true, true);
 			//singleTest(map, expNoisy, true, true);
-			singleTest(map, lte, true, true);
+			singleTest(map, lte, true, false);
 			//test(map, ob,  test_runs);
 			//test(map, wfl, test_runs);
 			//test(map, wfr, test_runs);
@@ -53,6 +53,7 @@ public class Sim {
 			//test(map, rnd, test_runs);
 			//test(map, expLim, test_runs);
 			//test(map, expNoisy, test_runs);
+			//test(map, lte, test_runs);
 			
 			System.out.println("Simulator exiting");
 			

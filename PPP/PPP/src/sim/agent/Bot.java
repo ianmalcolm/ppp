@@ -6,6 +6,11 @@ import java.util.Random;
 import state.AgentState;
 import state.StateValue;
 import ppp.PPP;
+import sim.agent.represenation.LimitedMemory;
+import sim.agent.represenation.Memory;
+import sim.agent.represenation.Node;
+import sim.agent.represenation.Occupancy;
+import sim.agent.represenation.PathPlanner;
 
 class InvalidMoveError extends Exception {
 	private static final long serialVersionUID = 9203487744481552202L;
@@ -16,9 +21,15 @@ class InvalidMoveError extends Exception {
 	
 }
 
+/**
+ * Abstract class providing interface for Sim Agents
+ * and methods useful to all agent subclasses
+ * @author slw546
+ *
+ */
 public abstract class Bot {
 	private final String BOT_NAME = "Bot";
-	private final int STEP_TIME = 1000;
+	private final int STEP_TIME = 500;
 
 	protected ArrayList<String> name_suffixes;
 	protected AgentState state;
@@ -28,12 +39,13 @@ public abstract class Bot {
 	private int invalidMoves;
 	private int successes;
 	private int fails;
-	private int testRuns;
+	protected int testRuns;
 	private int totalMoves;
 	private int maxMoves;
 	private int minMoves;
 	private int minInvalidMoves;
 	private int maxInvalidMoves;
+	private int totalStationairyMoves;
 	private int totalTurns;
 	private int totalAdv;
 	private int totalUnknownCells;
@@ -89,6 +101,7 @@ public abstract class Bot {
 		this.totalMoves  = 0;
 		this.maxMoves    = 0;
 		this.minMoves    = 99999;
+		this.totalStationairyMoves = 0;
 		this.totalTurns  = 0;
 		this.totalAdv    = 0;
 		this.avgMoves    = 0;
@@ -210,6 +223,9 @@ public abstract class Bot {
 						case 1:
 							cell_value = (short)Occupancy.EMPTY.code;
 							break;
+						case 2:
+							cell_value = (short)Occupancy.UNKNOWN.code;
+							break;
 						}
 					}
 					this.currentMem.setCell(p[0], p[1],  cell_value);
@@ -227,13 +243,7 @@ public abstract class Bot {
 	 */
 	abstract public void aprioriPlan(short goalX, short goalY);
 	abstract public void plan();
-	
-	public int cartesianDistance(int x1, int y1, int x2, int y2){		
-		int dist_x = Math.abs(x1 - x2);
-		int dist_y = Math.abs(y1 - y2);
-		return (dist_x+dist_y);
-	}
-	
+		
 	/*
 	 * Execution
 	 */
@@ -275,15 +285,25 @@ public abstract class Bot {
 			}
 			this.sense(ppp);
 			//this.currentMem.prettyPrintRoute(route_taken);
-			this.plan();
 			try {
-				//this.move(ppp);
+				this.plan();
+			} catch (Exception e){
+				System.out.println("Route Taken");
+				this.currentMem.prettyPrintRoute(this.route_taken);
+				System.out.println("\n\nRoute Planned");
+				this.currentMem.prettyPrintRoute(this.planned_route);
+				System.err.print(e);
+				e.printStackTrace();
+				System.exit(1);
+			}
+			try {
+				this.move(ppp);
 				if(showSteps){
-					this.currentMem.prettyPrintRoute(route_taken);
+					this.currentMem.prettyPrintRoute(this.route_taken);
 					System.out.println();
 					Thread.sleep(this.STEP_TIME);
 				}
-				this.move(ppp);
+				//this.move(ppp);
 			} catch (InvalidMoveError e) {
 				if (verbose) {
 					System.err.println(e+" -- replanning");
@@ -319,7 +339,7 @@ public abstract class Bot {
 		}
 	}
 	
-	private void finished(int movesMade, boolean success){
+	protected void finished(int movesMade, boolean success){
 		if (success){
 			this.successes++;
 		} else {
@@ -346,6 +366,9 @@ public abstract class Bot {
 	
 	public void move(PPP ppp) throws InvalidMoveError{
 		Node move_to = this.planned_route.remove(0);
+		if ((move_to.getX() == this.getX()) &&(move_to.getY() == this.getY())){
+			this.totalStationairyMoves++;
+		}
 		
 		boolean invalid = false;
 		if (ppp.isOccupied(move_to.getX(), move_to.getY())){
@@ -428,18 +451,14 @@ public abstract class Bot {
 	public Node getCheapestSuccessor(ArrayList<Node> succ, Boolean tiebreak){
 		int cheapest_cost = 99999;
 		Node cheapest = null;
-		Random rand = new Random();
 		for (Node s: succ){
 			if (s.getCost() < cheapest_cost){
 				cheapest_cost = s.getCost();
 				cheapest = s;
 			} else if ((s.getCost() == cheapest_cost) && (tiebreak)){
 				//Tie breaker
-				int  n = rand.nextInt(10);
-				if (n <= 4){
-					cheapest_cost = s.getCost();
-					cheapest = s;
-				}
+				cheapest = PathPlanner.tiebreaker(s, cheapest);
+				cheapest_cost = cheapest.getCost();
 			}
 		}
 		return cheapest;
@@ -505,10 +524,22 @@ public abstract class Bot {
 			System.out.printf("    Sensor Noise: %.2f\n", this.sensorNoise);
 			System.out.printf("    Total invalid moves: %d, Avg invalid moves: %.2f\n", this.totalInvalidMoves, this.avgInvalidMoves);
 		}
+		
+		if (this.totalStationairyMoves != 0){
+			System.out.printf("    Remained stationairy %d times over all runs\n", this.totalStationairyMoves);
+		}
 	}
 	
 	public ArrayList<Node> getPlannedRoute(){
 		return this.planned_route;
+	}
+	
+	public void setPlannedRoute(ArrayList<Node> plan){
+		this.planned_route = plan;
+	}
+	
+	public ArrayList<Node> getRouteTaken(){
+		return this.route_taken;
 	}
 	
 	public String getName(){

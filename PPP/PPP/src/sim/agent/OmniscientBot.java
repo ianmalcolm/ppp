@@ -1,10 +1,12 @@
 package sim.agent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+import sim.agent.represenation.Memory;
+import sim.agent.represenation.PathPlanner;
 
+/**
+ * Bot which uses perfect A Priori knowledge to find the optimal route
+ * @author slw546
+ */
 public class OmniscientBot extends Bot{
 	private final String BOT_NAME = "Omniscient Bot";
 
@@ -23,117 +25,7 @@ public class OmniscientBot extends Bot{
 	
 	@Override
 	public void aprioriPlan(short goalX, short goalY){
-		/*
-		 * Plan via A* a complete route from a priori position to the goal specified.
-		 * OPEN = priority queue containing START
-			CLOSED = empty set
-			while lowest rank in OPEN is not the GOAL:
-			  current = remove lowest rank item from OPEN
-			  add current to CLOSED
-			  for neighbors of current:
-			    cost = g(current) + movementcost(current, neighbor)
-			    if neighbor in OPEN and cost less than g(neighbor):
-			      remove neighbor from OPEN, because new path is better
-			    if neighbor in CLOSED and cost less than g(neighbor): ⁽²⁾
-			      remove neighbor from CLOSED
-			    if neighbor not in OPEN and neighbor not in CLOSED:
-			      set g(neighbor) to cost
-			      add neighbor to OPEN
-			      set priority queue rank to g(neighbor) + h(neighbor)
-			      set neighbor's parent to current
-			
-			reconstruct reverse path from goal to start
-			by following parent pointers
-			http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html
-		 */
-		
-		//Pos stores current location and cost so far
-		ArrayList<Node> open   = new ArrayList<Node>();
-		ArrayList<Node> closed = new ArrayList<Node>();
-		
-		open.add(new Node(this.state.getX(), this.state.getY(), this.state.getDirection()));
-		Comparator<Node> comparator = new Comparator<Node>(){
-			@Override
-			public int compare(Node o1, Node o2) {
-				if (o1.getCost() < o2.getCost()){
-					return -1;
-				} else if (o1.getCost() == o2.getCost()) {
-					if (o1.getCostToGoal() < o2.getCostToGoal()){
-						return -1;
-					} else if (o1.getCostToGoal() > o2.getCostToGoal()){
-						return 1;
-					}
-					return 0;
-				} else {
-					return 1;
-				}
-			}
-		};
-		
-		Node goal = null;
-		while (!open.isEmpty()){
-			Node current = open.remove(0);
-			closed.add(current);
-			if (current.isPos(goalX, goalY)){
-				goal = current;
-				break;
-			}
-			
-			//generate successors of best node
-			ArrayList<Node> successors = this.getSuccessors(current, this.apriori);
-			for (Node s: successors){
-				//cost so far + turn cost + advance cost
-				int to_reach = current.getCostToReach()+s.turnCost(current.getHeading())+1;
-				//int tentative_cost = to_reach + this.evaluatePosition(s.getX(), s.getY(), goalX, goalY);
-				
-				s.setCost(to_reach, this.evaluatePosition(s.getX(), s.getY(), goalX, goalY));
-
-				if (open.contains(s)){
-					Iterator<Node> iter = open.iterator();
-					while (iter.hasNext()){
-						Node o = iter.next();
-						if (o.equalPos(s)){
-							if (s.getCost() < o.getCost()) {
-								//s is a better path than currently possible to this node
-								//removes current item
-								iter.remove();
-							}
-						}
-					}
-				}
-				
-				//For if we have an inadmissible heuristic:
-				if (closed.contains(s)){
-					Iterator<Node> iter = closed.iterator();
-					while (iter.hasNext()){
-						Node o = iter.next();
-						if (o.equalPos(s)){
-							if (s.getCost() < o.getCost()) {
-								//s is better path than previously taken to this node
-								//removes current item
-								iter.remove();
-							}
-						}
-					}
-				}
-				
-				//Checking for equal pos. nodes in open and closed via node.equals
-				if ((!open.contains(s)) && (!closed.contains(s))){
-					open.add(s);
-				}
-				Collections.sort(open, comparator);
-			}
-		}
-		ArrayList<Node> route = new ArrayList<Node>();
-		route.add(0, goal);
-		//Start on 1,1 so we actually want to cut off the plan
-		//the node ahead of that spot; ie. our plan is to move off 1,1
-		//not move to 1,1 and move off (since we start there)
-		while (goal.getParent().getParent() != null){
-			route.add(0, goal.getParent());
-			goal = goal.getParent();
-		}
-		this.planned_route = route;
+		PathPlanner.aStar(this, this.apriori, goalX, goalY);
 	}
 
 	@Override 

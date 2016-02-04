@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
-//TODO?
-//extend to create a longer term plan explorer, which paths to interesting areas when it's current area is explored
+import sim.agent.represenation.Memory;
+import sim.agent.represenation.Node;
+import sim.agent.represenation.Occupancy;
+import sim.agent.represenation.PathPlanner;
+
+/**
+ * Exploration focused agent
+ * @author slw546
+ */
 public class ExplorerBot extends Bot {
 	private final String BOT_NAME = "Explorer";
 	
@@ -32,57 +38,10 @@ public class ExplorerBot extends Bot {
 
 	@Override
 	public void plan() {
-		short[] currentPos = this.getPos();
-		Node parent = null;
-		int parent_to_reach = 0;
-		char parent_heading = 'r';
-		
-		if (this.route_taken.size() != 0){
-			parent = this.route_taken.get(this.route_taken.size()-1);
-			parent_to_reach = parent.getCostToReach();
-			parent_heading  = parent.getHeading();
-		}
-		ArrayList<Node> successors = this.getSuccessors(parent, currentPos[0], currentPos[1], this.currentMem);
-		
-		int cheapest_cost = 99999;
-		Node cheapest = null;
-		Random rand = new Random();
-		ArrayList<short[]> cheapest_LoS = new ArrayList<short[]>();
-		for(Node s: successors) {
-			int to_reach = parent_to_reach+s.turnCost(parent_heading)+1;
-			ArrayList<short[]> visible = this.getVisibleCells(s);
-			
-			if (this.route_taken.contains(s)){
-				//Previously been at this position
-				Node p = this.route_taken.get(this.route_taken.indexOf(s));
-				s.setVisits(p.getVisits());
-			}
-			
-			if (this.goal_found) {
-				s.setCost(to_reach, this.evaluatePositionDistance(s, this.goal_pos));//+s.getVisits());
-			} else {
-				int vis = this.evaluatePositionReveals(visible);
-				int visits = s.getVisits();
-				s.setCost(to_reach, vis+visits);
-			}
-			
-			if (s.getCost() < cheapest_cost){
-				cheapest_cost = s.getCost();
-				cheapest = s;
-				cheapest_LoS = visible;
-			} else if (s.getCost() == cheapest_cost){
-				//Tie breaker
-				int  n = rand.nextInt(10);
-				if (n <= 4){
-					cheapest_cost = s.getCost();
-					cheapest = s;
-					cheapest_LoS = visible;
-				}
-			}
-		}
-		this.planned_route.add(cheapest);
-		for (short[] c : cheapest_LoS){
-			this.cellsSeen.add(Arrays.asList(c[0], c[1]));
+		Node c = PathPlanner.localExploration(this);
+		this.planned_route.add(c);
+		for (short[] cell : c.getLoS()){
+			this.cellsSeen.add(Arrays.asList(cell[0], cell[1]));
 		}
 	}
 
@@ -95,7 +54,7 @@ public class ExplorerBot extends Bot {
 	/*
 	 * Using LoS algorithm from Bot.sense
 	 */
-	protected ArrayList<short[]> getVisibleCells(Node n){
+	public ArrayList<short[]> getVisibleCells(Node n){
 		Set<List<Short>> visible = new HashSet<List<Short>>();
 		int nX = n.getX();
 		int nY = n.getY();
@@ -161,7 +120,7 @@ public class ExplorerBot extends Bot {
 		return ret;
 	}
 	
-	protected int evaluatePositionReveals(ArrayList<short[]> visible){
+	public int evaluatePositionReveals(ArrayList<short[]> visible){
 		int reveals = 0;
 		for(short[] cell : visible){
 			if (!this.cellsSeen.contains(Arrays.asList(cell[0], cell[1]))){
@@ -170,25 +129,15 @@ public class ExplorerBot extends Bot {
 				}
 			}
 		}
-		return 0-reveals;
+		return reveals;
 	}
 	
 	/*
 	 * Evaluate cell via distance to goal
 	 * Use once the goal is found to path the bot towards it.
 	 */
-	protected int evaluatePositionDistance(Node n, short[] goalPos){
-		if (!this.goal_found){
-			return 0;
-		}
-		int nX = n.getX();
-		int nY = n.getY();
-		int gX = goalPos[0];
-		int gY = goalPos[1];
-		
-		int dist_x = Math.abs(gX - nX);
-		int dist_y = Math.abs(gY - nY);
-		return (dist_x+dist_y);
+	public int evaluatePositionDistance(Node n, short[] goalPos){
+		return PathPlanner.cartesianDistance(n.getX(), n.getY(), goalPos[0], goalPos[1]);
 	}
 	
 	@Override

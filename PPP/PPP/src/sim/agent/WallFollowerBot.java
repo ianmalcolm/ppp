@@ -2,6 +2,13 @@ package sim.agent;
 
 import java.util.ArrayList;
 
+import sim.agent.represenation.Memory;
+import sim.agent.represenation.Node;
+
+/**
+ * Bot which tries to follow a wall to it's left or right
+ * @author slw546
+ */
 public class WallFollowerBot extends Bot{
 	private final String BOT_NAME = "WallFollower";
 

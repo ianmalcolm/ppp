@@ -2,117 +2,104 @@ package sim.agent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
+import sim.agent.represenation.Memory;
+import sim.agent.represenation.Node;
+import sim.agent.represenation.Occupancy;
+import sim.agent.represenation.PathPlanner;
+
+/**
+ * Exploration focused agent, with capability
+ * to plan longer term if current area is fully
+ * explored.
+ * @author slw546
+ */
 public class LongTermExplorer extends ExplorerBot {
 	private final String BOT_NAME = "Long Term Explorer";
 	
-	private boolean plan_short_term;
-	private boolean plan_long_term;
-	private short[] longTermGoal;
-	private int longTermGoalX;
-	private int longTermGoalY;
-
+	private boolean exploringLocally;
+	private int[] target;
+	
+	private int replans;
+	private int totalReplans;
+	private double avgReplans;
+	
 	public LongTermExplorer(Memory currentMem, int sensor_range) {
 		super(currentMem, sensor_range);
-		this.plan_short_term = true;
-		this.plan_long_term = false;
+		this.exploringLocally = true;
+	}
+	
+	@Override
+	public void setUpBot(){
+		super.setUpBot();
+		this.replans = 0;
+		this.totalReplans = 0;
+		this.avgReplans = 0.0;
 	}
 	
 	@Override
 	public void plan(){
-		System.out.println(this.plan_short_term +","+ this.plan_long_term);
-		if (this.plan_short_term) {
-			System.out.println("short term planning in effect");
-			this.shortTermPlan();
+		//System.out.println("Exploring locally: " + this.exploringLocally);
+		
+		//No further plan - explore locally
+		if (this.planned_route.size() == 0){
+			this.exploringLocally = true;
+		}
+		
+		if (this.exploringLocally) {
+			//try to explore locally
+			boolean success = this.exploreLocally();
+			//if there's nothing to see, plan to move somewhere interesting
+			if (!success){
+				this.exploringLocally = false;
+				this.replans ++;
+				this.pathToIntestingArea();
+			}
 		} else {
-			System.out.println("long term planning in effect");
-			this.longTermPlan();
+			//If we aren't exploring locally, we must be following a long term plan
+			this.checkForNewData();
+			//If we have new data, we swap to local exploration, which will avoid the obstacles for us
+			//If there is no new data, there's no obstacles to surprise us (since A* will have gone around them)
+			//this.avoidObstacles();
 		}
 	}
 	
-	/*
-	 * Explore locally
-	 */
-	public void shortTermPlan() {
-		short[] currentPos = this.getPos();
-		Node parent = null;
-		int parent_to_reach = 0;
-		char parent_heading = 'r';
-		
-		if (this.route_taken.size() != 0){
-			parent = this.route_taken.get(this.route_taken.size()-1);
-			parent_to_reach = parent.getCostToReach();
-			parent_heading  = parent.getHeading();
-		}
-		ArrayList<Node> successors = this.getSuccessors(parent, currentPos[0], currentPos[1], this.currentMem);
-		
-		int cheapest_cost = 99999;
-		Node cheapest = null;
-		Random rand = new Random();
-		ArrayList<short[]> cheapest_LoS = new ArrayList<short[]>();
-		int maxReveals = 0;
-		for(Node s: successors) {
-			int to_reach = parent_to_reach+s.turnCost(parent_heading)+1;
-			ArrayList<short[]> visible = this.getVisibleCells(s);
-			
-			if (this.route_taken.contains(s)){
-				//Previously been at this position
-				Node p = this.route_taken.get(this.route_taken.indexOf(s));
-				s.setVisits(p.getVisits());
-			}
-			
-			if (this.goal_found) {
-				s.setCost(to_reach, this.evaluatePositionDistance(s, this.goal_pos));//+s.getVisits());
-			} else {
-				int vis = this.evaluatePositionReveals(visible);
-				int visits = s.getVisits();
-				s.setCost(to_reach, vis+visits);
-				if (vis > maxReveals) {
-					maxReveals = vis;
-				}
-			}
-			
-			if (s.getCost() < cheapest_cost){
-				cheapest_cost = s.getCost();
-				cheapest = s;
-				cheapest_LoS = visible;
-			} else if (s.getCost() == cheapest_cost){
-				//Tie breaker
-				int  n = rand.nextInt(10);
-				if (n <= 4){
-					cheapest_cost = s.getCost();
-					cheapest = s;
-					cheapest_LoS = visible;
-				}
+	private int countNewVisibleCells(ArrayList<short[]> los){
+		int explored = 0;
+		for (short[] cell : los){
+			boolean added = this.cellsSeen.add(Arrays.asList(cell[0], cell[1]));
+			if (added){
+				explored++;
 			}
 		}
-		
-		//FIXME too eager to start planning via long term
-		if (maxReveals == 0) {
-			//no successor helps us explore - we should start moving towards unexplored areas
-			System.out.println("Switching to Long term tactic");
-			this.plan_long_term = true;
-			this.plan_short_term = false;
-			this.findClosestUnknown();
-			this.longTermPlan();
-			return;
-		} else {
-			this.planned_route.add(cheapest);
-			for (short[] c : cheapest_LoS){
-				this.cellsSeen.add(Arrays.asList(c[0], c[1]));
-			}
-		}
+		return explored;
 	}
 	
-	private void findClosestUnknown(){
+	private boolean exploreLocally(){
+		this.planned_route.clear();
+		Node c = PathPlanner.localExploration(this);
+		this.planned_route.add(c);
+		int explored = 0;
+		explored = this.countNewVisibleCells(c.getLoS());
+		if ((explored == 0) && (!this.goal_found)){
+			//Replan if no exploration achieved
+			//UNLESS we're pathing directly to the goal
+			System.out.println("Did not explore any new cells this move");
+			return false;
+		}
+		return true;
+	}
+
+	//Find the closest unknown position via cartesian distance from current pos
+	//FIXME take reachabiity of target into account
+	private int[] findClosestUnknown(){
 		int closestX = 0;
 		int closestY = 0;
 		int shortest_dist = 9999;
 		for (int y = 0; y < this.currentMem.mem_height; y++){
 			for (int x=0; x < this.currentMem.mem_width; x++){
 				if (Occupancy.getType(this.currentMem.readSquare(x, y)) == Occupancy.UNKNOWN){
-					int dist = this.cartesianDistance(this.getX(), this.getY(), x, y);
+					int dist = PathPlanner.cartesianDistance(this.getX(), this.getY(), x, y);
 					if (dist < shortest_dist) {
 						shortest_dist = dist;
 						closestX = x;
@@ -121,60 +108,59 @@ public class LongTermExplorer extends ExplorerBot {
 				}
 			}
 		}
-		// subtract sensor range - only need to get close enough to sense the position
-		this.longTermGoalX = closestX - this.sensorRange;
-		this.longTermGoalY = closestY - this.sensorRange;
-		
-		this.longTermGoal = new short[] {(short) longTermGoalX, (short) longTermGoalY};
 		System.out.println("Found closest unexplored area");
+		return new int[] {closestX, closestY};
 	}
-
+	
 	/*
-	 * Move directly towards longTermGoal pos
+	 * Plan ahead to get path to new area to explore locally
 	 */
-	public void longTermPlan() {
-		short[] currentPos = this.getPos();
-		if ((currentPos[0] == this.longTermGoal[0]) 
-				&& (currentPos[1] == this.longTermGoal[1])){
-			//reached long term goal pos -- go back to short term planning
-			System.out.println("Switching to short term tactic");
-			this.plan_long_term = false;
-			this.plan_short_term = true;
-			this.shortTermPlan();
-			return;
+	private void pathToIntestingArea(){
+		this.target = this.findClosestUnknown();
+		System.out.println("\nRoute taken so far");
+		//this.currentMem.prettyPrintRoute(this.route_taken);
+		System.out.printf("Planning long term to pos %d,%d by A*\n", this.target[0], this.target[1]);
+		PathPlanner.aStar(this, this.currentMem, this.target[0], this.target[1]);
+		System.out.printf("\n\nMoving to %d,%d to sense unexplored area\n", this.target[0], this.target[1]);
+		this.currentMem.prettyPrintRoute(this.planned_route);
+		//System.exit(1);
+	}
+	
+	private void checkForNewData(){
+		Node nextMove = this.planned_route.get(0);
+		int explored = this.countNewVisibleCells(this.getVisibleCells(nextMove));
+		if (explored != 0){
+			this.exploringLocally = true;
+			System.out.println("Route has found new data, reverting to local exploration");
 		}
-		if (this.goal_found){
-			//If we spot the goal on the way to explorable cells
-			//Abandon exploration and use short term plan to head towards goal
-			System.out.println("Switching to short term tactic");
-			this.plan_long_term = false;
-			this.plan_short_term = true;
-			this.shortTermPlan();
-			return;
+	}
+	
+	//Make small deviations from the projected route if new obstacles are found
+	private void avoidObstacles(){
+		Node nextMove = this.planned_route.get(0);
+		if (!this.currentMem.validPosition(nextMove.getX(), nextMove.getY())){
+			System.out.println("Route compromised!");
+			this.planned_route.clear();
+			PathPlanner.aStar(this, this.currentMem, this.target[0], this.target[1]);
 		}
-		Node parent = null;
-		int parent_to_reach = 0;
-		char parent_heading = 'r';
-		
-		if (this.route_taken.size() != 0){
-			parent = this.route_taken.get(this.route_taken.size()-1);
-			parent_to_reach = parent.getCostToReach();
-			parent_heading  = parent.getHeading();
-		}
-		ArrayList<Node> successors = this.getSuccessors(parent, currentPos[0], currentPos[1], this.currentMem);
-
-		for (Node s : successors) {
-			int to_reach = parent_to_reach+s.turnCost(parent_heading)+1;
-			s.setCost(to_reach, this.evaluatePositionDistance(s, this.longTermGoal));
-		}
-		
-		Node cheapest = this.getCheapestSuccessor(successors);
-		this.planned_route.add(cheapest);
-		System.out.println("Planned via long term");
 	}
 	
 	@Override
 	public String getName(){
 		return this.BOT_NAME + super.getSuffix();
 	}
+	
+	@Override
+	public void finished(int movesMade, boolean success){
+		super.finished(movesMade, success);
+		this.totalReplans += replans;
+		this.avgReplans = (float)this.totalReplans / (float)this.testRuns;
+	}
+	
+	@Override
+	public void testResults(){
+		super.testResults();
+		System.out.printf("    Total Replans: %d, Avg Replans: %.2f\n", this.totalReplans, this.avgReplans);
+	}
+
 }

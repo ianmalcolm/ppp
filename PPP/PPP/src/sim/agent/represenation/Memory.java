@@ -1,98 +1,9 @@
-package sim.agent;
+package sim.agent.represenation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import ppp.PPP;
-
-enum Occupancy {
-	EMPTY(0,      '.'),
-	BOUNDARY(1,   '#'),
-	START(2,       '@'),
-	OBS_LEFT(3,   '['),
-	OBS_RIGHT(4,  ']'),
-	MOVE_UP(5,    '^'),
-	MOVE_DOWN(6,  'v'),
-	MOVE_LEFT(7,  '<'),
-	MOVE_RIGHT(8, '>'),
-	POI(9,        '*'),//Point of Interest, for debugging
-	GOAL(10,      'G'),
-	UNKNOWN(99,   '~');
-	
-	public int code;
-	public char symbol;
-	private Occupancy(int o, char s){
-		this.code = o;
-		this.symbol = s;
-	}
-	
-	public String toString(){
-		return Character.toString(this.symbol);
-	}
-	
-	public static Occupancy getType(int o){
-		switch (o){
-		case 0:
-			return EMPTY;
-		case 1:
-			return BOUNDARY;
-		case 2:
-			return START;
-		case 3:
-			return OBS_LEFT;
-		case 4:
-			return OBS_RIGHT;
-		case 5:
-			return MOVE_UP;
-		case 6:
-			return MOVE_DOWN;
-		case 7:
-			return MOVE_LEFT;
-		case 8:
-			return MOVE_RIGHT;
-		case 9:
-			return POI;
-		case 10:
-			return GOAL;
-		default:
-			return UNKNOWN;
-		}
-	}
-	
-	public static Occupancy getType(short o){
-		return Occupancy.getType((int)o);
-	}
-	
-	public static boolean isObstalce(short o){
-		return Occupancy.isObstalce((int)o);
-	}
-	
-	public static boolean isObstalce(int o){
-		switch(Occupancy.getType(o)){
-		case BOUNDARY:
-		case OBS_LEFT:
-		case OBS_RIGHT:
-			return true;
-		default:
-			return false;
-		}
-	}
-	
-	public static Occupancy getHeading(char h){
-		switch (h){
-		case 'u':
-			return MOVE_UP;
-		case 'd':
-			return MOVE_DOWN;
-		case 'l':
-			return MOVE_LEFT;
-		case 'r':
-			return MOVE_RIGHT;
-		default:
-			return UNKNOWN;
-		}
-	}
-
-}
 
 /**
  * Memory storage for exploring agents
@@ -185,12 +96,19 @@ public class Memory {
 		if ((x<0)||(y<0)){
 			return false;
 		}
-		if ((x>this.mem_width) || (y>this.mem_height)){
+		if ((x>=this.mem_width) || (y>=this.mem_height)){
 			return false;
 		}
 		if (Occupancy.isObstalce(map[y][x])){
 			return false;
 		}
+		return true;
+	}
+	
+	public boolean reachablePosition(int x, int y, int bX, int bY){
+		//generate neighbours
+		//check if neighbours reachable
+		//exit when reachable neighbour found
 		return true;
 	}
 	
@@ -208,7 +126,18 @@ public class Memory {
 			currentNode = route.get(nodeIndex);
 		}
 		
+		int left_gutter_width = String.valueOf(this.mem_height).length() + 1;
+		char[] middle_pad = new char[this.mem_width-2];
+		char[] left_pad_zero = new char[left_gutter_width];
+		Arrays.fill(middle_pad, ' ');
+		Arrays.fill(left_pad_zero, ' ');
+		System.out.println(new String(left_pad_zero) + "0"+new String(middle_pad)+(this.mem_width-1));
+		
 		for (int i = 0; i < this.mem_height; i++){
+			int coord_width = String.valueOf(i).length();
+			char[] left_pad = new char[left_gutter_width-coord_width];
+			Arrays.fill(left_pad, ' ');
+			System.out.print(i+new String(left_pad));
 			for (int j=0; j< this.mem_width; j++){
 				short s = this.map[i][j];
 				Occupancy o = Occupancy.getType(s);
