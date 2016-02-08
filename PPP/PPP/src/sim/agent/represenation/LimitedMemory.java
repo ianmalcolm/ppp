@@ -72,7 +72,7 @@ public class LimitedMemory extends Memory {
 	
 	//Set directly into the limited memory without offsetting
 	private void setDirect(int x, int y, short val){
-		this.map[y][x]=val;
+		this.map[y][x].setOccupancy(Occupancy.getType(val));
 	}
 	
 	@Override

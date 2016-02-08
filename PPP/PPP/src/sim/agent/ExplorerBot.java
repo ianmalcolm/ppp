@@ -10,6 +10,7 @@ import sim.agent.represenation.Memory;
 import sim.agent.represenation.Node;
 import sim.agent.represenation.Occupancy;
 import sim.agent.represenation.PathPlanner;
+import sim.agent.represenation.Sensor;
 
 /**
  * Exploration focused agent
@@ -87,7 +88,7 @@ public class ExplorerBot extends Bot {
 			int i =0;
 			for(int x: endPoints){
 				i++;
-				ArrayList<short[]> LoS = this.line(nX, nY, x, y);
+				ArrayList<short[]> LoS = Sensor.line(nX, nY, x, y);
 				for (short[] cell : LoS){
 					visible.add(Arrays.asList(cell[0], cell[1]));
 					try {

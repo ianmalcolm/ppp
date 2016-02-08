@@ -21,13 +21,15 @@ public class Sim {
 	public static void main(String[] args) {
 		try {
 			int test_runs = 1000;
-			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP4.ppp", false);
+			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP1.ppp", false);
 			displayPPP(map);
+			map.evaluateDifficulty();
+			map.displayMap();
 			
 			int sensorRange = 2;
 			int LimitedMemRange = (2*sensorRange)+1;
-			Bot ob = new OmniscientBot(new Memory(map), sensorRange);
 			
+			Bot ob = new OmniscientBot(new Memory(map), sensorRange);
 			//Remember to account for walls in the memory size
 			Bot wfl = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
 			Bot wfr = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'r');
@@ -45,7 +47,7 @@ public class Sim {
 			//singleTest(map, wflLim, true, true);
 			//singleTest(map, expLim, true, true);
 			//singleTest(map, expNoisy, true, true);
-			singleTest(map, lte, true, false);
+			//singleTest(map, lte, true, true);
 			//test(map, ob,  test_runs);
 			//test(map, wfl, test_runs);
 			//test(map, wfr, test_runs);
@@ -53,7 +55,7 @@ public class Sim {
 			//test(map, rnd, test_runs);
 			//test(map, expLim, test_runs);
 			//test(map, expNoisy, test_runs);
-			//test(map, lte, test_runs);
+			test(map, lte, test_runs);
 			
 			System.out.println("Simulator exiting");
 			

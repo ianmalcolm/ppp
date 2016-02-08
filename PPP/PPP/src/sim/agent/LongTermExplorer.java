@@ -84,7 +84,7 @@ public class LongTermExplorer extends ExplorerBot {
 		if ((explored == 0) && (!this.goal_found)){
 			//Replan if no exploration achieved
 			//UNLESS we're pathing directly to the goal
-			System.out.println("Did not explore any new cells this move");
+			//System.out.println("Did not explore any new cells this move");
 			return false;
 		}
 		return true;
@@ -98,17 +98,19 @@ public class LongTermExplorer extends ExplorerBot {
 		int shortest_dist = 9999;
 		for (int y = 0; y < this.currentMem.mem_height; y++){
 			for (int x=0; x < this.currentMem.mem_width; x++){
-				if (Occupancy.getType(this.currentMem.readSquare(x, y)) == Occupancy.UNKNOWN){
-					int dist = PathPlanner.cartesianDistance(this.getX(), this.getY(), x, y);
-					if (dist < shortest_dist) {
-						shortest_dist = dist;
-						closestX = x;
-						closestY = y;
+				if (this.currentMem.reachablePosition(x, y)){
+					if (Occupancy.getType(this.currentMem.readSquare(x, y)) == Occupancy.UNKNOWN){
+						int dist = PathPlanner.cartesianDistance(this.getX(), this.getY(), x, y);
+						if (dist < shortest_dist) {
+							shortest_dist = dist;
+							closestX = x;
+							closestY = y;
+						}
 					}
 				}
 			}
 		}
-		System.out.println("Found closest unexplored area");
+		//System.out.println("Found closest unexplored area");
 		return new int[] {closestX, closestY};
 	}
 	
@@ -117,12 +119,12 @@ public class LongTermExplorer extends ExplorerBot {
 	 */
 	private void pathToIntestingArea(){
 		this.target = this.findClosestUnknown();
-		System.out.println("\nRoute taken so far");
+		//System.out.println("\nRoute taken so far");
 		//this.currentMem.prettyPrintRoute(this.route_taken);
-		System.out.printf("Planning long term to pos %d,%d by A*\n", this.target[0], this.target[1]);
+		//System.out.printf("Planning long term to pos %d,%d by A*\n", this.target[0], this.target[1]);
 		PathPlanner.aStar(this, this.currentMem, this.target[0], this.target[1]);
-		System.out.printf("\n\nMoving to %d,%d to sense unexplored area\n", this.target[0], this.target[1]);
-		this.currentMem.prettyPrintRoute(this.planned_route);
+		//System.out.printf("\n\nMoving to %d,%d to sense unexplored area\n", this.target[0], this.target[1]);
+		//this.currentMem.prettyPrintRoute(this.planned_route);
 		//System.exit(1);
 	}
 	
@@ -131,7 +133,7 @@ public class LongTermExplorer extends ExplorerBot {
 		int explored = this.countNewVisibleCells(this.getVisibleCells(nextMove));
 		if (explored != 0){
 			this.exploringLocally = true;
-			System.out.println("Route has found new data, reverting to local exploration");
+			//System.out.println("Route has found new data, reverting to local exploration");
 		}
 	}
 	

@@ -4,9 +4,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import state.AgentState;
 import state.StateValue;
+import sim.agent.represenation.Sensor;
 
 /*
  * 	Author: Hao Wei
@@ -48,6 +53,12 @@ public class PPP{
 	private boolean availability;	// the availability of the PPP, whether it is reachable or not
 	private StateValue bestSV;		// the best StateValue
 	private AgentState finalAS; 	// the final AgentState
+	
+	//Difficulty
+	private int totalCells;
+	private int goalVisibleCells;
+	private double goalVisiblePercentage;
+	
 	/*
 	 * 	Initialize the map
 	 */
@@ -62,6 +73,8 @@ public class PPP{
 		arrayDes = new Descriptor[nDes];
 		availability = false;
 		createPPP();
+		this.goalVisibleCells = 0;
+		this.totalCells = (size*2)*size;
 	}
 	/*
 	 * 	Initialize the map using a given PPP
@@ -349,7 +362,7 @@ public class PPP{
 	/*
 	 * 	Display the map
 	 */
-	private void displayMap(){
+	public void displayMap(){
 		for (short i = 0; i<row; i++){
 			for (short j = 0; j<col; j++){
 				System.out.print(map[i][j]);
@@ -360,7 +373,7 @@ public class PPP{
 	}
 	
 	public boolean isOccupied(int x, int y){
-		short o = occ[y][x];
+		short o = this.occ[y][x];
 		switch (o){
 		case 1:
 		case 3:
@@ -436,44 +449,7 @@ public class PPP{
 		//System.out.println(n);
 		asArray[0].setStateValue((short)0, (short)0, (short)0);
 	}
-	/*
-	 * Dynamic Programming Algorithm
-	 */
-	private void dPA(){
-		singleDPA();
-		AgentState[] temp = new AgentState[asSize];
-		do{
-			System.arraycopy(asArray, 0, temp, 0, asArray.length);
-			singleDPA();
-		} while (!similarAS(asArray, temp));
-	}
-	/*
-	 * 	one loop for the Dynamic Programming Algorithm
-	 */
-	private void singleDPA(){
-		AgentState r, l, a;	// stands for right, left, advance
-		short n;			// the current position of the replacement
-		for(short i = 0; i<asSize; i++){
-			AgentState temp = new AgentState(asArray[i]);
-			r = temp.turnRight();
-			n = arrayContain(r);
-			if(n!=-1){
-				asArray[n] = agentSelector(asArray[n], r);
-			}
-			temp = new AgentState(asArray[i]);
-			l = temp.turnLeft();
-			n = arrayContain(l);
-			if(n!=-1){
-				asArray[n] = agentSelector(asArray[n], l);
-			}
-			temp = new AgentState(asArray[i]);
-			a = temp.advance();
-			n = arrayContain(a);
-			if(n!=-1){
-				asArray[n] = agentSelector(asArray[n], a);
-			}
-		}
-	}
+
 	/*
 	 * 	Help function for determine whether the position is a possible position
 	 * 	Whether the tested AgentState is in the asArray
@@ -852,4 +828,101 @@ public class PPP{
 	public short[][] getOccGrid(){
 		return this.occ;
 	}
+	
+	/**
+	 * Evaluation
+	 */
+	
+	/*
+	 * Dynamic Programming Algorithm
+	 */
+	private void dPA(){
+		singleDPA();
+		AgentState[] temp = new AgentState[asSize];
+		do{
+			System.arraycopy(asArray, 0, temp, 0, asArray.length);
+			singleDPA();
+		} while (!similarAS(asArray, temp));
+	}
+	
+	/*
+	 * 	one loop for the Dynamic Programming Algorithm
+	 */
+	private void singleDPA(){
+		AgentState r, l, a;	// stands for right, left, advance
+		short n;			// the current position of the replacement
+		for(short i = 0; i<asSize; i++){
+			AgentState temp = new AgentState(asArray[i]);
+			r = temp.turnRight();
+			n = arrayContain(r);
+			if(n!=-1){
+				asArray[n] = agentSelector(asArray[n], r);
+			}
+			temp = new AgentState(asArray[i]);
+			l = temp.turnLeft();
+			n = arrayContain(l);
+			if(n!=-1){
+				asArray[n] = agentSelector(asArray[n], l);
+			}
+			temp = new AgentState(asArray[i]);
+			a = temp.advance();
+			n = arrayContain(a);
+			if(n!=-1){
+				asArray[n] = agentSelector(asArray[n], a);
+			}
+		}
+	}
+	
+	public void evaluateDifficulty(){
+		this.goalVisibleCells = this.evaluateGoalVisibility();
+		this.goalVisiblePercentage = this.goalVisibleCells / (double)this.totalCells;
+		System.out.printf("Number of cells from which goal is visible: %d\n", this.goalVisibleCells);
+		System.out.printf("Total Cells: %d\n", this.totalCells);
+		System.out.printf("Percentage: %.2f\n", this.goalVisiblePercentage);
+	}
+	
+	/**
+	 * Evaluate the visibility of the goal position assuming a perfect sensor
+	 * I.e. no noise and with a range covering the map
+	 * We calculate this by looking out from the goal;
+	 * Cells visible from the goal have visibility onto the goal.
+	 * This is less intensive than checking visibilty for every possible position.
+	 * @return count of cells from which the goal is visible
+	 */
+	private int evaluateGoalVisibility(){
+		//calculate the number of cells from which the goal position is visible
+		int range = (this.size*2)+2;
+		Sensor sensor = new Sensor(range);
+		int[] goalPos = new int[] {col-2, row-2};
+		int[] senseWindow = sensor.boundSenseWindow(goalPos[0], goalPos[1], this.size);
+		int x_left   = senseWindow[0];
+		int x_right  = senseWindow[1];
+		int y_top    = senseWindow[2];
+		int y_bottom = senseWindow[3];
+		
+		HashSet<List<Short>> visibleCells = new HashSet<List<Short>>();
+		
+		for (int y=y_top; y<=y_bottom; y++){
+			int[] endPoints = Sensor.getEndPoints(x_left, x_right);
+			for (int x: endPoints){
+				//Line from goalPos to cell (endX, Y)
+				//Scan along this line to determine number of cells which can see the goal
+				ArrayList<short[]> LoS = Sensor.line(goalPos[0], goalPos[1], x, y);
+				for (short[] p: LoS){
+					if(this.isOccupied(p[0], p[1])){
+						//Can't sense from, or from behind, an occupied cell.
+						//The rest of the line has it's visibilty blocked by this cell,
+						//so skip to next LoS
+						break;
+					} else {
+						visibleCells.add(Arrays.asList(p[0], p[1]));
+						map[p[1]][p[0]] = 'v';
+					}
+				}
+			}
+		}
+		return visibleCells.size();
+	}
+	
+	
 }

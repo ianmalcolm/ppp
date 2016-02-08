@@ -63,11 +63,15 @@ public enum Occupancy {
 		return Occupancy.getType((int)o);
 	}
 	
-	public static boolean isObstalce(short o){
-		return Occupancy.isObstalce((int)o);
+	public static boolean isObstacle(Occupancy o){
+		return Occupancy.isObstacle((int)o.code);
 	}
 	
-	public static boolean isObstalce(int o){
+	public static boolean isObstacle(short o){
+		return Occupancy.isObstacle((int)o);
+	}
+	
+	public static boolean isObstacle(int o){
 		switch(Occupancy.getType(o)){
 		case BOUNDARY:
 		case OBS_LEFT:

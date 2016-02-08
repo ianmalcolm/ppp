@@ -1,7 +1,6 @@
 package sim.agent;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import state.AgentState;
 import state.StateValue;
@@ -9,8 +8,8 @@ import ppp.PPP;
 import sim.agent.represenation.LimitedMemory;
 import sim.agent.represenation.Memory;
 import sim.agent.represenation.Node;
-import sim.agent.represenation.Occupancy;
 import sim.agent.represenation.PathPlanner;
+import sim.agent.represenation.Sensor;
 
 class InvalidMoveError extends Exception {
 	private static final long serialVersionUID = 9203487744481552202L;
@@ -35,7 +34,8 @@ public abstract class Bot {
 	protected AgentState state;
 	protected ArrayList<Node> planned_route;
 	protected ArrayList<Node> route_taken;
-	private int unknown_cells;
+	protected Sensor sensor;
+	public int unknown_cells;
 	private int invalidMoves;
 	private int successes;
 	private int fails;
@@ -93,6 +93,7 @@ public abstract class Bot {
 		if (this.currentMem instanceof LimitedMemory){
 			this.name_suffixes.add(this.currentMem.toString());
 		}
+		this.sensor = new Sensor(sensor_range, 0.0);
 		this.sensorRange = sensor_range;
 		this.planned_route = new ArrayList<Node>();
 		this.route_taken = new ArrayList<Node>();
@@ -133,109 +134,14 @@ public abstract class Bot {
 	public void setSensorNoise(double noise){
 		this.sensorNoise = noise;
 		this.name_suffixes.add("Noisy");
+		this.sensor.setNoise(noise);
 	}
 		
-	/*
-	 * Line of Sight
-	 */
-	protected double lerp(int start, int end, double dist){
-		return Math.round(start+dist *(end-start));
-	}
-	
-	protected int diag_dist(int x1, int y1, int x2, int y2){
-		int distX = x1-x2;
-		int distY = y1-y2;
-		return Math.max(Math.abs(distX), Math.abs(distY));
-	}
-	
-	protected ArrayList<short[]> line(int x1, int y1, int x2, int y2){
-		ArrayList<short[]> points = new ArrayList<short[]>();
-		int nPoints = this.diag_dist(x1, y1, x2, y2);
-		for (int step = 0; step<=nPoints; step++){
-			double t = nPoints == 0? 0.0 : (double)step/(double)nPoints;
-			short x = (short)this.lerp(x1, x2, t);
-			short y = (short)this.lerp(y1, y2, t);
-			short[] point = {x,y};
-			points.add(point);
-		}
-		return points;
-	}
-	
 	/*
 	 * Sense
 	 */
 	public void sense(PPP ppp){
-		short[] centre_pos = this.getPos();
-		// Sense along lines from robot to fringe of sight, given by sensorRange
-		int x_left   = centre_pos[0] - this.sensorRange;
-		int x_right  = centre_pos[0] + this.sensorRange;
-		int y_top    = centre_pos[1] - this.sensorRange;
-		int y_bottom = centre_pos[1] + this.sensorRange;
-		
-		if(y_top < 0)              { y_top = 0;}
-		if(x_left < 0)             { x_left = 0;}
-		if(x_right > 2*ppp.size+1) {x_right = 2*ppp.size+1;}
-		if(y_bottom > ppp.size+1)  {y_bottom=ppp.size+1;}
-		
-		Random rand = new Random();
-		for(int y=y_top; y<=y_bottom; y++){
-			//At the sides of the fringe, we only need to check the edge points
-			//not every point in between - they'll make up part of a LoS
-			int[] endPoints = new int[x_right-x_left+1];
-			for(int i=0; i<x_right-x_left+1; i++){
-				endPoints[i]=x_left+i;
-			}
-			
-			for(int x: endPoints){
-				ArrayList<short[]> LoS = this.line(centre_pos[0], centre_pos[1], x, y);
-				//Sense along the LoS
-				for (short[] p : LoS){
-					boolean true_reading = true;
-					boolean is_goal = false;
-					short cell_value = 0;
-					if(this.currentMem.isGoal(p[0], p[1])){
-						this.goal_found = true;
-						this.goal_pos = p;
-						is_goal = true;
-					}
-					
-					if ((this.sensorNoise != 0.0) && (!is_goal)) {
-						//Never incorrectly sense the goal position
-						double n = rand.nextDouble();
-						if (n < this.sensorNoise){
-							//sensor returns true occupancy
-							true_reading = false;
-						}
-					}
-
-					if (true_reading) {
-						if (Occupancy.getType(this.currentMem.readSquare(p[0], p[1])) == Occupancy.UNKNOWN){
-							this.unknown_cells--;
-						}
-						cell_value = ppp.getOccCell(p[0], p[1]);
-					} else {
-						//sensor returns noisy value
-						int n = rand.nextInt(2);
-						switch (n) {
-						case 0:
-							cell_value = (short)Occupancy.BOUNDARY.code;
-							break;
-						case 1:
-							cell_value = (short)Occupancy.EMPTY.code;
-							break;
-						case 2:
-							cell_value = (short)Occupancy.UNKNOWN.code;
-							break;
-						}
-					}
-					this.currentMem.setCell(p[0], p[1],  cell_value);
-					//Can't see through walls, rest of the line ignored.
-					if (ppp.isOccupied(p[0], p[1])){
-						break;
-					}
-				}
-			}
-		}
+		this.sensor.sense(ppp, this);
 	}
 	
 	/*
@@ -292,6 +198,8 @@ public abstract class Bot {
 				this.currentMem.prettyPrintRoute(this.route_taken);
 				System.out.println("\n\nRoute Planned");
 				this.currentMem.prettyPrintRoute(this.planned_route);
+				System.out.println("\n\n Reachability");
+				this.currentMem.prettyPrintRoute(this.route_taken, true);
 				System.err.print(e);
 				e.printStackTrace();
 				System.exit(1);
