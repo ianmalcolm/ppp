@@ -61,7 +61,11 @@ public class RandomBot extends Bot{
 	}
 	
 	public int evaluatePosition(Node s){
-		return this.random.nextInt(3);
+		int ret = this.random.nextInt(4);
+		if (s.isPos(this.getX(), this.getY())){
+			ret += this.random.nextInt(4);
+		}
+		return ret;
 	}
 	
 	@Override
