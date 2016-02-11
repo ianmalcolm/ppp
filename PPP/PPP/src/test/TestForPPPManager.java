@@ -13,7 +13,7 @@ public class TestForPPPManager {
 		ppp.averageTurn();
 		for(int i=0; i<40;i++){
 			//System.out.println(i+"00");
-			ppp.displayTour();
+			ppp.describePopulation();
 			System.out.println();
 			ppp.hundredME();
 			ppp.averageTurn();

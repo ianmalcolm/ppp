@@ -18,7 +18,7 @@ public class PPPManager {
 	private short sizePPP;		// the size of the PPP
 	private short maxObs;		// the maximum number of obstructions allowed in a single PPP
 	private short nDes;			// the number of descriptors
-	private short[] selected;	// contains all the index of selected chromosomes
+	private short[] selected;	// Index into Population of PPPs selected for tournament
 	private short[] tourOcc;	// if selected, set to 1, prevent one PPP to be selected twice
 	/*
 	 * 	The constructor for PPPManager
@@ -36,16 +36,18 @@ public class PPPManager {
 	 * 	Initialize the population
 	 */
 	private void iniPopulation(){
-		System.out.printf("initializing tournament population of size %d\n", this.sizePopu);
+		System.out.printf("Initializing tournament population of size %d\n", this.sizePopu);
 		for(short i=0; i<sizePopu; i++){
 			population[i] = new PPP(sizePPP, nDes, maxObs);
 		}
+		System.out.println("Done");
 	}
 	
 	/*
 	 * 	Select seven random chromosomes from the population
 	 */
 	private void selectChromosones(short n){
+		//n= sizeTour
 		//System.out.println("select tour");
 		Random generator = new Random();
 		tournament = new PPP[n];
@@ -92,11 +94,13 @@ public class PPPManager {
 		boolean both_reachable = false;
 		PPP child1;
 		PPP child2;
+		Random generator = new Random();
+		short p1, p2;
+		int count = 0;
 		while (!both_reachable){
+			count ++;
 			child1 = new PPP(parent1);
 			child2 = new PPP(parent2);
-			Random generator = new Random();
-			short p1, p2;
 			p1 = (short)generator.nextInt(nDes);
 			p2 = (short)generator.nextInt(nDes);
 			if(p1>p2){
@@ -111,6 +115,17 @@ public class PPPManager {
 			}
 			child1.updatePPP();
 			child2.updatePPP();
+			if (count > 100){
+				System.out.println("p1");
+				parent1.displayFinal();
+				System.out.println("p2");
+				parent2.displayFinal();
+				System.out.println("c1");
+				child1.displayFinal();
+				System.out.println("c2");
+				child2.displayFinal();
+				count = 0;
+			}
 			if((child1.checkAvailable()) && (child2.checkAvailable())){
 				both_reachable = true;
 				return new PairPPP(child1, child2);
@@ -118,8 +133,9 @@ public class PPPManager {
 		}
 		return null;
 	}
+	
 	/*
-	 *  Find the PPP which has the highest turns
+	 *  Find the PPP which has the highest turns from the tournament selection
 	 */
 	private short maxTurns(){
 		short tempTurn = 0;	// current max turn
@@ -138,7 +154,7 @@ public class PPPManager {
 		return index;
 	}
 	/*
-	 * 	Find the PPP which has the lowest turns
+	 * 	Find the PPP which has the lowest turns from the Tournament selection
 	 */
 	private short minTurns(){
 		short tempTurn = 1000;	// current max turn
@@ -156,31 +172,92 @@ public class PPPManager {
 		tourOcc[index] = 1;
 		return index;	
 	}
+	
+	private short minGoalVisibility(){
+		double min = 999999;
+		int index = 0;
+		for(int i = 0; i<this.sizeTour; i++){
+			if(tourOcc[i]==0){
+				double vis = population[selected[i]].getVisibilityPercentage();
+				//double vis = population[i].getVisibilityPercentage();
+				if (vis < min) {
+					index = i;
+					min = vis;
+				}
+			}
+		}
+		tourOcc[index] = 1;
+		return (short) index;
+	}
+	
+	private short maxGoalVisibility(){
+		double max = -999999;
+		int index = 0;
+		for(int i = 0; i<this.sizeTour; i++){
+			if(tourOcc[i]==0){
+				//double vis = population[selected[i]].getVisibilityPercentage();
+				double vis = population[i].getVisibilityPercentage();
+				if (vis < max) {
+					index = i;
+					max = vis;
+				}
+			}
+		}
+		tourOcc[index] = 1;
+		return (short) index;
+	}
+	
+	public void evaluatePPPs(){
+		for(int i = 0; i < this.sizePopu; i++){
+			this.population[i].evaluateDifficulty();
+		}
+	}
+	
+	/*
+	 * Two most fit PPPs in Tournament
+	 */
+	private short[] mostFit(){
+		short most1 = this.maxTurns();
+		short most2 = this.maxTurns();
+//		short most1 = this.minGoalVisibility();
+//		short most2 = this.minGoalVisibility();
+		return new short[] {most1, most2};
+	}
+	
+	/*
+	 * Two least fit PPPs in Tournament
+	 */
+	private short[] leastFit(){
+		short least1 = this.minTurns();
+		short least2 = this.minTurns();
+//		short least1 = this.maxGoalVisibility();
+//		short least2 = this.maxGoalVisibility();
+		return new short[] {least1, least2};
+	}
+	
+	public void checkPopReachable(){
+		for (int i = 0; i < this.population.length; i++){
+			if (!this.population[i].checkAvailable()){
+				System.err.println("Unreachable PPP!");
+				System.exit(1);
+			}
+		}
+	}
+	
 	/*
 	 * 	evolution on the seven tournament
 	 */
 	private void matingEvent(){
-		//System.out.println("Mating Event");
+		this.checkPopReachable();
 		selectChromosones(sizeTour);
-		//showChromo();
-		short most1, most2, least1, least2; // index of most and least fit chromosomes
-		most1 = maxTurns();
-		most2 = maxTurns();
-		least1 = minTurns();
-		least2 = minTurns();
-		/*for(int i=0; i<7; i++){
-			System.out.print(tourOcc[i]);
-		}
-		System.out.println();
-		System.out.print(selected[most1]+" "+population[selected[most1]].getTurn()+" ");
-		System.out.print(selected[most2]+" "+population[selected[most2]].getTurn()+" ");
-		System.out.print(selected[least2]+" "+population[selected[least2]].getTurn()+" ");
-		System.out.print(selected[least1]+" "+population[selected[least1]].getTurn()+"\n");*/
-		PairPPP temp = twoCrossover(tournament[most1],tournament[most2]);
-		population[selected[least1]] = new PPP(temp.getP1());
-		population[selected[least2]] = new PPP(temp.getP2());
-		population[selected[least1]].mutatePPP();
-		population[selected[least2]].mutatePPP();
+		short[] most = this.mostFit();
+		short[] least = this.leastFit();
+		PairPPP temp = twoCrossover(tournament[most[0]],tournament[most[1]]);
+		population[selected[least[0]]] = new PPP(temp.getP1());
+		population[selected[least[1]]] = new PPP(temp.getP2());
+		population[selected[least[0]]] = population[selected[least[0]]].mutatePPP();
+		population[selected[least[1]]] = population[selected[least[1]]].mutatePPP();
+		this.checkPopReachable();
 	}
 	
 	/*
@@ -208,13 +285,14 @@ public class PPPManager {
 	/*
 	 * 	one run contains 10,000 mating events
 	 */
-	public void oneRun(){
+	public void fullRun(){
 		for (int i=0; i<10; i++)
 		{
 			System.out.printf("\n Mating Event Set %d - %d", i*1000,(i+1)*1000);
 			thousandME();
 		}
 	}
+	
 	/*
 	 *  Display first 4 chromosomes
 	 */
@@ -225,14 +303,19 @@ public class PPPManager {
 			population[i].displayDes();
 		}
 	}
-	/*
-	 * 	****Turn for the first 60
-	 */
-	public void displayTour(){
-		for(short i=0; i<60; i++){
-			System.out.print(population[i].getTurn()+" ");
+	
+	private void describePPP(int index){
+		int turns = this.population[index].getTurn();
+		int adv = this.population[index].getAdvance();
+		double vis = this.population[index].getVisibilityPercentage();
+		System.out.printf("PPP%d :: Turns: %d; Adv: %d, Vis: %.2f\n", index, turns, adv, vis);
+	}
+	
+	public void describePopulation(){
+		for (int i = 0; i<this.sizePopu; i++){
+			this.describePPP(i);
 		}
-		System.out.println();
+		this.printFitnessMeasurements();
 	}
 	
 	public void writePopulation(String folder){
@@ -256,20 +339,34 @@ public class PPPManager {
 		result = result/60;
 		System.out.println("average turn is "+result);
 	}
-	/*
-	 *  ****display availability for population
-	 */
-	public void checkPopu(){
-		System.out.println("checked");
-		for(short i=0; i<sizePopu; i++){
-			if(!population[i].checkAvailable()){
-				System.out.println(i);
-				System.out.println("false");
-				population[i].drawMap();
-				population[i].displayPPP();
-				population[i].displayDes();
+	
+	public void printFitnessMeasurements(){
+		int iTurns = 0;
+		int iAdv   = 0;
+		int iVis   = 0;
+		int maxTurns = -9999;
+		int maxAdv = -9999;
+		double minVis = 9999;
+		for (int i = 0; i < this.population.length; i++){
+			int t = this.population[i].getTurn();
+			int a = this.population[i].getAdvance();
+			double v = this.population[i].getVisibilityPercentage();
+			if (t > maxTurns){
+				iTurns = i;
+				maxTurns = t;
+			}
+			if (a > maxAdv){
+				iAdv = i;
+				maxAdv = a;
+			}
+			if (v < minVis){
+				iVis = i;
+				minVis = v;
 			}
 		}
+		System.out.printf("\nPPP%d : Max Turns, %d\n",  iTurns, maxTurns);
+		System.out.printf("PPP%d : Max Adv,   %d\n",  iAdv, maxAdv);
+		System.out.printf("PPP%d : Min Vis,   %.2f\n", iVis, minVis);
 	}
 	
 	/*

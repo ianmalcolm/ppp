@@ -103,6 +103,10 @@ public class Memory {
 		return (short)map[y][x].occ.code;
 	}
 	
+	public int[][] cellNeighbours(int x, int y){
+		return this.map[y][x].getNeighbours();
+	}
+	
 	public boolean occupied(int x, int y){
 		return Occupancy.isObstacle(map[y][x].occ);
 	}
@@ -154,36 +158,47 @@ public class Memory {
 		if ((x>=this.mem_width) || (y>=this.mem_height)){
 			return false;
 		}
-		if(!this.reachablePosition(x, y)){
+		if (Occupancy.isObstacle(map[y][x].occ.code)){
 			return false;
 		}
 		return true;
 	}
 	
 	public boolean reachablePosition(int x, int y){
-		if (Occupancy.isObstacle(map[y][x].occ)){
+		Cell cell = this.map[y][x];
+		if (Occupancy.isObstacle(cell.occ)){
 			return false;
 		}
-		return true;
-		//return this.map[y][x].isReachable();
+		//return true;
+		return cell.isReachable();
 	}
 	
 	public void setCell(int x, int y, short val){
 		Occupancy o = Occupancy.getType(val);
-		this.map[y][x].setOccupancy(o);
+		Cell cell = this.map[y][x];
+		cell.setOccupancy(o);
 		
-		if (Occupancy.isObstacle(o)){
-			this.map[y][x].reachable = false;
-		} else {
-			//reachable if some neighbour is reachable
-			int[][] neighbours = this.map[y][x].getNeighbours();
-			for(int[] c : neighbours){
-				if (this.map[c[1]][c[0]].isReachable()){
-					this.map[y][x].reachable = true;
-					break;
+		if (!cell.reachable){
+			if (Occupancy.isObstacle(o)){
+				cell.reachable = false;
+			} else {
+//				cell.reachable=true;
+				//reachable if some neighbour is reachable
+				//FIXME broken for LimitedMemory and LTE
+				int[][] neighbours = cell.getNeighbours();
+				for(int[] c : neighbours){
+					if (this.validPosition(c[0], c[1])) {
+						Cell n = this.map[c[1]][c[0]];
+						if (n.isReachable()){
+							//System.out.printf("%d,%d reachable via %d,%d\n", x,y,c[0],c[1]);
+							cell.reachable = true;
+							break;
+						}
+					}
 				}
 			}
 		}
+		this.map[y][x]=cell;
 		
 	}
 	

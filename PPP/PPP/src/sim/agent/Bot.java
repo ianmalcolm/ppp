@@ -214,7 +214,7 @@ public abstract class Bot {
 				//this.move(ppp);
 			} catch (InvalidMoveError e) {
 				if (verbose) {
-					System.err.println(e+" -- replanning");
+					System.err.println(e+" -- replanning\n");
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

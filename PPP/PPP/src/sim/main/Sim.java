@@ -21,10 +21,11 @@ public class Sim {
 	public static void main(String[] args) {
 		try {
 			int test_runs = 1000;
-			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/PPP1.ppp", false);
+			PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/ppp/PPP9.ppp", false);
 			displayPPP(map);
 			map.evaluateDifficulty();
 			map.displayMap();
+			
 			
 			int sensorRange = 2;
 			int LimitedMemRange = (2*sensorRange)+1;
@@ -39,6 +40,7 @@ public class Sim {
 			Bot expNoisy = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 			expNoisy.setSensorNoise(0.1);
 			Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+			//lte.currentMem.prettyPrintRoute(null, true);
 			//singleTest(map, ob, true, false);
 			//singleTest(map, wfr, true, false);
 			//singleTest(map, wfl, true, false);
@@ -48,14 +50,14 @@ public class Sim {
 			//singleTest(map, expLim, true, true);
 			//singleTest(map, expNoisy, true, true);
 			//singleTest(map, lte, true, true);
-			//test(map, ob,  test_runs);
-			//test(map, wfl, test_runs);
-			//test(map, wfr, test_runs);
-			//test(map, exp, test_runs);
-			//test(map, rnd, test_runs);
-			//test(map, expLim, test_runs);
-			//test(map, expNoisy, test_runs);
-			test(map, lte, test_runs);
+			test(map, ob,  test_runs);
+			test(map, wfl, test_runs);
+			test(map, wfr, test_runs);
+			test(map, exp, test_runs);
+			test(map, rnd, test_runs);
+			test(map, expLim, test_runs);
+			test(map, expNoisy, test_runs);
+			//test(map, lte, test_runs);
 			
 			System.out.println("Simulator exiting");
 			
