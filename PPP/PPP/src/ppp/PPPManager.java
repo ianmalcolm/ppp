@@ -116,15 +116,17 @@ public class PPPManager {
 			child1.updatePPP();
 			child2.updatePPP();
 			if (count > 100){
-				System.out.println("p1");
-				parent1.displayFinal();
-				System.out.println("p2");
-				parent2.displayFinal();
-				System.out.println("c1");
-				child1.displayFinal();
-				System.out.println("c2");
-				child2.displayFinal();
-				count = 0;
+				System.err.println("\nFailing Crossover");
+				System.exit(1);
+//				System.out.println("p1");
+//				parent1.displayFinal();
+//				System.out.println("p2");
+//				parent2.displayFinal();
+//				System.out.println("c1");
+//				child1.displayFinal();
+//				System.out.println("c2");
+//				child2.displayFinal();
+//				count = 0;
 			}
 			if((child1.checkAvailable()) && (child2.checkAvailable())){
 				both_reachable = true;
@@ -217,10 +219,10 @@ public class PPPManager {
 	 * Two most fit PPPs in Tournament
 	 */
 	private short[] mostFit(){
-		short most1 = this.maxTurns();
-		short most2 = this.maxTurns();
-//		short most1 = this.minGoalVisibility();
-//		short most2 = this.minGoalVisibility();
+		//short most1 = this.maxTurns();
+		//short most2 = this.maxTurns();
+		short most1 = this.minGoalVisibility();
+		short most2 = this.minGoalVisibility();
 		return new short[] {most1, most2};
 	}
 	
@@ -228,10 +230,10 @@ public class PPPManager {
 	 * Two least fit PPPs in Tournament
 	 */
 	private short[] leastFit(){
-		short least1 = this.minTurns();
-		short least2 = this.minTurns();
-//		short least1 = this.maxGoalVisibility();
-//		short least2 = this.maxGoalVisibility();
+		//short least1 = this.minTurns();
+		//short least2 = this.minTurns();
+		short least1 = this.maxGoalVisibility();
+		short least2 = this.maxGoalVisibility();
 		return new short[] {least1, least2};
 	}
 	

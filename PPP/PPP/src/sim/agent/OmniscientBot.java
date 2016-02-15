@@ -8,7 +8,7 @@ import sim.agent.represenation.PathPlanner;
  * @author slw546
  */
 public class OmniscientBot extends Bot{
-	private final String BOT_NAME = "Omniscient Bot";
+	private final String BOT_NAME = "Omniscient A* Bot";
 
 	/*
 	 * A bot which has full knowledge of the map and therefore finds the perfect route.

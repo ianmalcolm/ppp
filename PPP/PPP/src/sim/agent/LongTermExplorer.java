@@ -167,8 +167,8 @@ public class LongTermExplorer extends ExplorerBot {
 	}
 	
 	@Override
-	public void testResults(){
-		super.testResults();
+	public void printTestResults(){
+		super.printTestResults();
 		System.out.printf("    Total Replans: %d, Avg Replans: %.2f\n", this.totalReplans, this.avgReplans);
 	}
 

@@ -45,7 +45,10 @@ public class PPP{
 	//Difficulty
 	private int totalCells;
 	private int goalVisibleCells;
+	private int startVisibleCells;
 	private double goalVisiblePercentage;
+	private double startVisiblePercentage;
+	
 	
 	/*
 	 * 	Initialize the map
@@ -491,6 +494,8 @@ public class PPP{
 			System.out.println("The smallest state value is " + bestSV);
 			System.out.printf("Goal Visible from %d/%d :: Percentage %.2f\n", 
 					this.goalVisibleCells, this.totalCells, this.goalVisiblePercentage);
+			System.out.printf("Start Visible from %d/%d :: Percentage %.2f\n", 
+					this.goalVisibleCells, this.totalCells, this.startVisiblePercentage);
 		} else
 			System.out.println("The destination is unreachable!");
 	}
@@ -847,22 +852,25 @@ public class PPP{
 	public void evaluateDifficulty(){
 		this.goalVisibleCells = this.evaluateGoalVisibility();
 		this.goalVisiblePercentage = this.goalVisibleCells / (double)this.totalCells;
+		
+		this.startVisibleCells = this.evaluateStartPosVisibility();
+		this.startVisiblePercentage = this.startVisibleCells / (double)this.totalCells;
 	}
 	
 	/**
 	 * Evaluate the visibility of the goal position assuming a perfect sensor
 	 * I.e. no noise and with a range covering the map
-	 * We calculate this by looking out from the goal;
-	 * Cells visible from the goal have visibility onto the goal.
+	 * We calculate this by looking out from the position specified;
+	 * Cells visible from the pos have visibility onto that pos .
 	 * This is less intensive than checking visibilty for every possible position.
-	 * @return count of cells from which the goal is visible
+	 * @return count of cells from which the pos is visible
 	 */
-	private int evaluateGoalVisibility(){
+	private int evaluateVisibilityFromPosition(int xPos, int yPos, boolean showOnMap){
 		//calculate the number of cells from which the goal position is visible
 		int range = (this.size*2)+2;
 		Sensor sensor = new Sensor(range);
 		int[] goalPos = new int[] {col-2, row-2};
-		int[] senseWindow = sensor.boundSenseWindow(goalPos[0], goalPos[1], this.size);
+		int[] senseWindow = sensor.boundSenseWindow(xPos, yPos, this.size);
 		int x_left   = senseWindow[0];
 		int x_right  = senseWindow[1];
 		int y_top    = senseWindow[2];
@@ -875,7 +883,7 @@ public class PPP{
 			for (int x: endPoints){
 				//Line from goalPos to cell (endX, Y)
 				//Scan along this line to determine number of cells which can see the goal
-				ArrayList<short[]> LoS = Sensor.line(goalPos[0], goalPos[1], x, y);
+				ArrayList<short[]> LoS = Sensor.line(xPos, yPos, x, y);
 				for (short[] p: LoS){
 					if(this.isOccupied(p[0], p[1])){
 						//Can't sense from, or from behind, an occupied cell.
@@ -884,12 +892,21 @@ public class PPP{
 						break;
 					} else {
 						visibleCells.add(Arrays.asList(p[0], p[1]));
-						map[p[1]][p[0]] = 'v';
+						if (showOnMap){
+							map[p[1]][p[0]] = 'v';
+						}
 					}
 				}
 			}
 		}
 		return visibleCells.size();
+	}
+	
+	private int evaluateGoalVisibility(){
+		return this.evaluateVisibilityFromPosition(col-2, row-2, false);
+	}
+	private int evaluateStartPosVisibility(){
+		return this.evaluateVisibilityFromPosition(1, 1, true);
 	}
 	
 	public double getVisibilityPercentage(){

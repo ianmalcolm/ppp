@@ -419,7 +419,7 @@ public abstract class Bot {
 		System.out.print("\n");
 	}
 	
-	public void testResults(){
+	public void printTestResults(){
 		System.out.printf("Bot: %s\n", this.getName());
 		System.out.printf("    Successes: %d Fails: %d\n", this.successes, this.fails);
 		System.out.printf("    Success Rate: %.2f%%\n", 100*((float)this.successes / (float)this.testRuns));
@@ -436,6 +436,11 @@ public abstract class Bot {
 		if (this.totalStationairyMoves != 0){
 			System.out.printf("    Remained stationairy %d times over all runs\n", this.totalStationairyMoves);
 		}
+	}
+	
+	public String getTestResults(){
+		double passRate = 100*((float)this.successes / (float)this.testRuns);
+		return String.format("%.2f", passRate);
 	}
 	
 	public ArrayList<Node> getPlannedRoute(){
