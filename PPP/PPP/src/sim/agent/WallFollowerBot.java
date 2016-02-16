@@ -165,7 +165,7 @@ public class WallFollowerBot extends Bot{
 	
 	@Override
 	public String getName(){
-		return this.BOT_NAME + " " + super.getSuffix();
+		return this.BOT_NAME + super.getSuffix();
 	}
 
 }

@@ -28,7 +28,7 @@ class InvalidMoveError extends Exception {
  */
 public abstract class Bot {
 	private final String BOT_NAME = "Bot";
-	private final int STEP_TIME = 500;
+	private final int STEP_TIME = 100;
 
 	protected ArrayList<String> name_suffixes;
 	protected AgentState state;
@@ -133,7 +133,7 @@ public abstract class Bot {
 	
 	public void setSensorNoise(double noise){
 		this.sensorNoise = noise;
-		this.name_suffixes.add("Noisy");
+		this.name_suffixes.add(String.format("Noise: %.2f", noise));
 		this.sensor.setNoise(noise);
 	}
 		
@@ -153,15 +153,15 @@ public abstract class Bot {
 	/*
 	 * Execution
 	 */
-	public void run(PPP ppp){
-		this.run(ppp, false);
+	public void run(PPP ppp, int maxMoves){
+		this.run(ppp, maxMoves, false);
 	}
 	
-	public void run(PPP ppp, boolean verbose){
-		this.run(ppp, verbose, false);
+	public void run(PPP ppp, int maxMoves, boolean verbose){
+		this.run(ppp, maxMoves, verbose, false);
 	}
 	
-	public void run(PPP ppp, boolean verbose, boolean showSteps){
+	public void run(PPP ppp, int maxMoves, boolean verbose, boolean showSteps){
 		short[] pos = this.getPos();
 		if ((pos[0] > (ppp.size*2)) || (pos[1] > ppp.size)) {
 			System.err.println("Bot started on an invalid Position!");
@@ -171,7 +171,6 @@ public abstract class Bot {
 		short goalX = (short)(ppp.size*2);
 		short goalY = ppp.size;
 		int moves = this.route_taken.size();
-		int maxMoves = 300;
 		this.aprioriPlan(goalX, goalY);
 		
 		if (verbose){
@@ -208,7 +207,7 @@ public abstract class Bot {
 				this.move(ppp);
 				if(showSteps){
 					this.currentMem.prettyPrintRoute(this.route_taken);
-					System.out.println();
+					System.out.printf("Step %d\n\n", moves);
 					Thread.sleep(this.STEP_TIME);
 				}
 				//this.move(ppp);

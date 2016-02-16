@@ -17,6 +17,7 @@ public enum Occupancy {
 	MOVE_RIGHT(8, '>'),
 	POI(9,        '*'),//Point of Interest, for debugging
 	GOAL(10,      'G'),
+	BOT(11,       'B'),
 	UNKNOWN(99,   '~');
 	
 	public int code;
@@ -54,6 +55,8 @@ public enum Occupancy {
 			return POI;
 		case 10:
 			return GOAL;
+		case 11:
+			return BOT;
 		default:
 			return UNKNOWN;
 		}

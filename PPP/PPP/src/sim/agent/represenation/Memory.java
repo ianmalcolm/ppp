@@ -246,6 +246,9 @@ public class Memory {
 						o = Occupancy.getHeading(n.getHeading());
 					}
 				}
+				if (route.get(route.size()-1).isPos(j, i)){
+					o = Occupancy.BOT;
+				}
 				if (re){
 					if (r){
 						System.out.print(".");
@@ -258,7 +261,6 @@ public class Memory {
 			}
 			System.out.print("\n");
 		}
-		System.out.print("\n");
 	}
 	
 	public String toString(){

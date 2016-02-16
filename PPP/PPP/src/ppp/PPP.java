@@ -76,6 +76,7 @@ public class PPP{
 		this.maxObs = ppp.maxObs;
 		this.asSize = ppp.asSize;
 		this.goalVisibleCells = 0;
+		this.startVisibleCells = 0;
 		this.totalCells = (this.size*2)*this.size;
 		row = (short)(size+2);
 		col = (short)(size*2+2);
@@ -495,7 +496,7 @@ public class PPP{
 			System.out.printf("Goal Visible from %d/%d :: Percentage %.2f\n", 
 					this.goalVisibleCells, this.totalCells, this.goalVisiblePercentage);
 			System.out.printf("Start Visible from %d/%d :: Percentage %.2f\n", 
-					this.goalVisibleCells, this.totalCells, this.startVisiblePercentage);
+					this.startVisibleCells, this.totalCells, this.startVisiblePercentage);
 		} else
 			System.out.println("The destination is unreachable!");
 	}
@@ -869,7 +870,6 @@ public class PPP{
 		//calculate the number of cells from which the goal position is visible
 		int range = (this.size*2)+2;
 		Sensor sensor = new Sensor(range);
-		int[] goalPos = new int[] {col-2, row-2};
 		int[] senseWindow = sensor.boundSenseWindow(xPos, yPos, this.size);
 		int x_left   = senseWindow[0];
 		int x_right  = senseWindow[1];
@@ -909,7 +909,7 @@ public class PPP{
 		return this.evaluateVisibilityFromPosition(1, 1, true);
 	}
 	
-	public double getVisibilityPercentage(){
+	public double getGoalVisibility(){
 		return this.goalVisiblePercentage;
 	}
 	
@@ -917,5 +917,7 @@ public class PPP{
 		return this.goalVisibleCells;
 	}
 	
-	
+	public String getTaxDescription(){
+		return String.format("%d,%d,%.2f", this.getTurn(), this.getAdvance(), this.getGoalVisibility());
+	}
 }

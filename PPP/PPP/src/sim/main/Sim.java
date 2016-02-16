@@ -22,21 +22,21 @@ import sim.agent.LongTermExplorer;
 public class Sim {
 	public final static int testRuns = 1000;
 	public final static int sensorRange = 2;
-	public boolean csvLocked = false;
+	public final static int maxMoves = 300;
 	
 	public static void main(String[] args) {
 		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/vis", false);
-		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/vis/PPP59.ppp", false);
+		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/vis/PPP0.ppp", false);
 		displayPPP(map);
 		map.evaluateDifficulty();
 		map.displayMap();
 
-		//ArrayList<Bot> bots = getBots(map);
-		//testAll(map, bots);
-		//Bot wfr = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'r');
+		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
+		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
+		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		singleTest(map, exp, true, true);
+		
 		//singleTest(map, ob, true, false);
-		//singleTest(map, wfr, true, true);
-		//singleTest(map, wfl, true, false);
 		//singleTest(map, exp, true, true);
 		//singleTest(map, rnd, true, false);
 		//singleTest(map, wflLim, true, true);
@@ -50,7 +50,6 @@ public class Sim {
 	public static void testMapsInFolder(String folder, boolean verbose){
 		File[] files = new File(folder).listFiles();
 		boolean csvReady = false;
-		FileWriter csvWriter = null;
 		CsvWriter csv = null;
 		int unreachable = 0;
 		
@@ -69,16 +68,15 @@ public class Sim {
 				}
 				ArrayList<Bot> bots = getBots(map);
 				if (!csvReady){
-					//csv = new CsvWriter(folder, bots);
+					csv = new CsvWriter(folder, bots);
 					csvReady = true;
-					csvWriter = initCSV(folder, bots);
 				}
-				//csv.writeToCSV(fileName);
-				writeToCSV(csvWriter, fileName);
-				testAll(map, bots, csvWriter);
+				csv.writePPP(map, fileName);
+				testAll(map, bots, csv);
+				System.out.println("Done.");
 			}
 		}
-		closeCSV(csvWriter);
+		csv.closeCSV();
 		if (unreachable > 0){
 			System.out.printf("\n%d Unreachable PPPs in test set were skipped!", unreachable);
 		}
@@ -101,64 +99,25 @@ public class Sim {
 		//ret.add(new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange));
 		return ret;
 	}
-	
-	public static FileWriter initCSV(String folder, ArrayList<Bot> bots){
-		try {
-			FileWriter w = new FileWriter(folder+"/results.csv");
-			w.append("PPP");
-			for (Bot b : bots){
-				w.append(","+b.getName());
-			}
-			w.append("\n");
-			return w;
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		return null;
-	}
-	public static void writeToCSV(FileWriter csv, String str){
-		try {
-			csv.append(str);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-	public static void closeCSV(FileWriter csv){
-		try {
-			csv.flush();
-			csv.close();
-		} catch (IOException e) {
-			System.exit(1);
-		}
-	}
-	public synchronized void lockCsv(){
-		csvLocked = true;
-	}
-	public synchronized void unlockCsv(){
-		csvLocked = false;
-		notifyAll();
-	}
-	
+		
 	public static void testAll(PPP map, ArrayList<Bot> bots){
 		testAll(map, bots, null);
 	}
 	
-	public static void testAll(PPP map, ArrayList<Bot> bots, FileWriter csv){
+	public static void testAll(PPP map, ArrayList<Bot> bots, CsvWriter csv){
 		for (Bot b : bots){
 			test(map, b, testRuns);
 			if (csv != null){
-				writeToCSV(csv, ","+b.getTestResults());
+				csv.writeToCSV(","+b.getTestResults());
 			}
 		}
 		if(csv != null){
-			writeToCSV(csv, "\n");
+			csv.writeToCSV("\n");
 		}
 	}
 	
 	public static void singleTest(PPP map, Bot bot, boolean verbose, boolean showSteps){
-		bot.run(map, verbose, showSteps);
+		bot.run(map, maxMoves, verbose, showSteps);
 		bot.printTestResults();
 		bot.reset();
 	}
@@ -173,7 +132,7 @@ public class Sim {
 		int t = 0;
 		int dot = 0;
 		while(t < tests){
-			bot.run(map, false);
+			bot.run(map, maxMoves, false);
 			bot.reset();
 			t++;
 			dot++;
@@ -273,21 +232,19 @@ class CsvWriter {
 	private FileWriter writer;
 	private boolean locked;
 	
+	
 	public CsvWriter(String folder, ArrayList<Bot> bots){
 		try {
 			FileWriter w = new FileWriter(folder+"/results.csv");
-			w.append("PPP");
-			for (Bot b : bots){
-				w.append(","+b.getName());
-			}
-			w.append("\n");
 			this.writer = w;
+			this.initCSV(folder, bots);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
 		this.locked = false;
 	}
+	
 	public void writeToCSV(String str){
 		try {
 			this.writer.append(str);
@@ -296,6 +253,25 @@ class CsvWriter {
 			System.exit(1);
 		}
 	}
+	
+	public void writePPP(PPP map, String fileName){
+		this.writeToCSV(fileName);
+		this.writeToCSV(",");
+		this.writeToCSV(map.getTaxDescription());
+	}
+	
+	private void initCSV(String folder, ArrayList<Bot> bots){
+		this.writeToCSV("PPP");
+		String[] taxChars = {"Turns","Adv","GoalVis%"};
+		for(String t : taxChars){
+			this.writeToCSV(","+t);
+		}
+		for (Bot b : bots){
+			this.writeToCSV(","+b.getName());
+		}
+		this.writeToCSV("\n");
+	}
+	
 	public void closeCSV(){
 		try {
 			this.writer.flush();
@@ -304,6 +280,7 @@ class CsvWriter {
 			System.exit(1);
 		}
 	}
+	
 	public synchronized void lockCsv(){
 		while(this.locked){
 			try {
@@ -314,6 +291,7 @@ class CsvWriter {
 		}
 		this.locked = true;
 	}
+	
 	public synchronized void unlockCsv(){
 		this.locked = false;
 		notifyAll();
@@ -323,9 +301,9 @@ class CsvWriter {
 class TestThread extends Thread {
 	private PPP map;
 	private ArrayList<Bot> bots;
-	private FileWriter csv;
+	private CsvWriter csv;
 	
-	public TestThread(PPP m, ArrayList<Bot> b, FileWriter c){
+	public TestThread(PPP m, ArrayList<Bot> b, CsvWriter c){
 		this.map = m;
 		this.bots = b;
 		this.csv = c;

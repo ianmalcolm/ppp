@@ -180,7 +180,7 @@ public class PPPManager {
 		int index = 0;
 		for(int i = 0; i<this.sizeTour; i++){
 			if(tourOcc[i]==0){
-				double vis = population[selected[i]].getVisibilityPercentage();
+				double vis = population[selected[i]].getGoalVisibility();
 				//double vis = population[i].getVisibilityPercentage();
 				if (vis < min) {
 					index = i;
@@ -198,7 +198,7 @@ public class PPPManager {
 		for(int i = 0; i<this.sizeTour; i++){
 			if(tourOcc[i]==0){
 				//double vis = population[selected[i]].getVisibilityPercentage();
-				double vis = population[i].getVisibilityPercentage();
+				double vis = population[i].getGoalVisibility();
 				if (vis < max) {
 					index = i;
 					max = vis;
@@ -309,7 +309,7 @@ public class PPPManager {
 	private void describePPP(int index){
 		int turns = this.population[index].getTurn();
 		int adv = this.population[index].getAdvance();
-		double vis = this.population[index].getVisibilityPercentage();
+		double vis = this.population[index].getGoalVisibility();
 		System.out.printf("PPP%d :: Turns: %d; Adv: %d, Vis: %.2f\n", index, turns, adv, vis);
 	}
 	
@@ -352,7 +352,7 @@ public class PPPManager {
 		for (int i = 0; i < this.population.length; i++){
 			int t = this.population[i].getTurn();
 			int a = this.population[i].getAdvance();
-			double v = this.population[i].getVisibilityPercentage();
+			double v = this.population[i].getGoalVisibility();
 			if (t > maxTurns){
 				iTurns = i;
 				maxTurns = t;
