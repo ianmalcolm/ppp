@@ -181,7 +181,6 @@ public class PPPManager {
 		for(int i = 0; i<this.sizeTour; i++){
 			if(tourOcc[i]==0){
 				double vis = population[selected[i]].getGoalVisibility();
-				//double vis = population[i].getVisibilityPercentage();
 				if (vis < min) {
 					index = i;
 					min = vis;
@@ -197,11 +196,42 @@ public class PPPManager {
 		int index = 0;
 		for(int i = 0; i<this.sizeTour; i++){
 			if(tourOcc[i]==0){
-				//double vis = population[selected[i]].getVisibilityPercentage();
-				double vis = population[i].getGoalVisibility();
+				double vis = population[selected[i]].getGoalVisibility();
 				if (vis < max) {
 					index = i;
 					max = vis;
+				}
+			}
+		}
+		tourOcc[index] = 1;
+		return (short) index;
+	}
+	
+	private short maxVisibilityMagnitude(){
+		double max = -999999;
+		int index = 0;
+		for(int i = 0; i<this.sizeTour; i++){
+			if(tourOcc[i]==0){
+				double vis = population[selected[i]].getVisibilityMangitude();
+				if (vis < max) {
+					index = i;
+					max = vis;
+				}
+			}
+		}
+		tourOcc[index] = 1;
+		return (short) index;
+	}
+	
+	private short minVisibilityMagnitude(){
+		double min = 999999;
+		int index = 0;
+		for(int i = 0; i<this.sizeTour; i++){
+			if(tourOcc[i]==0){
+				double vis = population[selected[i]].getVisibilityMangitude();
+				if (vis < min) {
+					index = i;
+					min = vis;
 				}
 			}
 		}
@@ -221,8 +251,10 @@ public class PPPManager {
 	private short[] mostFit(){
 		//short most1 = this.maxTurns();
 		//short most2 = this.maxTurns();
-		short most1 = this.minGoalVisibility();
-		short most2 = this.minGoalVisibility();
+//		short most1 = this.minGoalVisibility();
+//		short most2 = this.minGoalVisibility();
+		short most1 = this.minVisibilityMagnitude();
+		short most2 = this.minVisibilityMagnitude();
 		return new short[] {most1, most2};
 	}
 	
@@ -232,8 +264,10 @@ public class PPPManager {
 	private short[] leastFit(){
 		//short least1 = this.minTurns();
 		//short least2 = this.minTurns();
-		short least1 = this.maxGoalVisibility();
-		short least2 = this.maxGoalVisibility();
+//		short least1 = this.maxGoalVisibility();
+//		short least2 = this.maxGoalVisibility();
+		short least1 = this.maxVisibilityMagnitude();
+		short least2 = this.maxVisibilityMagnitude();
 		return new short[] {least1, least2};
 	}
 	
@@ -346,13 +380,16 @@ public class PPPManager {
 		int iTurns = 0;
 		int iAdv   = 0;
 		int iVis   = 0;
+		int iMag   = 0;
 		int maxTurns = -9999;
 		int maxAdv = -9999;
 		double minVis = 9999;
+		double minMag = 9999;
 		for (int i = 0; i < this.population.length; i++){
 			int t = this.population[i].getTurn();
 			int a = this.population[i].getAdvance();
 			double v = this.population[i].getGoalVisibility();
+			double m = this.population[i].getVisibilityMangitude();
 			if (t > maxTurns){
 				iTurns = i;
 				maxTurns = t;
@@ -365,10 +402,15 @@ public class PPPManager {
 				iVis = i;
 				minVis = v;
 			}
+			if (m < minMag){
+				iMag = i;
+				minMag = m;
+			}
 		}
 		System.out.printf("\nPPP%d : Max Turns, %d\n",  iTurns, maxTurns);
 		System.out.printf("PPP%d : Max Adv,   %d\n",  iAdv, maxAdv);
 		System.out.printf("PPP%d : Min Vis,   %.2f\n", iVis, minVis);
+		System.out.printf("PPP%d : Min Vis Magnitude,   %.2f\n", iMag, minMag);
 	}
 	
 	/*

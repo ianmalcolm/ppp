@@ -25,19 +25,17 @@ public class Sim {
 	public final static int maxMoves = 300;
 	
 	public static void main(String[] args) {
-		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/wei", false);
-		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/vis/PPP32.ppp", false);
-		//displayPPP(map);
-		//map.evaluateDifficulty();
-		//map.displayMap();
+		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/ppp2", false);
+		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/ppp2/PPP21.ppp", false);
+		displayPPP(map);
+		map.evaluateDifficulty();
+		map.displayMap();
 
-//		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'r');
-//		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
-//		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
-//		Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
-		//singleTest(map, lte, false, false);
-		//singleTest(map, lte, false, false);
-		//singleTest(map, lte, false, true);
+		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'r');
+		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
+		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		//singleTest(map, exp, true, true);
 		//test(map, lte, testRuns, false, false);
 		
 		//singleTest(map, ob, true, false);
@@ -218,19 +216,19 @@ public class Sim {
 		}
 		return null;
 	}
-
 }
 
 class CsvWriter {
 	private FileWriter writer;
 	private boolean locked;
-	
+	private String path;
 	
 	public CsvWriter(String folder, ArrayList<Bot> bots){
 		try {
-			FileWriter w = new FileWriter(folder+"/results.csv");
+			this.path = folder+"/results.csv";
+			FileWriter w = new FileWriter(this.path);
 			this.writer = w;
-			this.initCSV(folder, bots);
+			this.initCSV(bots);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -250,12 +248,14 @@ class CsvWriter {
 	public void writePPP(PPP map, String fileName){
 		this.writeToCSV(fileName);
 		this.writeToCSV(",");
-		this.writeToCSV(map.getTaxDescription());
+		String s =  String.format("%d,%d,%.2f,%.2f", map.getTurn(), map.getAdvance(), 
+								map.getGoalVisibility(), map.getVisibilityMangitude());
+		this.writeToCSV(s);
 	}
 	
-	private void initCSV(String folder, ArrayList<Bot> bots){
+	private void initCSV(ArrayList<Bot> bots){
 		this.writeToCSV("PPP");
-		String[] taxChars = {"Turns","Adv","GoalVis%"};
+		String[] taxChars = {"Turns","Adv","GoalVis%","VisMag"};
 		for(String t : taxChars){
 			this.writeToCSV(","+t);
 		}
@@ -269,6 +269,7 @@ class CsvWriter {
 		try {
 			this.writer.flush();
 			this.writer.close();
+			System.out.println("Results Written to " + this.path);
 		} catch (IOException e) {
 			System.exit(1);
 		}

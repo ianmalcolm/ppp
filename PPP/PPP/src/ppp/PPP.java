@@ -46,8 +46,16 @@ public class PPP{
 	private int totalCells;
 	private int goalVisibleCells;
 	private int startVisibleCells;
+	private int centreVisibleCells;
+	private int topRightVisibleCells;
+	private int bottomLeftVisibleCells;
+	
 	private double goalVisiblePercentage;
 	private double startVisiblePercentage;
+	private double centreVisiblePercentage;
+	private double topRightVisiblePercentage;
+	private double bottomLeftVisiblePercentage;
+	private double visibilityMagnitude;
 	
 	
 	/*
@@ -151,7 +159,7 @@ public class PPP{
 	 */
 	private void iniDestination(){
 		occ[row-2][col-2] = 10;
-		//occ[row-2][col-3] = 10;
+		occ[row-2][col-3] = 10;
 	}
 	/*
 	 * 	initialize all the descriptors
@@ -493,10 +501,13 @@ public class PPP{
 		if(availability){
 			System.out.println("The final agent state is " + finalAgentState());
 			System.out.println("The smallest state value is " + bestSV);
-			System.out.printf("Goal Visible from %d/%d :: Percentage %.2f\n", 
-					this.goalVisibleCells, this.totalCells, this.goalVisiblePercentage);
-			System.out.printf("Start Visible from %d/%d :: Percentage %.2f\n", 
-					this.startVisibleCells, this.totalCells, this.startVisiblePercentage);
+			System.out.println("Visibility");
+			System.out.printf("From Goal: %d/%d = %.2f\n", this.goalVisibleCells, this.totalCells, this.goalVisiblePercentage);
+			System.out.printf("From Start: %d/%d = %.2f\n", this.startVisibleCells, this.totalCells, this.startVisiblePercentage);
+			System.out.printf("From TopR: %d/%d = %.2f\n", this.topRightVisibleCells, this.totalCells, this.topRightVisiblePercentage);
+			System.out.printf("From BLeft: %d/%d = %.2f\n", this.bottomLeftVisibleCells, this.totalCells, this.bottomLeftVisiblePercentage);
+			System.out.printf("From Centre: %d/%d = %.2f\n", this.centreVisibleCells, this.totalCells, this.centreVisiblePercentage);
+			System.out.printf("Magnitude: %.2f\n", this.visibilityMagnitude);
 		} else
 			System.out.println("The destination is unreachable!");
 	}
@@ -851,11 +862,24 @@ public class PPP{
 	}
 	
 	public void evaluateDifficulty(){
-		this.goalVisibleCells = this.evaluateGoalVisibility();
-		this.goalVisiblePercentage = this.goalVisibleCells / (double)this.totalCells;
+		this.goalVisibleCells       = this.evaluateVisibilityFromPosition(col-2, row-2, false);
+		this.startVisibleCells      = this.evaluateVisibilityFromPosition(1, 1, false);
+		this.centreVisibleCells     = this.evaluateVisibilityFromPosition(size, size/2, false);
+		this.topRightVisibleCells   = this.evaluateVisibilityFromPosition(col-2, 1, false);
+		this.bottomLeftVisibleCells = this.evaluateVisibilityFromPosition(1, row-2, false);
 		
-		this.startVisibleCells = this.evaluateStartPosVisibility();
+		this.goalVisiblePercentage  = this.goalVisibleCells / (double)this.totalCells;
 		this.startVisiblePercentage = this.startVisibleCells / (double)this.totalCells;
+		this.centreVisiblePercentage =  this.centreVisibleCells / (double)this.totalCells;
+		this.topRightVisiblePercentage = this.topRightVisibleCells / (double)this.totalCells;
+		this.bottomLeftVisiblePercentage = this.bottomLeftVisibleCells / (double)this.totalCells;
+		double[] visLst = {this.goalVisiblePercentage, this.startVisiblePercentage, this.centreVisiblePercentage,
+							this.topRightVisiblePercentage, this.bottomLeftVisiblePercentage};
+		double sumSq = 0.0;
+		for (double d : visLst){
+			sumSq += Math.pow(d, 2);
+		}
+		this.visibilityMagnitude = Math.sqrt(sumSq);
 	}
 	
 	/**
@@ -902,22 +926,28 @@ public class PPP{
 		return visibleCells.size();
 	}
 	
-	private int evaluateGoalVisibility(){
-		return this.evaluateVisibilityFromPosition(col-2, row-2, false);
-	}
-	private int evaluateStartPosVisibility(){
-		return this.evaluateVisibilityFromPosition(1, 1, true);
-	}
-	
 	public double getGoalVisibility(){
 		return this.goalVisiblePercentage;
 	}
 	
-	public int getVisibilityCount(){
-		return this.goalVisibleCells;
+	public double getCentreVisibility(){
+		return this.centreVisiblePercentage;
 	}
 	
-	public String getTaxDescription(){
-		return String.format("%d,%d,%.2f", this.getTurn(), this.getAdvance(), this.getGoalVisibility());
+	public double getTopRightVisibility(){
+		return this.topRightVisiblePercentage;
 	}
+	
+	public double getBottomLeftVisiblity(){
+		return this.bottomLeftVisiblePercentage;
+	}
+	
+	public double getStartVisibility(){
+		return this.startVisiblePercentage;
+	}
+	
+	public double getVisibilityMangitude(){
+		return this.visibilityMagnitude;
+	}
+
 }

@@ -33,7 +33,7 @@ public class Main {
 		System.out.println("Running tournament");
 		manager.hundredME();
 		manager.describePopulation();
-		manager.writePopulation("vis");
+		manager.writePopulation("ppp2");
 	}
 
 }
