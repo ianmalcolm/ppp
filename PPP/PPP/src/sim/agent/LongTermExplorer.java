@@ -38,6 +38,15 @@ public class LongTermExplorer extends ExplorerBot {
 	}
 	
 	@Override
+	public void reset(){
+		super.reset();
+		this.exploringLocally = true;
+	}
+	
+	@Override
+	public void aprioriPlan(short goalX, short goalY) {}
+	
+	@Override
 	public void plan(){
 		//System.out.println("Exploring locally: " + this.exploringLocally);
 		
@@ -56,6 +65,7 @@ public class LongTermExplorer extends ExplorerBot {
 				this.pathToIntestingArea();
 			}
 		} else {
+			//System.out.printf("Not exploring locally, target:%d,%d \n", this.target[0], this.target[1]);
 			//If we aren't exploring locally, we must be following a long term plan
 			this.checkForNewData();
 			//If we have new data, we swap to local exploration, which will avoid the obstacles for us
@@ -97,8 +107,8 @@ public class LongTermExplorer extends ExplorerBot {
 		int closestX = 0;
 		int closestY = 0;
 		int shortest_dist = 9999;
-		this.currentMem.prettyPrintRoute(this.route_taken);
-		System.out.println();
+		//this.currentMem.prettyPrintRoute(this.route_taken);
+		//System.out.println();
 		for (int y = 0; y < this.currentMem.mem_height; y++){
 			for (int x=0; x < this.currentMem.mem_width; x++){
 				//Plan to a reachable, valid position which has an unknown neighbour
@@ -128,7 +138,7 @@ public class LongTermExplorer extends ExplorerBot {
 		this.target = this.findClosestUnknown();
 		//System.out.println("\nRoute taken so far");
 		//this.currentMem.prettyPrintRoute(this.route_taken);
-		System.out.printf("Planning long term to pos %d,%d by A*\n", this.target[0], this.target[1]);
+		//System.out.printf("Planning long term to pos %d,%d by A*\n", this.target[0], this.target[1]);
 		PathPlanner.aStar(this, this.currentMem, this.target[0], this.target[1]);
 		//System.out.printf("\n\nMoving to %d,%d to sense unexplored area\n", this.target[0], this.target[1]);
 		//this.currentMem.prettyPrintRoute(this.planned_route);

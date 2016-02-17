@@ -28,7 +28,7 @@ class InvalidMoveError extends Exception {
  */
 public abstract class Bot {
 	private final String BOT_NAME = "Bot";
-	private final int STEP_TIME = 100;
+	private final int STEP_TIME = 1000;
 
 	protected ArrayList<String> name_suffixes;
 	protected AgentState state;
@@ -227,16 +227,16 @@ public abstract class Bot {
 		}
 		this.sense(ppp);
 		
+		boolean success = false;
 		if(this.state.isPos(goalX, goalY)){
 			if (verbose) {
 				System.out.printf("Reached Goal %d,%d in %d moves\n", goalX, goalY, moves);
 			}
-			this.finished(moves, true);
+			success = true;
 		} else {
 			if (verbose) {
 				System.out.printf("Failed to reach goal in %d moves\n", moves);
 			}
-			this.finished(moves, false);
 		}
 		
 		if(verbose){
@@ -244,6 +244,7 @@ public abstract class Bot {
 			this.currentMem.prettyPrintRoute(route_taken);
 			//this.printTakenRoute();
 		}
+		this.finished(moves, success);
 	}
 	
 	protected void finished(int movesMade, boolean success){
@@ -269,6 +270,7 @@ public abstract class Bot {
 		this.avgAdv   = (float)this.totalAdv   / (float)this.testRuns;
 		this.avgUnknownCells = (float)this.totalUnknownCells / (float)this.testRuns;
 		this.avgInvalidMoves = (float)this.totalInvalidMoves / (float)this.testRuns;
+		this.reset();
 	}
 	
 	public void move(PPP ppp) throws InvalidMoveError{

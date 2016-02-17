@@ -35,6 +35,12 @@ public class ExplorerBot extends Bot {
 	}
 	
 	@Override
+	public void reset(){
+		super.reset();
+		this.cellsSeen = new HashSet<List<Short>>();
+	}
+	
+	@Override
 	public void aprioriPlan(short goalX, short goalY) {}
 
 	@Override

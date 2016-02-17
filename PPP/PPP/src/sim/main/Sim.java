@@ -25,16 +25,20 @@ public class Sim {
 	public final static int maxMoves = 300;
 	
 	public static void main(String[] args) {
-		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/vis", false);
-		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/vis/PPP0.ppp", false);
-		displayPPP(map);
-		map.evaluateDifficulty();
-		map.displayMap();
+		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/wei", false);
+		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/vis/PPP32.ppp", false);
+		//displayPPP(map);
+		//map.evaluateDifficulty();
+		//map.displayMap();
 
-		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
-		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
-		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
-		singleTest(map, exp, true, true);
+//		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'r');
+//		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
+//		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+//		Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		//singleTest(map, lte, false, false);
+		//singleTest(map, lte, false, false);
+		//singleTest(map, lte, false, true);
+		//test(map, lte, testRuns, false, false);
 		
 		//singleTest(map, ob, true, false);
 		//singleTest(map, exp, true, true);
@@ -106,7 +110,7 @@ public class Sim {
 	
 	public static void testAll(PPP map, ArrayList<Bot> bots, CsvWriter csv){
 		for (Bot b : bots){
-			test(map, b, testRuns);
+			test(map, b, testRuns, false, false);
 			if (csv != null){
 				csv.writeToCSV(","+b.getTestResults());
 			}
@@ -117,35 +121,24 @@ public class Sim {
 	}
 	
 	public static void singleTest(PPP map, Bot bot, boolean verbose, boolean showSteps){
-		bot.run(map, maxMoves, verbose, showSteps);
-		bot.printTestResults();
-		bot.reset();
+		test(map, bot, 1, verbose, showSteps);
 	}
-	
-	public static void test(PPP map, Bot bot, int tests){
-		test(map, bot, tests, false);
-	}
-	public static void test(PPP map, Bot bot, int tests, boolean verbose){
-		if (verbose){
-			System.out.println("\nTesting " + bot.getName());
-		}
+		
+	public static void test(PPP map, Bot bot, int tests, boolean verbose, boolean showSteps){
+		System.out.println("\nTesting " + bot.getName());
 		int t = 0;
 		int dot = 0;
 		while(t < tests){
-			bot.run(map, maxMoves, false);
-			bot.reset();
+			bot.run(map, maxMoves, showSteps, showSteps);
 			t++;
 			dot++;
-			if (verbose){
-				dot++;
-				if (dot == tests/10){
-					System.out.print("...");
-					dot = 0;
-				}
+			if (dot == tests/10){
+				System.out.print("...");
+				dot = 0;
 			}
 		}
+		System.out.print("\n");
 		if (verbose){
-			System.out.print("\n");
 			bot.printTestResults();
 		}
 	}

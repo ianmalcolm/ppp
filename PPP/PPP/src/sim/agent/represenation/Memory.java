@@ -246,8 +246,10 @@ public class Memory {
 						o = Occupancy.getHeading(n.getHeading());
 					}
 				}
-				if (route.get(route.size()-1).isPos(j, i)){
-					o = Occupancy.BOT;
+				if ((route.size() >= 1)){
+					if (route.get(route.size()-1).isPos(j, i)){
+						o = Occupancy.BOT;
+					}
 				}
 				if (re){
 					if (r){
