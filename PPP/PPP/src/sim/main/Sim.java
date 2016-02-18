@@ -25,18 +25,21 @@ public class Sim {
 	public final static int maxMoves = 300;
 	
 	public static void main(String[] args) {
-		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/ppp2", false);
-		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/ppp2/PPP21.ppp", false);
-		displayPPP(map);
-		map.evaluateDifficulty();
-		map.displayMap();
+		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/mag", false);
+//		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/mag/PPP0.ppp", true);
+//		displayPPP(map);
+		//map.evaluateDifficulty();
+		//map.displayMap();
 
-		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'r');
-		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
-		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
-		Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
-		//singleTest(map, exp, true, true);
-		//test(map, lte, testRuns, false, false);
+		int LimitedMemRange = (2*sensorRange)+1;
+//		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
+//		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
+//		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+//		Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+//		Bot lexp = new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange);
+//
+		//singleTest(map, ob, true, true);
+		//test(map, lexp, testRuns, true, false);
 		
 		//singleTest(map, ob, true, false);
 		//singleTest(map, exp, true, true);
@@ -75,12 +78,12 @@ public class Sim {
 				}
 				csv.writePPP(map, fileName);
 				testAll(map, bots, csv);
-				System.out.println("Done.");
+				System.out.println("Tests complete.");
 			}
 		}
 		csv.closeCSV();
 		if (unreachable > 0){
-			System.out.printf("\n%d Unreachable PPPs in test set were skipped!", unreachable);
+			System.out.printf("\n%d Unreachable PPPs in test set were skipped!\n", unreachable);
 		}
 	}
 	
@@ -94,11 +97,11 @@ public class Sim {
 		ret.add(new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'r'));
 		ret.add(new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange));
 		ret.add(new RandomBot(new Memory(2+(map.size*2), 2+map.size), sensorRange));
-		//ret.add(new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange));
+		ret.add(new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange));
 		Bot expNoisy = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		expNoisy.setSensorNoise(0.1);
 		ret.add(expNoisy);
-		//ret.add(new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange));
+		ret.add(new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange));
 		return ret;
 	}
 		
@@ -144,6 +147,7 @@ public class Sim {
 	public static void displayPPP(PPP ppp){
 		ppp.drawMap();
 		ppp.displayPPP();
+		ppp.displayDes();
 	}
 	
 	/*
@@ -178,6 +182,10 @@ public class Sim {
 			short size = (short) (rows-2);
 
 			PPP ret = new PPP(size, (short) descriptors.length, (short) maxObs);
+			for (int i = 0; i < ret.arrayDes.length; i++){
+				Descriptor t = new Descriptor(0,0,0,0);
+				ret.setDescriptor(t, i);
+			}
 			
 			int pos = 0;
 			if(descriptors.length > 0){
@@ -190,21 +198,26 @@ public class Sim {
 					Descriptor des = new Descriptor(x,y,l,t);
 					ret.setDescriptor(des, pos);
 					pos ++;
+					if (verbose){
+						System.out.println("Set " + des.toString());
+						ret.updatePPP();
+						ret.drawMap();
+						ret.displayMap();
+					}
 				}
 			}
 			ret.updatePPP();
 			
 			// Read map from remaining lines
-			if (verbose) {
-				line = reader.readLine();	
-				while(line != null){
-					System.out.println(line);
-					line = reader.readLine();
-				}
-			}
+//			if (verbose) {
+//				line = reader.readLine();	
+//				while(line != null){
+//					System.out.println(line);
+//					line = reader.readLine();
+//				}
+//			}
 			reader.close();
 			fileReader.close();
-			System.out.println("Done");
 			return ret;
 
 		} catch (FileNotFoundException e) {

@@ -1,5 +1,10 @@
 package sim.agent.represenation;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import sim.agent.represenation.Memory.Cell;
+
 /**
  * Limited Size memory, providing finite window onto the PPP
  * This class maps functions back onto Memory within the constrained view
@@ -44,7 +49,7 @@ public class LimitedMemory extends Memory {
 			for (int x = newXLeft; x <= xRight; x++){
 				if (this.inSpatialBounds(x, y)){
 					//New cell is in old viewpoint
-					short cell = this.readSquare(x, y);
+					Cell cell = this.readCell(x, y);
 					this.setDirect(x-newXLeft, y-newYTop, cell);
 				} else {
 					//not in old viewpoint, so is unknown
@@ -60,7 +65,7 @@ public class LimitedMemory extends Memory {
 		//this.map = newMap;
 	}
 	
-	private boolean inSpatialBounds(int x, int y){
+	protected boolean inSpatialBounds(int x, int y){
 		if ((x<this.xLeft) || (x>this.xRight)) {
 			return false;
 		}
@@ -71,8 +76,9 @@ public class LimitedMemory extends Memory {
 	}
 	
 	//Set directly into the limited memory without offsetting
-	private void setDirect(int x, int y, short val){
-		this.map[y][x].setOccupancy(Occupancy.getType(val));
+	private void setDirect(int x, int y, Cell c){
+		this.map[y][x].setOccupancy(c.getOccupancy());
+		this.map[y][x].setReachable(c.isReachable());
 	}
 	
 	@Override
@@ -80,7 +86,10 @@ public class LimitedMemory extends Memory {
 		try{
 			super.setCell(x-this.xLeft, y-this.yTop, val);
 		} catch (ArrayIndexOutOfBoundsException e){
-			System.out.printf("%d,%d :: %d,%d\n", x, y, this.xLeft, this.yTop);
+			System.err.println("LimitedMem.setCell");
+			System.err.printf("Set %d,%d --> %d,%d\n", x,y, x-this.xLeft, y-this.yTop);
+			System.err.printf("Bounds %d,%d to %d,%d\n" , this.xLeft, this.yTop, this.xRight, this.yBottom);
+			System.err.printf("%d,%d size\n", this.mem_width, this.mem_height);
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -100,6 +109,14 @@ public class LimitedMemory extends Memory {
 	}
 	
 	@Override
+	public Cell readCell(int x, int y){
+		if (!this.inSpatialBounds(x, y)){
+			return null;
+		}
+		return super.readCell(x-this.xLeft, y-this.yTop);
+	}
+	
+	@Override
 	public short readSquare(int x, int y){
 		if (!this.inSpatialBounds(x, y)){
 			return 99;
@@ -110,6 +127,20 @@ public class LimitedMemory extends Memory {
 	@Override
 	public boolean isGoal(int x, int y){
 		return super.isGoal(x-this.xLeft, y-this.yTop);
+	}
+	
+	@Override
+	/*
+	 * Override to return neighbours in terms of view point position
+	 */
+	public int[][] getNeighbours(Cell c){
+		int[][] coord = new int[][] {
+			{c.getX()-this.xLeft, c.getY()-1-this.yTop},  //up
+			{c.getX()-1-this.xLeft, c.getY()-this.yTop},  //left
+			{c.getX()-this.xLeft, c.getY()+1-this.yTop},  //down
+			{c.getX()+1-this.xLeft, c.getY()-this.yTop}}; //right
+					
+		return coord;
 	}
 	
 	@Override

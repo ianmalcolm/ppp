@@ -6,23 +6,21 @@ import ppp.PPPManager;
 public class Main {
 
 	public static void main(String[] args){
-		tournament();
-		//singlePPP();
+		//tournament();
+		singlePPP();
 	}
 	
 	public static void singlePPP() {
 		System.out.println("Initialising a new PPP");
 		PPP ppp = new PPP((short)20, (short)8, (short)50); // PPP(size, nDes, maxObs)
-		ppp.drawMap();
-		ppp.displayPPP();
-		ppp.displayDes();
-		System.out.println("\n Mutating the PPP");
-		ppp.mutatePPP();
+
+		//System.out.println("\n Mutating the PPP");
+		ppp = ppp.mutatePPP();
 		ppp.drawMap();
 		ppp.displayPPP();
 		ppp.displayDes();
 		//ppp.displayOcc();
-		ppp.writePPP(99);
+		ppp.writePPP("ppp", 95);
 		System.out.println("Done: Exiting");
 	}
 	
@@ -33,7 +31,7 @@ public class Main {
 		System.out.println("Running tournament");
 		manager.hundredME();
 		manager.describePopulation();
-		manager.writePopulation("ppp2");
+		manager.writePopulation("goal");
 	}
 
 }

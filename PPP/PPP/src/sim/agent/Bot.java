@@ -173,6 +173,13 @@ public abstract class Bot {
 		int moves = this.route_taken.size();
 		this.aprioriPlan(goalX, goalY);
 		
+		// If we have a limited memory, we won't be able to see the route taken across the whole map
+		// So create an overview map (which won't be used by the bot) to print the route on later
+		Memory routeMap = null;
+		if (this.currentMem instanceof LimitedMemory){
+			routeMap = new Memory(ppp);
+		}
+		
 		if (verbose){
 			if (this.planned_route.size() > 0){
 				if (this.apriori != null) {
@@ -204,13 +211,13 @@ public abstract class Bot {
 				System.exit(1);
 			}
 			try {
-				this.move(ppp);
+				//this.move(ppp);
 				if(showSteps){
 					this.currentMem.prettyPrintRoute(this.route_taken);
 					System.out.printf("Step %d\n\n", moves);
 					Thread.sleep(this.STEP_TIME);
 				}
-				//this.move(ppp);
+				this.move(ppp);
 			} catch (InvalidMoveError e) {
 				if (verbose) {
 					System.err.println(e+" -- replanning\n");
@@ -240,8 +247,13 @@ public abstract class Bot {
 		}
 		
 		if(verbose){
+			if (routeMap == null) {
+				routeMap = this.currentMem;
+			}
 			System.out.println("\nRoute Taken");
-			this.currentMem.prettyPrintRoute(route_taken);
+			routeMap.prettyPrintRoute(route_taken);
+			System.out.println("\nReachability Map");
+			routeMap.prettyPrintRoute(null, true);
 			//this.printTakenRoute();
 		}
 		this.finished(moves, success);

@@ -26,7 +26,7 @@ public class PPP{
 	private short row;	// the number of chars in one column
 	private short col;	// the number of chars in one row
 	private char[][] map;	// the char array of the map
-	private Descriptor[] arrayDes;	// the array of the descriptors
+	public Descriptor[] arrayDes;	// the array of the descriptors
 	//private Descriptor[] tempDes;	// the temp array of the descriptors, for updatePPP
 	/*
 	 * 	0 presents the current cell is non-occupied and 1 presents occupied
@@ -332,6 +332,7 @@ public class PPP{
 	 * 	the map and the final result of PPP
 	 */
 	public void displayPPP(){
+		//displayOcc();
 		displayMap();
 		displayFinal();
 	}
@@ -787,25 +788,26 @@ public class PPP{
 				for (short j = 0; j<col; j++){
 					// Boundary wall
 					if(occ[i][j]==1){
-						writer.write("2 ");
-						if(j!=0&j!=col-1){
-							j++;
-						}
+						writer.write("#");
+//						if(j!=0&j!=col-1){
+//							j++;
+//						}
 					}
 					//Empty space or goal / initial position
 					if(occ[i][j]==0||occ[i][j]==2||occ[i][j]==10){
-						writer.write("0 ");
-						j++;
+						writer.write(".");
+//						j++;
 					}
 					// Left side of obstacle
-					if(occ[i][j]==3){
-						writer.write("1 ");
-						j++;
+					if(occ[i][j]==3||occ[i][j]==4){
+						writer.write("#");
+//						j++;
 					}
 				}
 				writer.write("\n");
 			}
 		} catch (IOException ex){
+			System.err.println("Folder :" + folder + ", File " + "/PPP"+number+".ppp");
 			ex.printStackTrace();
 			System.exit(1);
 		} finally {

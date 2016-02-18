@@ -13,10 +13,15 @@ public class Memory {
 	protected Cell[][] map;
 	public int mem_width;
 	public int mem_height;
+	private int xLeft;
+	private int xRight;
+	private int yTop;
+	private int yBottom;
 	
 	//Constructor Populated via Occ grid
 	public Memory(PPP ppp){
 		this(ppp.getOccGrid());
+		this.setBounds();
 	}
 	
 	//Empty grid constructors
@@ -29,6 +34,7 @@ public class Memory {
 				this.map[y][x] = new Cell(x,y,Occupancy.UNKNOWN);
 			}
 		}
+		this.setBounds();
 	}
 	
 	public Memory(short[][] map) {
@@ -40,6 +46,14 @@ public class Memory {
 				this.map[y][x] = new Cell(x,y,Occupancy.getType(map[y][x]));
 			}
 		}
+		this.setBounds();
+	}
+	
+	private void setBounds(){
+		this.xLeft = 0;
+		this.xRight = this.mem_width-1;
+		this.yTop  = 0;
+		this.yBottom = this.mem_height-1;
 	}
 	
 	protected class Cell{
@@ -54,6 +68,10 @@ public class Memory {
 			this.occ = o;
 			this.reachable = false;
 		}
+		
+		public int getX(){ return this.posX; }
+		public int getY(){ return this.posY; }
+		
 		
 		public boolean isReachable(){
 			return this.reachable;
@@ -73,14 +91,14 @@ public class Memory {
 				this.reachable = true;
 			}
 		}
-		
-		public int[][] getNeighbours(){
-			return new int[][] {
-				{this.posX, this.posY-1},  //up
-				{this.posX-1, this.posY},  //left
-				{this.posX, this.posY+1},  //down
-				{this.posX+1, this.posY}}; //right
-		}
+	}
+	
+	public int[][] getNeighbours(Cell c){
+		return new int[][] {
+			{c.posX, c.posY-1},  //up
+			{c.posX-1, c.posY},  //left
+			{c.posX, c.posY+1},  //down
+			{c.posX+1, c.posY}}; //right
 	}
 	
 	public void setUnsensed(int x, int y){
@@ -98,13 +116,17 @@ public class Memory {
 			}
 		}
 	}
+	
+	protected Cell readCell(int x, int y){
+		return map[y][x];
+	}
 		
 	public short readSquare(int x, int y){
 		return (short)map[y][x].occ.code;
 	}
 	
-	public int[][] cellNeighbours(int x, int y){
-		return this.map[y][x].getNeighbours();
+	public int[][] getNeighboursOfPos(int x, int y){
+		return this.getNeighbours(this.map[y][x]);
 	}
 	
 	public boolean occupied(int x, int y){
@@ -182,15 +204,12 @@ public class Memory {
 			if (Occupancy.isObstacle(o)){
 				cell.reachable = false;
 			} else {
-//				cell.reachable=true;
 				//reachable if some neighbour is reachable
-				//FIXME broken for LimitedMemory and LTE
-				int[][] neighbours = cell.getNeighbours();
+				int[][] neighbours = this.getNeighbours(cell);
 				for(int[] c : neighbours){
 					if (this.validPosition(c[0], c[1])) {
 						Cell n = this.map[c[1]][c[0]];
 						if (n.isReachable()){
-							//System.out.printf("%d,%d reachable via %d,%d\n", x,y,c[0],c[1]);
 							cell.reachable = true;
 							break;
 						}
@@ -199,7 +218,6 @@ public class Memory {
 			}
 		}
 		this.map[y][x]=cell;
-		
 	}
 	
 	public void prettyPrintRoute(ArrayList<Node> route){

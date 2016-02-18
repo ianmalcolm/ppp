@@ -127,9 +127,29 @@ public class Descriptor {
 	 * 	toString
 	 */
 	public String toString(){
-		String result;
-		result = "("+(y-1)/2+","+(x-1)+","+l+","+t+")";
-		return result;
+		return this.write()+ "," + this.printType();
+//		String result;
+//		result = "("+(y-1)/2+","+(x-1)+","+l+","+t+")";
+//		return result;
+	}
+	
+	public String printType(){
+		switch(this.t){
+		case 0:
+			return "right";
+		case 1:
+			return "left";
+		case 2:
+			return "up";
+		case 3:
+			return "down";
+		case 4:
+			return "left-up";
+		case 5:
+			return "left-down";
+		default:
+			return "??";	
+		}
 	}
 	
 	public String write(){

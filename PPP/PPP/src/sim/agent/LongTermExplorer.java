@@ -33,7 +33,6 @@ public class LongTermExplorer extends ExplorerBot {
 	public void setUpBot(){
 		super.setUpBot();
 		this.replans = 0;
-		this.totalReplans = 0;
 		this.avgReplans = 0.0;
 	}
 	
@@ -101,8 +100,6 @@ public class LongTermExplorer extends ExplorerBot {
 	}
 
 	//Find the closest unknown position via cartesian distance from current pos
-	//FIXME take reachabiity of target into account
-	//FIXME pathing into unreachable areas without causing InvalidMoveErrors
 	private int[] findClosestUnknown(){
 		int closestX = 0;
 		int closestY = 0;
@@ -113,7 +110,7 @@ public class LongTermExplorer extends ExplorerBot {
 			for (int x=0; x < this.currentMem.mem_width; x++){
 				//Plan to a reachable, valid position which has an unknown neighbour
 				if (this.currentMem.validPosition(x, y) && this.currentMem.reachablePosition(x, y)){
-					int [][] neighbours = this.currentMem.cellNeighbours(x, y);
+					int [][] neighbours = this.currentMem.getNeighboursOfPos(x, y);
 					for (int[] n : neighbours){
 						if (Occupancy.getType(this.currentMem.readSquare(n[0], n[1]))==Occupancy.UNKNOWN){
 							int dist = PathPlanner.cartesianDistance(this.getX(), this.getY(), x, y);
@@ -171,8 +168,8 @@ public class LongTermExplorer extends ExplorerBot {
 	
 	@Override
 	public void finished(int movesMade, boolean success){
-		super.finished(movesMade, success);
 		this.totalReplans += replans;
+		super.finished(movesMade, success);
 		this.avgReplans = (float)this.totalReplans / (float)this.testRuns;
 	}
 	

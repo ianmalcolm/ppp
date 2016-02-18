@@ -249,12 +249,12 @@ public class PPPManager {
 	 * Two most fit PPPs in Tournament
 	 */
 	private short[] mostFit(){
-		//short most1 = this.maxTurns();
-		//short most2 = this.maxTurns();
-//		short most1 = this.minGoalVisibility();
-//		short most2 = this.minGoalVisibility();
-		short most1 = this.minVisibilityMagnitude();
-		short most2 = this.minVisibilityMagnitude();
+//		short most1 = this.maxTurns();
+//		short most2 = this.maxTurns();
+		short most1 = this.minGoalVisibility();
+		short most2 = this.minGoalVisibility();
+//		short most1 = this.minVisibilityMagnitude();
+//		short most2 = this.minVisibilityMagnitude();
 		return new short[] {most1, most2};
 	}
 	
@@ -262,12 +262,12 @@ public class PPPManager {
 	 * Two least fit PPPs in Tournament
 	 */
 	private short[] leastFit(){
-		//short least1 = this.minTurns();
-		//short least2 = this.minTurns();
-//		short least1 = this.maxGoalVisibility();
-//		short least2 = this.maxGoalVisibility();
-		short least1 = this.maxVisibilityMagnitude();
-		short least2 = this.maxVisibilityMagnitude();
+//		short least1 = this.minTurns();
+//		short least2 = this.minTurns();
+		short least1 = this.maxGoalVisibility();
+		short least2 = this.maxGoalVisibility();
+//		short least1 = this.maxVisibilityMagnitude();
+//		short least2 = this.maxVisibilityMagnitude();
 		return new short[] {least1, least2};
 	}
 	
@@ -344,7 +344,8 @@ public class PPPManager {
 		int turns = this.population[index].getTurn();
 		int adv = this.population[index].getAdvance();
 		double vis = this.population[index].getGoalVisibility();
-		System.out.printf("PPP%d :: Turns: %d; Adv: %d, Vis: %.2f\n", index, turns, adv, vis);
+		double mag = this.population[index].getVisibilityMangitude();
+		System.out.printf("PPP%d :: Turns: %d; Adv: %d, Vis: %.2f, Mag: %.2f\n", index, turns, adv, vis, mag);
 	}
 	
 	public void describePopulation(){
