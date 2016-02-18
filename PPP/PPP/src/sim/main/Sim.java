@@ -25,9 +25,9 @@ public class Sim {
 	public final static int maxMoves = 300;
 	
 	public static void main(String[] args) {
-		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/mag", false);
-//		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/mag/PPP0.ppp", true);
-//		displayPPP(map);
+		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/mag", false);
+		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/mag/PPP10.ppp", false);
+		displayPPP(map);
 		//map.evaluateDifficulty();
 		//map.displayMap();
 
