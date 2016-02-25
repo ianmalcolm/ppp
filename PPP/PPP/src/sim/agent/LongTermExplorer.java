@@ -2,6 +2,7 @@ package sim.agent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import sim.agent.represenation.Memory;
 import sim.agent.represenation.Node;
@@ -101,18 +102,25 @@ public class LongTermExplorer extends ExplorerBot {
 
 	//Find the closest unknown position via cartesian distance from current pos
 	private int[] findClosestUnknown(){
+		Random random = new Random();
 		int closestX = 0;
 		int closestY = 0;
-		int shortest_dist = 9999;
+		while (!((this.currentMem.validPosition(closestX, closestY)) 
+				&& (this.currentMem.reachablePosition(closestX, closestY)))){
+			closestX = random.nextInt(this.currentMem.mem_width)+1;
+			closestY = random.nextInt(this.currentMem.mem_height)+1;;
+		}
+		int shortest_dist = 999999999;
 		//this.currentMem.prettyPrintRoute(this.route_taken);
 		//System.out.println();
-		for (int y = 0; y < this.currentMem.mem_height; y++){
-			for (int x=0; x < this.currentMem.mem_width; x++){
+		for (int y = 1; y < this.currentMem.mem_height; y++){
+			for (int x=1; x < this.currentMem.mem_width; x++){
 				//Plan to a reachable, valid position which has an unknown neighbour
-				if (this.currentMem.validPosition(x, y) && this.currentMem.reachablePosition(x, y)){
+				if ((this.currentMem.validPosition(x, y)) && (this.currentMem.reachablePosition(x, y))){
 					int [][] neighbours = this.currentMem.getNeighboursOfPos(x, y);
 					for (int[] n : neighbours){
-						if (Occupancy.getType(this.currentMem.readSquare(n[0], n[1]))==Occupancy.UNKNOWN){
+						Occupancy o = Occupancy.getType(this.currentMem.readSquare(n[0], n[1]));
+						if (o==Occupancy.UNKNOWN){
 							int dist = PathPlanner.cartesianDistance(this.getX(), this.getY(), x, y);
 							if (dist < shortest_dist) {
 								shortest_dist = dist;
@@ -136,7 +144,25 @@ public class LongTermExplorer extends ExplorerBot {
 		//System.out.println("\nRoute taken so far");
 		//this.currentMem.prettyPrintRoute(this.route_taken);
 		//System.out.printf("Planning long term to pos %d,%d by A*\n", this.target[0], this.target[1]);
-		PathPlanner.aStar(this, this.currentMem, this.target[0], this.target[1]);
+		try {
+			PathPlanner.aStar(this, this.currentMem, this.target[0], this.target[1]);
+		} catch (Exception e) {
+			System.out.printf("target: %d,%d\n", this.target[0], this.target[1]);
+			int[][] n = this.currentMem.getNeighboursOfPos(this.target[0], this.target[1]);
+			for (int[] ne : n){
+				Occupancy o = Occupancy.getType(this.currentMem.readSquare(ne[0], ne[1]));
+				boolean b = o == Occupancy.UNKNOWN ? true : false;
+				System.out.printf("%d,%d :: %s %s\n", ne[0], ne[1], o, b);
+			}
+			
+			int[][] twenty = this.currentMem.getNeighboursOfPos(20, 17);
+			for (int[] ne : twenty){
+				Occupancy o = Occupancy.getType(this.currentMem.readSquare(ne[0], ne[1]));
+				boolean b = o == Occupancy.UNKNOWN ? true : false;
+				System.out.printf("%d,%d :: %s %s\n", ne[0], ne[1], o, b);
+			}
+			throw e;
+		}
 		//System.out.printf("\n\nMoving to %d,%d to sense unexplored area\n", this.target[0], this.target[1]);
 		//this.currentMem.prettyPrintRoute(this.planned_route);
 		//System.exit(1);

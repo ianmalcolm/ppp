@@ -25,9 +25,9 @@ public class Sim {
 	public final static int maxMoves = 300;
 	
 	public static void main(String[] args) {
-		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/mag", false);
-		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/mag/PPP10.ppp", false);
-		displayPPP(map);
+		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/vis2", false);
+		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/wei/PPP48.ppp", false);
+		//displayPPP(map);
 		//map.evaluateDifficulty();
 		//map.displayMap();
 
@@ -35,7 +35,7 @@ public class Sim {
 //		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
 //		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
 //		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
-//		Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		//Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 //		Bot lexp = new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange);
 //
 		//singleTest(map, ob, true, true);
