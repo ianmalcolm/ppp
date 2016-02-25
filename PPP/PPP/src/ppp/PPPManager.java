@@ -239,6 +239,40 @@ public class PPPManager {
 		return (short) index;
 	}
 	
+	private short minVisibilityWeightedSum(){
+		double min = 999999;
+		int index = 0;
+		for(int i = 0; i<this.sizeTour; i++){
+			if(tourOcc[i]==0){
+				double vis = population[selected[i]].getVisibilityWeightedSum();
+				if (vis < min) {
+					index = i;
+					min = vis;
+				}
+			}
+		}
+		tourOcc[index] = 1;
+		return (short) index;
+	}
+	
+	private short maxVisibilityWeightedSum(){
+		double max = -999999;
+		int index = 0;
+		for(int i = 0; i<this.sizeTour; i++){
+			if(tourOcc[i]==0){
+				double vis = population[selected[i]].getVisibilityWeightedSum();
+				if (vis < max) {
+					index = i;
+					max = vis;
+				}
+			}
+		}
+		tourOcc[index] = 1;
+		return (short) index;
+	}
+	
+	
+	
 	public void evaluatePPPs(){
 		for(int i = 0; i < this.sizePopu; i++){
 			this.population[i].evaluateDifficulty();

@@ -23,6 +23,7 @@ public class PPP{
 	public short size;	// the size of the PPP
 	private short nDes;	// the number of descriptors
 	private short maxObs;	// the maximum number of obstructions allowed
+	private int obsUsed;
 	private short row;	// the number of chars in one column
 	private short col;	// the number of chars in one row
 	private char[][] map;	// the char array of the map
@@ -56,6 +57,9 @@ public class PPP{
 	private double topRightVisiblePercentage;
 	private double bottomLeftVisiblePercentage;
 	private double visibilityMagnitude;
+	private double visibilityPercentageSum;
+	private double obstaclesUsePercentage;
+	private double visibilityWeighted;
 	
 	
 	/*
@@ -279,6 +283,7 @@ public class PPP{
 			}
 			arrayDes[i] = new Descriptor(rRow, rCol, currentLength, type);
 			obsLeft -= currentLength;
+			obsUsed += currentLength;
 		}
 	}
 	/*
@@ -617,7 +622,7 @@ public class PPP{
 								occ[rRow][rCol+j*2] = 3;
 								occ[rRow][rCol+1+j*2] = 4;
 								currentLength++;
-							} else lDes++;
+							} else {lDes++;}
 						}else{
 							break;
 						}
@@ -631,7 +636,7 @@ public class PPP{
 								occ[rRow][rCol-j*2] = 3;
 								occ[rRow][rCol+1-j*2] = 4;
 								currentLength++;
-							} else lDes++;
+							} else {lDes++;}
 						}else{
 							break;
 						}
@@ -645,7 +650,7 @@ public class PPP{
 								occ[rRow-j][rCol] = 3;
 								occ[rRow-j][rCol+1] = 4;
 								currentLength++;
-							} else lDes++;
+							} else {lDes++;}
 						}else{
 							break;
 						}
@@ -659,7 +664,7 @@ public class PPP{
 								occ[rRow+j][rCol] = 3;
 								occ[rRow+j][rCol+1] = 4;
 								currentLength++;
-							} else lDes++;
+							} else {lDes++;}
 						}else{
 							break;
 						}
@@ -673,7 +678,7 @@ public class PPP{
 								occ[rRow-j][rCol-j*2] = 3;
 								occ[rRow-j][rCol+1-j*2] = 4;
 								currentLength++;
-							} else lDes++;
+							} else {lDes++;}
 						}else{
 							break;
 						}
@@ -687,7 +692,7 @@ public class PPP{
 								occ[rRow+j][rCol-j*2] = 3;
 								occ[rRow+j][rCol+1-j*2] = 4;
 								currentLength++;
-							} else lDes++;
+							} else {lDes++;}
 						}else{
 							break;
 						}
@@ -696,6 +701,7 @@ public class PPP{
 			}
 			arrayDes[i].setLength(currentLength);
 			obsLeft -= currentLength;
+			obsUsed += currentLength;
 		}
 	}
 	/*
@@ -882,6 +888,10 @@ public class PPP{
 			sumSq += Math.pow(d, 2);
 		}
 		this.visibilityMagnitude = Math.sqrt(sumSq);
+		this.obstaclesUsePercentage = (float)this.obsUsed / (float)this.maxObs;
+		
+		this.visibilityWeighted = this.goalVisiblePercentage + this.startVisiblePercentage + this.centreVisiblePercentage;
+		this.visibilityWeighted += this.bottomLeftVisiblePercentage + this.topRightVisiblePercentage + this.obstaclesUsePercentage;
 	}
 	
 	/**
@@ -950,6 +960,10 @@ public class PPP{
 	
 	public double getVisibilityMangitude(){
 		return this.visibilityMagnitude;
+	}
+	
+	public double getVisibilityWeightedSum(){
+		return this.visibilityWeighted;
 	}
 
 }
