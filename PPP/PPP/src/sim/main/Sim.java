@@ -25,16 +25,16 @@ public class Sim {
 	public final static int maxMoves = 300;
 	
 	public static void main(String[] args) {
-		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/mag", false);
-		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/vis2/PPP43.ppp", true);
+		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Goal Vis", false);
+		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Goal Vis/PPP0.ppp", true);
 		//displayPPP(map);
 		//map.evaluateDifficulty();
 		//map.displayMap();
 
 		int LimitedMemRange = (2*sensorRange)+1;
 //		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
-//		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
-//		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		//Bot ob = new OmniscientBot(new Memory(map), sensorRange);
+		//Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 //		Bot lexp = new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange);
 //
@@ -206,7 +206,54 @@ public class Sim {
 					}
 				}
 			}
-			ret.updatePPP();
+			
+			short[][] occ = ret.getOccGrid();
+			line = reader.readLine();
+			int x = 0;
+			int y = 0;
+			String prevWall = "";
+			while(line != null){
+				//read occ map
+				String[] chars = line.split("");
+				for (String c : chars){
+					switch(c){
+						case "#":
+							if ((x==0) || (x==occ[0].length)){
+								// Boundary wall #
+								occ[y][x]=(short)1;
+							} else {
+								switch(prevWall){
+									case "[":
+										prevWall="]";
+										occ[y][x]=(short)4;
+										break;
+									case "]":
+										prevWall="[";
+										occ[y][x]=(short)3;
+										break;
+									default:
+										prevWall="[";
+										occ[y][x]=(short)3;
+										break;
+								}
+							}
+							break;
+						case ".":
+							occ[y][x]=(short)0;
+							break;
+					}
+					x++;
+				}
+				y++;
+				x=0;
+				prevWall="";
+				line = reader.readLine();
+			}
+			ret.setOccGrid(occ);
+			ret.iniBoundary();
+			ret.iniAgency();
+			ret.iniDestination();
+			ret.evaluatePPP();
 			
 			// Read map from remaining lines
 //			if (verbose) {
@@ -261,14 +308,14 @@ class CsvWriter {
 	public void writePPP(PPP map, String fileName){
 		this.writeToCSV(fileName);
 		this.writeToCSV(",");
-		String s =  String.format("%d,%d,%.2f,%.2f", map.getTurn(), map.getAdvance(), 
-								map.getGoalVisibility(), map.getVisibilityMangitude());
+		String s =  String.format("%d,%d,%.2f,%.2f,%.2f", map.getTurn(), map.getAdvance(), 
+								map.getGoalVisibility(), map.getVisibilityMangitude(), map.getVisibilityWeightedSum());
 		this.writeToCSV(s);
 	}
 	
 	private void initCSV(ArrayList<Bot> bots){
 		this.writeToCSV("PPP");
-		String[] taxChars = {"Turns","Adv","GoalVis%","VisMag"};
+		String[] taxChars = {"Turns","Adv","GoalVis%","VisMag","VisWeighted"};
 		for(String t : taxChars){
 			this.writeToCSV(","+t);
 		}

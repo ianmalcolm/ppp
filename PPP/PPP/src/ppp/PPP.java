@@ -137,7 +137,7 @@ public class PPP{
 	/*
 	 * 	initialize boundaries for createDescriptors
 	 */
-	private void iniBoundary(){
+	public void iniBoundary(){
 		for (short i = 0; i<col; i++){
 			occ[0][i] = 1;
 		}
@@ -154,14 +154,14 @@ public class PPP{
 	/*
 	 * 	initialize agency for createDescriptors 
 	 */
-	private void iniAgency(){
+	public void iniAgency(){
 		occ[1][1] = 2;
 		occ[1][2] = 2;
 	}
 	/*
 	 * 	initialize destination for createDescriptors
 	 */
-	private void iniDestination(){
+	public void iniDestination(){
 		occ[row-2][col-2] = 10;
 		occ[row-2][col-3] = 10;
 	}
@@ -587,11 +587,16 @@ public class PPP{
 	 */
 	public void updatePPP(){
 		copyDescriptors();
+		evaluatePPP();
+	}
+	
+	public void evaluatePPP(){
 		iniAgentState();
 		dPA();
 		checkPPP();
 		this.evaluateDifficulty();
 	}
+	
 	/*
 	 * 	Update the descriptors after mutation
 	 */
@@ -825,6 +830,10 @@ public class PPP{
 		return this.occ;
 	}
 	
+	public void setOccGrid(short[][] occ){
+		this.occ = occ;
+	}
+	
 	/**
 	 * Evaluation
 	 */
@@ -890,8 +899,13 @@ public class PPP{
 		this.visibilityMagnitude = Math.sqrt(sumSq);
 		this.obstaclesUsePercentage = (float)this.obsUsed / (float)this.maxObs;
 		
+		//Prefer to minimise this score
 		this.visibilityWeighted = this.goalVisiblePercentage + this.startVisiblePercentage + this.centreVisiblePercentage;
-		this.visibilityWeighted += this.bottomLeftVisiblePercentage + this.topRightVisiblePercentage + this.obstaclesUsePercentage;
+		this.visibilityWeighted += this.bottomLeftVisiblePercentage + this.topRightVisiblePercentage;
+		// Penalise lack of obstacles
+		this.visibilityWeighted += (1-this.obstaclesUsePercentage);
+		// Penalise lack of turns
+		this.visibilityWeighted += (1-this.bestSV.getTurn());
 	}
 	
 	/**

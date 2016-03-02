@@ -6,8 +6,8 @@ import ppp.PPPManager;
 public class Main {
 
 	public static void main(String[] args){
-		//tournament();
-		singlePPP();
+		tournament();
+		//singlePPP();
 	}
 	
 	public static void singlePPP() {
@@ -31,7 +31,7 @@ public class Main {
 		System.out.println("Running tournament");
 		manager.hundredME();
 		manager.describePopulation();
-		manager.writePopulation("goal");
+		manager.writePopulation("new");
 	}
 
 }

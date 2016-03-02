@@ -117,16 +117,7 @@ public class PPPManager {
 			child2.updatePPP();
 			if (count > 100){
 				System.err.println("\nFailing Crossover");
-				System.exit(1);
-//				System.out.println("p1");
-//				parent1.displayFinal();
-//				System.out.println("p2");
-//				parent2.displayFinal();
-//				System.out.println("c1");
-//				child1.displayFinal();
-//				System.out.println("c2");
-//				child2.displayFinal();
-//				count = 0;
+				return new PairPPP(parent1, parent2);
 			}
 			if((child1.checkAvailable()) && (child2.checkAvailable())){
 				both_reachable = true;
@@ -197,7 +188,7 @@ public class PPPManager {
 		for(int i = 0; i<this.sizeTour; i++){
 			if(tourOcc[i]==0){
 				double vis = population[selected[i]].getGoalVisibility();
-				if (vis < max) {
+				if (vis > max) {
 					index = i;
 					max = vis;
 				}
@@ -213,7 +204,7 @@ public class PPPManager {
 		for(int i = 0; i<this.sizeTour; i++){
 			if(tourOcc[i]==0){
 				double vis = population[selected[i]].getVisibilityMangitude();
-				if (vis < max) {
+				if (vis > max) {
 					index = i;
 					max = vis;
 				}
@@ -261,7 +252,7 @@ public class PPPManager {
 		for(int i = 0; i<this.sizeTour; i++){
 			if(tourOcc[i]==0){
 				double vis = population[selected[i]].getVisibilityWeightedSum();
-				if (vis < max) {
+				if (vis > max) {
 					index = i;
 					max = vis;
 				}
