@@ -70,6 +70,7 @@ public class PPP{
 		this.nDes = nDes;
 		this.maxObs = maxObs;
 		this.goalVisibleCells = 0;
+		this.obsUsed = 0;
 		this.totalCells = (size*2)*size;
 		row = (short)(size+2);
 		col = (short)(size*2+2);
@@ -507,13 +508,20 @@ public class PPP{
 		if(availability){
 			System.out.println("The final agent state is " + finalAgentState());
 			System.out.println("The smallest state value is " + bestSV);
-			System.out.println("Visibility");
+			System.out.println("\nVisibility");
 			System.out.printf("From Goal: %d/%d = %.2f\n", this.goalVisibleCells, this.totalCells, this.goalVisiblePercentage);
 			System.out.printf("From Start: %d/%d = %.2f\n", this.startVisibleCells, this.totalCells, this.startVisiblePercentage);
 			System.out.printf("From TopR: %d/%d = %.2f\n", this.topRightVisibleCells, this.totalCells, this.topRightVisiblePercentage);
 			System.out.printf("From BLeft: %d/%d = %.2f\n", this.bottomLeftVisibleCells, this.totalCells, this.bottomLeftVisiblePercentage);
 			System.out.printf("From Centre: %d/%d = %.2f\n", this.centreVisibleCells, this.totalCells, this.centreVisiblePercentage);
 			System.out.printf("Magnitude: %.2f\n", this.visibilityMagnitude);
+			System.out.println("\nWeighted Sum");
+			System.out.printf("Magnitude: %.2f\n", this.visibilityMagnitude);
+			System.out.printf("Obstacle use: %.2f ==> (1- %.2f)= %.2f\n", this.obstaclesUsePercentage, this.obstaclesUsePercentage, 1-this.obstaclesUsePercentage);
+			int turns = this.bestSV.getTurn();
+			System.out.printf("Turns: %d ==> (1-%d)=%d\n", turns, turns, 1-turns);
+			System.out.printf("Total: %.2f\n", this.visibilityWeighted);
+			System.out.println("");
 		} else
 			System.out.println("The destination is unreachable!");
 	}
@@ -897,15 +905,26 @@ public class PPP{
 			sumSq += Math.pow(d, 2);
 		}
 		this.visibilityMagnitude = Math.sqrt(sumSq);
+		
+		this.obsUsed = 0;
+		for (short[] row : this.occ){
+			for (short cell : row){
+				if ((cell == 3)){
+					this.obsUsed++;
+				}
+			}
+		}
+		
 		this.obstaclesUsePercentage = (float)this.obsUsed / (float)this.maxObs;
 		
 		//Prefer to minimise this score
+		this.visibilityWeighted = 0;
 		this.visibilityWeighted = this.goalVisiblePercentage + this.startVisiblePercentage + this.centreVisiblePercentage;
 		this.visibilityWeighted += this.bottomLeftVisiblePercentage + this.topRightVisiblePercentage;
 		// Penalise lack of obstacles
 		this.visibilityWeighted += (1-this.obstaclesUsePercentage);
 		// Penalise lack of turns
-		this.visibilityWeighted += (1-this.bestSV.getTurn());
+		//this.visibilityWeighted += (1-this.bestSV.getTurn());
 	}
 	
 	/**

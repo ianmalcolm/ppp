@@ -276,10 +276,12 @@ public class PPPManager {
 	private short[] mostFit(){
 //		short most1 = this.maxTurns();
 //		short most2 = this.maxTurns();
-		short most1 = this.minGoalVisibility();
-		short most2 = this.minGoalVisibility();
+//		short most1 = this.minGoalVisibility();
+//		short most2 = this.minGoalVisibility();
 //		short most1 = this.minVisibilityMagnitude();
 //		short most2 = this.minVisibilityMagnitude();
+		short most1 = this.minVisibilityWeightedSum();
+		short most2 = this.minVisibilityWeightedSum();
 		return new short[] {most1, most2};
 	}
 	
@@ -289,10 +291,12 @@ public class PPPManager {
 	private short[] leastFit(){
 //		short least1 = this.minTurns();
 //		short least2 = this.minTurns();
-		short least1 = this.maxGoalVisibility();
-		short least2 = this.maxGoalVisibility();
+		//short least1 = this.maxGoalVisibility();
+		//short least2 = this.maxGoalVisibility();
 //		short least1 = this.maxVisibilityMagnitude();
 //		short least2 = this.maxVisibilityMagnitude();
+		short least1 =this.maxVisibilityWeightedSum();
+		short least2 =this.maxVisibilityWeightedSum();
 		return new short[] {least1, least2};
 	}
 	
@@ -370,7 +374,8 @@ public class PPPManager {
 		int adv = this.population[index].getAdvance();
 		double vis = this.population[index].getGoalVisibility();
 		double mag = this.population[index].getVisibilityMangitude();
-		System.out.printf("PPP%d :: Turns: %d; Adv: %d, Vis: %.2f, Mag: %.2f\n", index, turns, adv, vis, mag);
+		double weight = this.population[index].getVisibilityWeightedSum();
+		System.out.printf("PPP%d :: Turns: %d; Adv: %d, Vis: %.2f, Mag: %.2f, VisWeighted: %.2f\n", index, turns, adv, vis, mag, weight);
 	}
 	
 	public void describePopulation(){
@@ -407,15 +412,20 @@ public class PPPManager {
 		int iAdv   = 0;
 		int iVis   = 0;
 		int iMag   = 0;
+		int iWeightMax = 0;
+		int iWeightMin = 0;
 		int maxTurns = -9999;
 		int maxAdv = -9999;
 		double minVis = 9999;
 		double minMag = 9999;
+		double minWeight = 999;
+		double maxWeight = -999;
 		for (int i = 0; i < this.population.length; i++){
 			int t = this.population[i].getTurn();
 			int a = this.population[i].getAdvance();
 			double v = this.population[i].getGoalVisibility();
 			double m = this.population[i].getVisibilityMangitude();
+			double weight = this.population[i].getVisibilityWeightedSum();
 			if (t > maxTurns){
 				iTurns = i;
 				maxTurns = t;
@@ -432,11 +442,21 @@ public class PPPManager {
 				iMag = i;
 				minMag = m;
 			}
+			if (weight > maxWeight){
+				iWeightMax = i;
+				maxWeight = weight;
+			}
+			if (weight < minWeight){
+				iWeightMin = i;
+				minWeight = weight;
+			}
 		}
 		System.out.printf("\nPPP%d : Max Turns, %d\n",  iTurns, maxTurns);
 		System.out.printf("PPP%d : Max Adv,   %d\n",  iAdv, maxAdv);
 		System.out.printf("PPP%d : Min Vis,   %.2f\n", iVis, minVis);
 		System.out.printf("PPP%d : Min Vis Magnitude,   %.2f\n", iMag, minMag);
+		System.out.printf("PPP%d : Min Vis Weighted, %.2f\n", iWeightMin, minWeight);
+		System.out.printf("PPP%d : Max Vis Weighted, %.2f\n", iWeightMax, maxWeight);
 	}
 	
 	/*

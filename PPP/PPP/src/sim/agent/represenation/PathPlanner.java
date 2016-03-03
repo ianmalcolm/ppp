@@ -123,8 +123,11 @@ public class PathPlanner {
 		//Start on 1,1 so we actually want to cut off the plan
 		//the node ahead of that spot; ie. our plan is to move off 1,1
 		//not move to 1,1 and move off (since we start there)
-		while (goal.getParent().getParent() != null){
-			route.add(0, goal.getParent());
+		while (goal.getParent() != null){
+			Node p = goal.getParent();
+			if (!(p.isPos(bot.getX(), bot.getY()))){
+				route.add(0, goal.getParent());
+			}
 			goal = goal.getParent();
 		}
 		bot.setPlannedRoute(route);
