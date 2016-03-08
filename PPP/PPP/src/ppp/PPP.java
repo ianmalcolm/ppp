@@ -516,7 +516,7 @@ public class PPP{
 			System.out.printf("From Centre: %d/%d = %.2f\n", this.centreVisibleCells, this.totalCells, this.centreVisiblePercentage);
 			System.out.printf("Magnitude: %.2f\n", this.visibilityMagnitude);
 			System.out.println("\nWeighted Sum");
-			System.out.printf("Magnitude: %.2f\n", this.visibilityMagnitude);
+			//System.out.printf("Magnitude: %.2f\n", this.visibilityMagnitude);
 			System.out.printf("Obstacle use: %.2f ==> (1- %.2f)= %.2f\n", this.obstaclesUsePercentage, this.obstaclesUsePercentage, 1-this.obstaclesUsePercentage);
 			int turns = this.bestSV.getTurn();
 			System.out.printf("Turns: %d ==> (1-%d)=%d\n", turns, turns, 1-turns);
@@ -918,13 +918,26 @@ public class PPP{
 		this.obstaclesUsePercentage = (float)this.obsUsed / (float)this.maxObs;
 		
 		//Prefer to minimise this score
-		this.visibilityWeighted = 0;
-		this.visibilityWeighted = this.goalVisiblePercentage + this.startVisiblePercentage + this.centreVisiblePercentage;
-		this.visibilityWeighted += this.bottomLeftVisiblePercentage + this.topRightVisiblePercentage;
+		double visSum = 0.0;
+		double visSumInverted = 0.0;
+		//Increase important of start, goal by higher weight
+		//TODO add a MIN to centre visibility to discourage outright blocking?
+		//TODO ignore centre pos as often blocked?
+		double[] visSumLst = {2*this.goalVisiblePercentage, 2*this.startVisiblePercentage, this.centreVisiblePercentage,
+				this.topRightVisiblePercentage, this.bottomLeftVisiblePercentage};
+		for (double d: visSumLst){
+			visSum += d;
+			visSumInverted += (1-d);
+			//System.out.printf("%.2f -- %.2f\n", d, 1-d);
+		}
+		//System.out.printf("sum %.2f\n", visSum);
+		//System.out.printf("sumInverted %.2f\n", visSumInverted);
+		this.visibilityWeighted = visSum;
 		// Penalise lack of obstacles
 		this.visibilityWeighted += (1-this.obstaclesUsePercentage);
 		// Penalise lack of turns
 		//this.visibilityWeighted += (1-this.bestSV.getTurn());
+		//TODO try to encourage more advances?
 	}
 	
 	/**

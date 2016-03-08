@@ -26,10 +26,10 @@ public class Sim {
 	
 	public static void main(String[] args) {
 		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Weighted", false);
-		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Weighted/PPP24.ppp", false);
+		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/StartGoalWeight/PPP52.ppp", false);
 		displayPPP(map);
-//		map.evaluateDifficulty();
-//		displayPPP(map);
+		map.evaluateDifficulty();
+		displayPPP(map);
 		//map.displayMap();
 
 		int LimitedMemRange = (2*sensorRange)+1;
