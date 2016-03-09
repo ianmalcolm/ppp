@@ -12,6 +12,7 @@ import java.util.Random;
 import state.AgentState;
 import state.StateValue;
 import sim.agent.represenation.Sensor;
+import sim.agent.represenation.Memory;
 
 /*
  * 	Author: Hao Wei
@@ -50,6 +51,8 @@ public class PPP{
 	private int centreVisibleCells;
 	private int topRightVisibleCells;
 	private int bottomLeftVisibleCells;
+	private int reachableCells;
+	private int unreachableCells;
 	
 	private double goalVisiblePercentage;
 	private double startVisiblePercentage;
@@ -60,6 +63,7 @@ public class PPP{
 	private double visibilityPercentageSum;
 	private double obstaclesUsePercentage;
 	private double visibilityWeighted;
+	private double reachableRatio;
 	
 	
 	/*
@@ -521,6 +525,9 @@ public class PPP{
 			int turns = this.bestSV.getTurn();
 			System.out.printf("Turns: %d ==> (1-%d)=%d\n", turns, turns, 1-turns);
 			System.out.printf("Total: %.2f\n", this.visibilityWeighted);
+			System.out.printf("Reachable cells %d\n", this.reachableCells);
+			System.out.printf("Unreachable Cells %d\n of which obstacles: %d\n", this.unreachableCells, 2*this.obsUsed);
+			System.out.printf("Ratio %.2f:1\n", this.reachableRatio);
 			System.out.println("");
 		} else
 			System.out.println("The destination is unreachable!");
@@ -921,7 +928,6 @@ public class PPP{
 		double visSum = 0.0;
 		double visSumInverted = 0.0;
 		//Increase important of start, goal by higher weight
-		//TODO add a MIN to centre visibility to discourage outright blocking?
 		//TODO ignore centre pos as often blocked?
 		double[] visSumLst = {2*this.goalVisiblePercentage, 2*this.startVisiblePercentage, this.centreVisiblePercentage,
 				this.topRightVisiblePercentage, this.bottomLeftVisiblePercentage};
@@ -934,10 +940,20 @@ public class PPP{
 		//System.out.printf("sumInverted %.2f\n", visSumInverted);
 		this.visibilityWeighted = visSum;
 		// Penalise lack of obstacles
-		this.visibilityWeighted += (1-this.obstaclesUsePercentage);
+		this.visibilityWeighted += 2*(1-this.obstaclesUsePercentage);
 		// Penalise lack of turns
 		//this.visibilityWeighted += (1-this.bestSV.getTurn());
-		//TODO try to encourage more advances?
+		
+		Memory mem = new Memory(this);
+		this.reachableCells = mem.checkReachability(this.occ);
+		this.unreachableCells = this.totalCells-this.reachableCells;
+		//Double obsUsed as that is the count of '3' in Occ, ie. the left peice of an obstacle
+		//But our reachability is counting occ as double width, so we need to account for the '4' right hand occ.
+		this.reachableRatio = (float)this.reachableCells/(float)(this.unreachableCells-(2*this.obsUsed));
+		
+		//TODO
+		//try encouraging visMag around 0.6
+		//reduce weight on start pos, increase on goalPos 2.5/1.5
 	}
 	
 	/**
@@ -1010,6 +1026,14 @@ public class PPP{
 	
 	public double getVisibilityWeightedSum(){
 		return this.visibilityWeighted;
+	}
+	
+	public double getObstacleUse(){
+		return this.obstaclesUsePercentage;
+	}
+	
+	public int getUnreachableCells(){
+		return this.unreachableCells-(2*this.obsUsed);
 	}
 
 }

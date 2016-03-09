@@ -82,9 +82,9 @@ public class LimitedMemory extends Memory {
 	}
 	
 	@Override
-	public void setCell(int x, int y, short val){
+	public boolean setCell(int x, int y, short val){
 		try{
-			super.setCell(x-this.xLeft, y-this.yTop, val);
+			return super.setCell(x-this.xLeft, y-this.yTop, val);
 		} catch (ArrayIndexOutOfBoundsException e){
 			System.err.println("LimitedMem.setCell");
 			System.err.printf("Set %d,%d --> %d,%d\n", x,y, x-this.xLeft, y-this.yTop);
@@ -93,6 +93,7 @@ public class LimitedMemory extends Memory {
 			e.printStackTrace();
 			System.exit(1);
 		}
+		return false;
 	}
 	
 	@Override

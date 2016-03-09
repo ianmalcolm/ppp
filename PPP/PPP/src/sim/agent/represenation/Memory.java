@@ -2,6 +2,8 @@ package sim.agent.represenation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import ppp.PPP;
 
@@ -191,11 +193,63 @@ public class Memory {
 		if (Occupancy.isObstacle(cell.occ)){
 			return false;
 		}
-		//return true;
 		return cell.isReachable();
 	}
 	
-	public void setCell(int x, int y, short val){
+	/**
+	 * Check which cells are enterable ie. reachable from the start pos
+	 * @param x startX
+	 * @param y startY
+	 */
+	public int checkReachability(short[][] occ){
+		this.setAllUnsensed();
+		
+		for (int i = 0; i < 2; i++){
+			int x = 0;
+			int y = 0;
+			for (short[] row : occ){
+				for (short val : row){
+					this.setCell(x, y, val);
+					x++;
+				}
+				y++;
+				x=0;
+			}
+			for(y=occ.length-1; y>=0; y--){
+				for(x=occ[0].length-1; x>=0; x--){
+					short val = occ[y][x];
+					this.setCell(x, y, val);
+				}
+			}
+
+			for(x=0; x<occ[0].length; x++){
+				for(y=0;y<occ.length; y++){
+					short val = occ[y][x];
+					this.setCell(x, y, val);
+				}
+			}
+			
+			for(x=occ[0].length-1; x>=0; x--){
+				for(y=occ.length-1; y>=0; y--){
+					short val = occ[y][x];
+					this.setCell(x, y, val);
+				}
+			}
+		}
+		
+		int reachable = 0;
+		for (int y = 0; y < occ.length; y++){
+			for (int x = 0; x < occ[0].length; x++){
+				if (this.reachablePosition(x, y)){
+					reachable++;
+				}
+			}
+		}
+		return reachable;
+		
+	}
+	
+	public boolean setCell(int x, int y, short val){
 		Occupancy o = Occupancy.getType(val);
 		Cell cell = this.map[y][x];
 		cell.setOccupancy(o);
@@ -218,6 +272,7 @@ public class Memory {
 			}
 		}
 		this.map[y][x]=cell;
+		return cell.reachable;
 	}
 	
 	public void prettyPrintRoute(ArrayList<Node> route){
