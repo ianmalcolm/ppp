@@ -1,0 +1,2 @@
+PPP,Turns,Adv,GoalVis%,StartVis%,VisMag,Obstacle Use,Unreachable Cells,VisWeighted,Omniscient A* Bot,WallFollower [l],WallFollower [r],Explorer,Random Bot,Explorer [Limited Memory: 5x5],Explorer [Noise: 0.10],Long Term Explorer
+PPPempty.ppp,1,38,1.00,1.00,2.24,NaN,0,NaN,100.00,100.00,100.00,99.30,4.40,13.60,80.10,100.00

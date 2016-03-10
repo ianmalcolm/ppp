@@ -25,12 +25,13 @@ public class Sim {
 	public final static int maxMoves = 300;
 	
 	public static void main(String[] args) {
-		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/ObstacleWeigt", false);
-		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/ObstacleWeigt/PPP30.ppp", false);
+		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/EncourageTurns", false);
+		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/moreVisChecks/PPP27.ppp", false);
 		//displayPPP(map);
-		//map.evaluateDifficulty();
-		//displayPPP(map);
-		//map.displayMap();
+		
+//		map.drawMap();
+//		map.evaluateDifficulty();
+//		map.displayMap();
 
 		int LimitedMemRange = (2*sensorRange)+1;
 		//Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
@@ -42,7 +43,7 @@ public class Sim {
 		//Bot expN = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//expN.setSensorNoise(0.1);
 //
-		//singleTest(map, exp, true, true);
+		//singleTest(map, ob, true, true);
 		//test(map, lte, 1000, true, false);
 		
 		//singleTest(map, ob, true, false);

@@ -894,11 +894,15 @@ public class PPP{
 	}
 	
 	public void evaluateDifficulty(){
+		//this.drawMap();
 		this.goalVisibleCells       = this.evaluateVisibilityFromPosition(col-2, row-2, false);
 		this.startVisibleCells      = this.evaluateVisibilityFromPosition(1, 1, false);
 		this.centreVisibleCells     = this.evaluateVisibilityFromPosition(size, size/2, false);
 		this.topRightVisibleCells   = this.evaluateVisibilityFromPosition(col-2, 1, false);
 		this.bottomLeftVisibleCells = this.evaluateVisibilityFromPosition(1, row-2, false);
+//		int test = this.evaluateVisibilityFromPosition(0, 1, true);
+//		int test2 = this.evaluateVisibilityFromPosition(1, 0, true);
+		//this.displayMap();
 		
 		this.goalVisiblePercentage  = this.goalVisibleCells / (double)this.totalCells;
 		this.startVisiblePercentage = this.startVisibleCells / (double)this.totalCells;
@@ -922,14 +926,18 @@ public class PPP{
 			}
 		}
 		
-		this.obstaclesUsePercentage = (float)this.obsUsed / (float)this.maxObs;
+		if (this.maxObs > 0){
+			this.obstaclesUsePercentage = (float)this.obsUsed / (float)this.maxObs;
+		} else {
+			this.obstaclesUsePercentage = 1;
+		}
 		
 		//Prefer to minimise this score
 		double visSum = 0.0;
 		double visSumInverted = 0.0;
 		//Increase important of start, goal by higher weight
 		//TODO ignore centre pos as often blocked?
-		double[] visSumLst = {2*this.goalVisiblePercentage, 2*this.startVisiblePercentage, this.centreVisiblePercentage,
+		double[] visSumLst = {2.5*this.goalVisiblePercentage, 1.5*this.startVisiblePercentage, this.centreVisiblePercentage,
 				this.topRightVisiblePercentage, this.bottomLeftVisiblePercentage};
 		for (double d: visSumLst){
 			visSum += d;
@@ -950,10 +958,37 @@ public class PPP{
 		//Double obsUsed as that is the count of '3' in Occ, ie. the left peice of an obstacle
 		//But our reachability is counting occ as double width, so we need to account for the '4' right hand occ.
 		this.reachableRatio = (float)this.reachableCells/(float)(this.unreachableCells-(2*this.obsUsed));
+		//mem.prettyPrintRoute(null, true);
 		
-		//TODO
 		//try encouraging visMag around 0.6
-		//reduce weight on start pos, increase on goalPos 2.5/1.5
+//		double goal = 0.6;
+//		double visMagDiff = Math.abs(this.visibilityMagnitude-goal);
+////		//penalise visMag far from 0.6
+////		if (visMagDiff > 0.3){
+////			this.visibilityWeighted += 2;
+////		}
+//		//Try encouraging more than 1 turn
+//		if (this.bestSV.getTurn() == 1){
+//			this.visibilityWeighted += 2;
+//		}
+		
+		//measure visibility from more points across map
+		int width = this.size*2;
+		int[] xPoints = {width/4, width/2, 3*width/4};
+		int[] yPoints = {size/4,  size/2, 3*size/4};
+		int[] xWeights = {1,1,1};
+		int[] yWeights = {1,1,1};
+		double total = 0.0;
+		for(int yIndex = 0; yIndex < yPoints.length; yIndex++){
+			for(int xIndex=0; xIndex < xPoints.length; xIndex++){
+				int x = xPoints[xIndex];
+				int y = yPoints[yIndex];
+				double cellsVisible = this.evaluateVisibilityFromPosition(x, y, false);
+				double score = cellsVisible / (double)this.totalCells;
+				total += score*xWeights[xIndex]*yWeights[yIndex];
+			}
+		}
+		this.visibilityWeighted += total;
 	}
 	
 	/**
@@ -983,6 +1018,9 @@ public class PPP{
 				//Scan along this line to determine number of cells which can see the goal
 				ArrayList<short[]> LoS = Sensor.line(xPos, yPos, x, y);
 				for (short[] p: LoS){
+//					if((p[0]==xPos)&&(p[1]==yPos)){
+//						continue;
+//					}
 					if(this.isOccupied(p[0], p[1])){
 						//Can't sense from, or from behind, an occupied cell.
 						//The rest of the line has it's visibilty blocked by this cell,

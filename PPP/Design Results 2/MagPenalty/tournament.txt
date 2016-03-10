@@ -1,0 +1,73 @@
+Initializing tournament population of size 60
+Done
+Running tournament
+   ....................................................................................................
+PPP0 :: Turns: 1; Adv: 38, Vis: 0.25, Mag: 1.30, VisWeighted: 6.76
+PPP1 :: Turns: 2; Adv: 38, Vis: 0.50, Mag: 1.42, VisWeighted: 7.13
+PPP2 :: Turns: 4; Adv: 38, Vis: 0.39, Mag: 0.66, VisWeighted: 1.84
+PPP3 :: Turns: 3; Adv: 38, Vis: 0.32, Mag: 1.53, VisWeighted: 7.54
+PPP4 :: Turns: 7; Adv: 40, Vis: 0.25, Mag: 0.57, VisWeighted: 1.66
+PPP5 :: Turns: 13; Adv: 38, Vis: 0.33, Mag: 0.72, VisWeighted: 1.76
+PPP6 :: Turns: 3; Adv: 38, Vis: 0.47, Mag: 0.98, VisWeighted: 5.76
+PPP7 :: Turns: 2; Adv: 38, Vis: 0.53, Mag: 1.25, VisWeighted: 6.62
+PPP8 :: Turns: 3; Adv: 38, Vis: 0.05, Mag: 0.47, VisWeighted: 0.59
+PPP9 :: Turns: 2; Adv: 38, Vis: 0.50, Mag: 0.71, VisWeighted: 2.36
+PPP10 :: Turns: 5; Adv: 46, Vis: 0.10, Mag: 0.76, VisWeighted: 1.72
+PPP11 :: Turns: 3; Adv: 38, Vis: 0.24, Mag: 0.59, VisWeighted: 1.37
+PPP12 :: Turns: 2; Adv: 38, Vis: 0.45, Mag: 1.34, VisWeighted: 6.86
+PPP13 :: Turns: 3; Adv: 38, Vis: 0.29, Mag: 0.69, VisWeighted: 1.82
+PPP14 :: Turns: 3; Adv: 38, Vis: 0.30, Mag: 0.59, VisWeighted: 1.37
+PPP15 :: Turns: 2; Adv: 38, Vis: 0.55, Mag: 1.11, VisWeighted: 6.52
+PPP16 :: Turns: 3; Adv: 38, Vis: 0.15, Mag: 0.89, VisWeighted: 1.99
+PPP17 :: Turns: 4; Adv: 38, Vis: 0.57, Mag: 0.65, VisWeighted: 1.76
+PPP18 :: Turns: 3; Adv: 38, Vis: 0.59, Mag: 1.01, VisWeighted: 5.55
+PPP19 :: Turns: 3; Adv: 38, Vis: 0.54, Mag: 0.64, VisWeighted: 1.88
+PPP20 :: Turns: 3; Adv: 38, Vis: 0.65, Mag: 1.84, VisWeighted: 9.11
+PPP21 :: Turns: 1; Adv: 38, Vis: 0.32, Mag: 0.56, VisWeighted: 1.85
+PPP22 :: Turns: 2; Adv: 38, Vis: 0.39, Mag: 0.60, VisWeighted: 1.99
+PPP23 :: Turns: 3; Adv: 38, Vis: 0.41, Mag: 0.60, VisWeighted: 1.77
+PPP24 :: Turns: 3; Adv: 38, Vis: 0.08, Mag: 0.69, VisWeighted: 1.53
+PPP25 :: Turns: 4; Adv: 40, Vis: 0.36, Mag: 1.10, VisWeighted: 5.76
+PPP26 :: Turns: 1; Adv: 38, Vis: 0.31, Mag: 0.91, VisWeighted: 5.19
+PPP27 :: Turns: 5; Adv: 46, Vis: 0.05, Mag: 0.76, VisWeighted: 1.40
+PPP28 :: Turns: 5; Adv: 38, Vis: 0.25, Mag: 0.82, VisWeighted: 2.74
+PPP29 :: Turns: 3; Adv: 38, Vis: 0.28, Mag: 0.69, VisWeighted: 1.80
+PPP30 :: Turns: 5; Adv: 40, Vis: 0.32, Mag: 0.58, VisWeighted: 1.74
+PPP31 :: Turns: 2; Adv: 38, Vis: 0.40, Mag: 0.57, VisWeighted: 1.55
+PPP32 :: Turns: 3; Adv: 38, Vis: 0.39, Mag: 0.76, VisWeighted: 2.87
+PPP33 :: Turns: 5; Adv: 48, Vis: 0.04, Mag: 0.76, VisWeighted: 1.39
+PPP34 :: Turns: 1; Adv: 38, Vis: 0.09, Mag: 0.67, VisWeighted: 1.70
+PPP35 :: Turns: 2; Adv: 38, Vis: 0.34, Mag: 1.02, VisWeighted: 5.20
+PPP36 :: Turns: 2; Adv: 38, Vis: 0.44, Mag: 0.67, VisWeighted: 2.17
+PPP37 :: Turns: 3; Adv: 38, Vis: 0.64, Mag: 1.34, VisWeighted: 7.17
+PPP38 :: Turns: 3; Adv: 38, Vis: 0.43, Mag: 0.79, VisWeighted: 2.72
+PPP39 :: Turns: 3; Adv: 38, Vis: 0.39, Mag: 0.73, VisWeighted: 1.75
+PPP40 :: Turns: 1; Adv: 38, Vis: 0.57, Mag: 0.85, VisWeighted: 2.90
+PPP41 :: Turns: 3; Adv: 38, Vis: 0.17, Mag: 0.79, VisWeighted: 2.27
+PPP42 :: Turns: 6; Adv: 40, Vis: 0.02, Mag: 0.66, VisWeighted: 1.48
+PPP43 :: Turns: 3; Adv: 38, Vis: 0.49, Mag: 1.25, VisWeighted: 6.66
+PPP44 :: Turns: 3; Adv: 38, Vis: 0.64, Mag: 1.34, VisWeighted: 7.12
+PPP45 :: Turns: 3; Adv: 38, Vis: 0.07, Mag: 0.75, VisWeighted: 1.83
+PPP46 :: Turns: 3; Adv: 38, Vis: 0.07, Mag: 0.71, VisWeighted: 1.95
+PPP47 :: Turns: 1; Adv: 38, Vis: 0.09, Mag: 0.70, VisWeighted: 1.78
+PPP48 :: Turns: 5; Adv: 40, Vis: 0.54, Mag: 0.64, VisWeighted: 1.84
+PPP49 :: Turns: 2; Adv: 38, Vis: 0.37, Mag: 0.73, VisWeighted: 2.39
+PPP50 :: Turns: 3; Adv: 38, Vis: 0.35, Mag: 0.77, VisWeighted: 2.82
+PPP51 :: Turns: 3; Adv: 38, Vis: 0.05, Mag: 0.75, VisWeighted: 1.68
+PPP52 :: Turns: 1; Adv: 38, Vis: 0.26, Mag: 0.81, VisWeighted: 2.41
+PPP53 :: Turns: 3; Adv: 38, Vis: 0.33, Mag: 0.70, VisWeighted: 1.58
+PPP54 :: Turns: 3; Adv: 38, Vis: 0.41, Mag: 0.62, VisWeighted: 1.67
+PPP55 :: Turns: 1; Adv: 38, Vis: 0.54, Mag: 1.06, VisWeighted: 5.67
+PPP56 :: Turns: 3; Adv: 38, Vis: 0.40, Mag: 0.79, VisWeighted: 3.11
+PPP57 :: Turns: 1; Adv: 38, Vis: 0.25, Mag: 1.01, VisWeighted: 5.63
+PPP58 :: Turns: 4; Adv: 38, Vis: 0.54, Mag: 0.56, VisWeighted: 1.66
+PPP59 :: Turns: 2; Adv: 38, Vis: 0.51, Mag: 0.86, VisWeighted: 3.31
+
+PPP5 : Max Turns, 13
+PPP33 : Max Adv,   48
+PPP42 : Min Vis,   0.02
+PPP8 : Min Vis Magnitude,   0.47
+PPP8 : Min Vis Weighted, 0.59
+PPP20 : Max Vis Weighted, 9.11
+Population saved to /new
+

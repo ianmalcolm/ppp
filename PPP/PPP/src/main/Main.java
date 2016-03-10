@@ -12,7 +12,7 @@ public class Main {
 	
 	public static void singlePPP() {
 		System.out.println("Initialising a new PPP");
-		PPP ppp = new PPP((short)20, (short)8, (short)50); // PPP(size, nDes, maxObs)
+		PPP ppp = new PPP((short)20, (short)8, (short)0); // PPP(size, nDes, maxObs)
 
 		//System.out.println("\n Mutating the PPP");
 		ppp = ppp.mutatePPP();
@@ -20,7 +20,7 @@ public class Main {
 		ppp.displayPPP();
 		ppp.displayDes();
 		//ppp.displayOcc();
-		ppp.writePPP("ppp", 95);
+		ppp.writePPP("new", 62);
 		System.out.println("Done: Exiting");
 	}
 	
