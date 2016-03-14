@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 import ppp.PPP;
 import ppp.Descriptor;
 import sim.agent.Bot;
+import sim.agent.BumperBot;
+import sim.agent.DecisionBumper;
 import sim.agent.ExplorerBot;
 import sim.agent.OmniscientBot;
 import sim.agent.RandomBot;
@@ -21,12 +23,16 @@ import sim.agent.LongTermExplorer;
 
 public class Sim {
 	public final static int testRuns = 1000;
-	public final static int sensorRange = 2;
-	public final static int maxMoves = 300;
+	public final static int sensorRange = 4;
+	public final static int maxMoves = 600;
 	
 	public static void main(String[] args) {
-		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/EncourageTurns", false);
-		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/moreVisChecks/PPP27.ppp", false);
+//		String[] folders = {"doubleRun", "EncourageTurns", "Goal Vis", "MagPenalty", "ObstacleWeigt", "StartGoalWeight", "VisMag"};
+//		for (String f : folders){
+//			testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/"+f, false);
+//		}
+		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/HugeMaps", false);
+		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/HugeMaps/PPP34.ppp", false);
 		//displayPPP(map);
 		
 //		map.drawMap();
@@ -41,10 +47,12 @@ public class Sim {
 		//Bot ran = new RandomBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//Bot lexp = new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange);
 		//Bot expN = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		//Bot bump = new BumperBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		//Bot bump = new DecisionBumper(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//expN.setSensorNoise(0.1);
 //
-		//singleTest(map, ob, true, true);
-		//test(map, lte, 1000, true, false);
+		//singleTest(map, bump, true, true);
+		//test(map, bump, 1000, true, false);
 		
 		//singleTest(map, ob, true, false);
 		//singleTest(map, exp, true, true);
@@ -83,7 +91,12 @@ public class Sim {
 				}
 				//bots.clear();
 				csv.writePPP(map, fileName);
-				testAll(map, bots, csv);
+				try {
+					testAll(map, bots, csv);
+				} catch (Exception e){
+					csv.closeCSV();
+					throw e;
+				}
 				System.out.println("Tests complete.");
 			}
 		}
@@ -108,6 +121,8 @@ public class Sim {
 		expNoisy.setSensorNoise(0.1);
 		ret.add(expNoisy);
 		ret.add(new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange));
+		ret.add(new BumperBot(new Memory(2+(map.size*2), 2+map.size), sensorRange));
+		ret.add(new DecisionBumper(new Memory(2+(map.size*2), 2+map.size), sensorRange));
 		return ret;
 	}
 		
