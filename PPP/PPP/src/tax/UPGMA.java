@@ -1,7 +1,13 @@
 package tax;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 
 import sim.agent.represenation.Node;
 
@@ -15,11 +21,13 @@ public class UPGMA {
 	private short count;					// count the number of PPPs in taxa
 	private TaxChar[] fixTaxa;				// the array for implementing the UPGMA
 	private ArrayList<Pair> taxaPair;		// the array list of pair of PPP.
+	private int current_id = 0;
 	/*
 	 * 	Constructor for UPGMA
 	 */
 	public UPGMA(){
 		taxa = new ArrayList<TaxChar>();
+		this.count = 0;
 	}
 	/*
 	 * 	add a single PPP in the taxa
@@ -35,7 +43,8 @@ public class UPGMA {
 		float a = (tc1.getAdvance() + tc2.getAdvance())/2;
 		float t = (tc1.getTurn() + tc2.getTurn())/2;
 		float o = (tc1.getObs()+tc2.getObs())/2;
-		return new TaxChar(a,t,o);
+		TaxChar ret = new TaxChar(a,t,o);
+		return ret;
 	}
 	/*
 	 * 	Implementing the UPGMA
@@ -62,7 +71,7 @@ public class UPGMA {
 			Pair temp = calDistance();
 			taxaPair.add(temp);
 			TaxChar newTC = mergeTC(fixTaxa[temp.getX()], fixTaxa[temp.getY()]);
-			newTC.setName(fixTaxa[temp.getX()].getName()+":"+fixTaxa[temp.getY()].getName());
+			newTC.setName(fixTaxa[temp.getX()].getName());
 			newTC.setMerged();
 			fixTaxa[temp.getX()] = newTC;
 			fixTaxa[temp.getY()].setWaste();
@@ -121,13 +130,6 @@ public class UPGMA {
 	 */
 	public void printTaxaPair(){
 		this.printTaxonomy(taxaPair);
-//		short length = (short)taxaPair.size();
-//		for(short i=0; i<length; i++){
-//			Pair tp = taxaPair.get(i);
-//			TaxChar first = fixTaxa[tp.getX()];
-//			TaxChar second = fixTaxa[tp.getY()];
-//			System.out.printf("Pair %s\nPPPs\n    %s\n    %s\n", tp, first.getName(), second.getName());
-//		}
 	}
 	
 	private void printTaxonomy(ArrayList<Pair> tax){
@@ -184,5 +186,70 @@ public class UPGMA {
 			}
 		}
 		System.out.println("");
+	}
+	
+	public void writeJson(String folder){
+		Writer writer = null;
+		HashMap<String, Integer> nodes = new HashMap<String, Integer>();
+		int id = 0;
+		boolean firstPrinted = false;
+		
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(
+			          new FileOutputStream(folder+"/graph.json"), "utf-8"));
+			writer.write("{\n");
+			writer.write("  \"nodes\": [");
+			for(TaxChar tc : fixTaxa){
+				tc.setId(id);
+				id++;
+				nodes.put(tc.getName(), tc.getId());
+				if (!firstPrinted){
+					writer.write("    "+tc.toJson());
+					firstPrinted = true;
+				} else {
+					writer.write(",\n    "+tc.toJson());
+				}
+			}
+			writer.write("\n  ]");
+			writer.write(",\n  \"links\":[");
+			firstPrinted = false;
+			for(Pair tp: taxaPair){
+				TaxChar first = fixTaxa[tp.getX()];
+				TaxChar second = fixTaxa[tp.getY()];
+				int firstId = nodes.get(first.getName());
+				int secondId = nodes.get(second.getName());
+				Link link = new Link(firstId, secondId);
+				if (!firstPrinted){
+					writer.write("    "+link.toJson());
+					firstPrinted = true;
+				} else {
+					writer.write(",\n    "+link.toJson());
+				}
+			}
+			writer.write("\n  ]");
+			writer.write("\n}");
+			
+		} catch (IOException ex){
+			System.err.println("Folder :" + folder + ", File " + "graph.json");
+			ex.printStackTrace();
+			System.exit(1);
+		} finally {
+			   try {writer.close();} catch (Exception ex) {ex.printStackTrace();}
+		}
+	}
+	
+}
+
+class Link {
+	private int source;
+	private int target;
+	
+	public Link(int source, int target){
+		this.source = source;
+		this.target = target;
+	}
+	
+	public String toJson(){
+		return String.format("{\"source\":%d, \"target\":%d}", this.source, this.target);
 	}
 }

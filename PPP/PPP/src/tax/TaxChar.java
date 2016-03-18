@@ -18,6 +18,7 @@ public class TaxChar {
 	private short sObs;				// obstruction for toString
 	private String name;			// name for the TaxChar
 	private boolean isMerge = false;
+	private int id=0;
 	/*
 	 * 	The constructor for TaxChar by passing each values in int
 	 * 	Notes: move = advance + turn
@@ -144,5 +145,17 @@ public class TaxChar {
 		String result;
 		result = name+ "("+sAdvance+"-"+sTurn+"-"+sObs+")";
 		return result;
+	}
+	
+	public String toJson(){
+		return String.format("{\"name\":\"%s\"}", this.name);
+	}
+	
+	public void setId(int id){
+		this.id = id;
+	}
+	
+	public int getId(){
+		return this.id;
 	}
 }

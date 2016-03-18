@@ -203,8 +203,8 @@ public class Sim {
 			}
 		}
 		tree.calUPGMA();
-		tree.printLeafNodes();
-		tree.printSortedNodes();
+		tree.writeJson(folder);
+		System.out.println("Graph JSON written to " + folder + "/graph.json");
 		if (unreachable > 0){
 			System.out.printf("\n%d Unreachable PPPs in test set were skipped!\n", unreachable);
 		}
