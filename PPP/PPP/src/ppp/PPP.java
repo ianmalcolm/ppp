@@ -1130,5 +1130,9 @@ public class PPP{
 	public double getAvgOpenH(){
 		return this.avgOpenHeight;
 	}
+	
+	public int getObsUsed(){
+		return this.obsUsed;
+	}
 
 }

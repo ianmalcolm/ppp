@@ -1,6 +1,9 @@
 package tax;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+
+import sim.agent.represenation.Node;
 
 /*
  * 	Author:	Hao Wei
@@ -9,7 +12,7 @@ import java.util.ArrayList;
  */
 public class UPGMA {
 	private ArrayList<TaxChar> taxa;		// the array of all PPPs
-	private short count;						// count the number of PPPs in taxa
+	private short count;					// count the number of PPPs in taxa
 	private TaxChar[] fixTaxa;				// the array for implementing the UPGMA
 	private ArrayList<Pair> taxaPair;		// the array list of pair of PPP.
 	/*
@@ -59,6 +62,8 @@ public class UPGMA {
 			Pair temp = calDistance();
 			taxaPair.add(temp);
 			TaxChar newTC = mergeTC(fixTaxa[temp.getX()], fixTaxa[temp.getY()]);
+			newTC.setName(fixTaxa[temp.getX()].getName()+":"+fixTaxa[temp.getY()].getName());
+			newTC.setMerged();
 			fixTaxa[temp.getX()] = newTC;
 			fixTaxa[temp.getY()].setWaste();
 		}
@@ -115,9 +120,69 @@ public class UPGMA {
 	 * 	Print the taxaPair onto the console
 	 */
 	public void printTaxaPair(){
-		short length = (short)taxaPair.size();
-		for(short i=0; i<length; i++){
-			System.out.println(taxaPair.get(i));
+		this.printTaxonomy(taxaPair);
+//		short length = (short)taxaPair.size();
+//		for(short i=0; i<length; i++){
+//			Pair tp = taxaPair.get(i);
+//			TaxChar first = fixTaxa[tp.getX()];
+//			TaxChar second = fixTaxa[tp.getY()];
+//			System.out.printf("Pair %s\nPPPs\n    %s\n    %s\n", tp, first.getName(), second.getName());
+//		}
+	}
+	
+	private void printTaxonomy(ArrayList<Pair> tax){
+		for(Pair tp : tax){
+			TaxChar first = fixTaxa[tp.getX()];
+			TaxChar second = fixTaxa[tp.getY()];
+			System.out.printf("Pair %s\nPPPs\n    %s\n    %s\n", tp, first.getName(), second.getName());
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void printSortedNodes(){
+		ArrayList<Pair> tree = new ArrayList<Pair>();
+		tree = (ArrayList<Pair>) taxaPair.clone();
+		Comparator<Pair> comparator = new Comparator<Pair>(){
+			@Override
+			public int compare(Pair p1, Pair p2) {
+				String p1First = fixTaxa[p1.getX()].getName();
+				String p2First = fixTaxa[p2.getX()].getName();
+				if (p1First.length() < p2First.length()){
+					//p1 < p2
+					return -1;
+				} else if (p1First.length() == p2First.length()){
+					//p1==p2
+					return 0;
+				} else {
+					//p1>p2
+					return 1;
+				}
+			}
+		};
+		tree.sort(comparator);
+		this.printTaxonomy(tree);
+	}
+	
+	public void printLeafNodes(){
+		int count = 0;
+		System.out.print("Leaf Nodes\n    ");
+		for (Pair tp : taxaPair){
+			TaxChar first = fixTaxa[tp.getX()];
+			TaxChar second = fixTaxa[tp.getY()];
+			if (!first.isMerged()){
+				System.out.printf("%s, ", first.getName());
+				count++;
+			}
+			if (!second.isMerged()){
+				System.out.printf("%s, ", second.getName());
+				count++;
+			}
+			if (count >= 5){
+				count = 0;
+				System.out.println("");
+				System.out.print("    ");
+			}
+		}
+		System.out.println("");
 	}
 }

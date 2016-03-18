@@ -1,0 +1,9 @@
+{
+  "nodes": [
+	{"name":"dog"},
+	{"name":"cat"}
+  ],
+  "links": [
+    {"source": 0, "target": 1}
+  ]
+}

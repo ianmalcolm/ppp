@@ -17,6 +17,7 @@ public class TaxChar {
 	private short sTurn;				// turn for toString
 	private short sObs;				// obstruction for toString
 	private String name;			// name for the TaxChar
+	private boolean isMerge = false;
 	/*
 	 * 	The constructor for TaxChar by passing each values in int
 	 * 	Notes: move = advance + turn
@@ -123,6 +124,19 @@ public class TaxChar {
 	public void setName(String name){
 		this.name = name;
 	}
+	
+	public String getName(){
+		return this.name;
+	}
+	
+	public void setMerged(){
+		this.isMerge = true;
+	}
+	
+	public boolean isMerged(){
+		return this.isMerge;
+	}
+	
 	/*
 	 * 	toString
 	 */

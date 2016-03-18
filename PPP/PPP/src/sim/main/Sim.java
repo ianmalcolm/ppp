@@ -20,6 +20,7 @@ import sim.agent.WallFollowerBot;
 import sim.agent.represenation.LimitedMemory;
 import sim.agent.represenation.Memory;
 import sim.agent.LongTermExplorer;
+import tax.*;
 
 public class Sim {
 	public final static int testRuns = 1000;
@@ -32,8 +33,9 @@ public class Sim {
 //			testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/"+f, false);
 //		}
 		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Openness", false);
-		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness/PPP21.ppp", false);
-		displayPPP(map);
+		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Openness", false);
+		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness/PPP21.ppp", false);
+		//displayPPP(map);
 		
 //		map.drawMap();
 //		map.evaluateDifficulty();
@@ -171,6 +173,43 @@ public class Sim {
 		ppp.displayDes();
 //		ppp.displayOcc();
 	}
+	
+	public static void runUPGMA(String folder, boolean verbose){
+		File[] files = new File(folder).listFiles();
+		boolean csvReady = false;
+		CsvWriter csv = null;
+		ArrayList<PPP> maps = new ArrayList<PPP>();
+		UPGMA tree = new UPGMA();
+		int unreachable = 0;
+		
+		for (File f: files){
+			String fileName = f.getName();
+			if (fileName.contains(".ppp")){
+				PPP map = loadPPP(f.getPath(), false);
+				System.out.printf("Loaded %s\n", fileName);
+				if (verbose){
+					displayPPP(map);
+				}
+				if(!map.checkAvailable()){
+					System.err.println("Unreachable PPP in test set!");
+					unreachable++;
+					continue;
+				}
+				maps.add(map);
+				TaxChar tc = new TaxChar(map.getAdvance(), map.getTurn(), map.getObsUsed());
+				String mapName = fileName.substring(0, fileName.indexOf("."));
+				tc.setName(mapName);
+				tree.addTC(tc);
+			}
+		}
+		tree.calUPGMA();
+		tree.printLeafNodes();
+		tree.printSortedNodes();
+		if (unreachable > 0){
+			System.out.printf("\n%d Unreachable PPPs in test set were skipped!\n", unreachable);
+		}
+	}
+	
 	
 	/*
 	 * Map Loader

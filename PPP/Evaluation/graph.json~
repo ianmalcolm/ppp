@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    {"name": "dog"},
+    {"name": "dog.svg"},
+    {"name": "dog.svg.area"},
+    {"name": "dog.svg.line"},
+    {"name": "dog.scale"},
+    {"name": "dog.scale.linear"},
+    {"name": "dog.scale.ordinal"}
+  ],
+  "links": [
+    {"source": 0, "target": 1},
+    {"source": 1, "target": 2},
+    {"source": 1, "target": 3},
+    {"source": 0, "target": 4},
+    {"source": 4, "target": 5},
+    {"source": 4, "target": 6}
+  ]
+}
