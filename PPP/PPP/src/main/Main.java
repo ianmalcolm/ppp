@@ -4,6 +4,9 @@ import ppp.PPP;
 import ppp.PPPManager;
 
 public class Main {
+	private final static int size = 20;
+	private final static int descriptors = 8;
+	private final static int obstacles = 50;
 
 	public static void main(String[] args){
 		tournament();
@@ -12,7 +15,7 @@ public class Main {
 	
 	public static void singlePPP() {
 		System.out.println("Initialising a new PPP");
-		PPP ppp = new PPP((short)20, (short)8, (short)0); // PPP(size, nDes, maxObs)
+		PPP ppp = new PPP((short)size, (short)descriptors, (short)obstacles); // PPP(size, nDes, maxObs)
 
 		//System.out.println("\n Mutating the PPP");
 		ppp = ppp.mutatePPP();
@@ -25,11 +28,11 @@ public class Main {
 	}
 	
 	public static void tournament() {
-		PPPManager manager = new PPPManager((short) 20, (short)8, (short) 50);
+		PPPManager manager = new PPPManager((short) size, (short)descriptors, (short) obstacles);
 		manager.checkPopReachable();
-		//manager.oneRun();
 		System.out.println("Running tournament");
-		manager.hundredME();
+		//manager.hundredME();
+		manager.fullRun();
 		manager.describePopulation();
 		manager.writePopulation("new");
 	}

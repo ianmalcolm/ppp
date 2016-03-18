@@ -23,23 +23,23 @@ import sim.agent.LongTermExplorer;
 
 public class Sim {
 	public final static int testRuns = 1000;
-	public final static int sensorRange = 4;
-	public final static int maxMoves = 600;
+	public final static int sensorRange = 2;
+	public final static int maxMoves = 300;
 	
 	public static void main(String[] args) {
 //		String[] folders = {"doubleRun", "EncourageTurns", "Goal Vis", "MagPenalty", "ObstacleWeigt", "StartGoalWeight", "VisMag"};
 //		for (String f : folders){
 //			testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/"+f, false);
 //		}
-		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/HugeMaps", false);
-		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/HugeMaps/PPP34.ppp", false);
-		//displayPPP(map);
+		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Openness", false);
+		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness/PPP21.ppp", false);
+		displayPPP(map);
 		
 //		map.drawMap();
 //		map.evaluateDifficulty();
 //		map.displayMap();
 
-		int LimitedMemRange = (2*sensorRange)+1;
+//		int LimitedMemRange = (2*sensorRange)+1;
 		//Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
 		//Bot ob = new OmniscientBot(new Memory(map), sensorRange);
 		//Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
@@ -330,17 +330,19 @@ class CsvWriter {
 	public void writePPP(PPP map, String fileName){
 		this.writeToCSV(fileName);
 		this.writeToCSV(",");
-		String s =  String.format("%d,%d,%.2f,%.2f,%.2f,%.2f,%d,%.2f", 
+		String s =  String.format("%d,%d,%.2f,%.2f,%.2f,%.2f,%d,%d,%d,%.2f,%.2f,%.2f", 
 								map.getTurn(), map.getAdvance(), 
 								map.getGoalVisibility(), map.getStartVisibility(), map.getVisibilityMangitude(),
 								map.getObstacleUse(), map.getUnreachableCells(),
+								map.getOpenW(), map.getOpenH(),
+								map.getAvgOpenW(), map.getAvgOpenH(),
 								map.getVisibilityWeightedSum());
 		this.writeToCSV(s);
 	}
 	
 	private void initCSV(ArrayList<Bot> bots){
 		this.writeToCSV("PPP");
-		String[] taxChars = {"Turns","Adv","GoalVis%","StartVis%","VisMag","Obstacle Use","Unreachable Cells","VisWeighted"};
+		String[] taxChars = {"Turns","Adv","GoalVis%","StartVis%","VisMag","Obstacle Use","Unreachable Cells","OpenW", "OpenH","AvgOpenW","AvgOpenH","VisWeighted"};
 		for(String t : taxChars){
 			this.writeToCSV(","+t);
 		}

@@ -53,6 +53,8 @@ public class PPP{
 	private int bottomLeftVisibleCells;
 	private int reachableCells;
 	private int unreachableCells;
+	private int maxOpenWidth;
+	private int maxOpenHeight;
 	
 	private double goalVisiblePercentage;
 	private double startVisiblePercentage;
@@ -64,6 +66,9 @@ public class PPP{
 	private double obstaclesUsePercentage;
 	private double visibilityWeighted;
 	private double reachableRatio;
+	private double avgOpenWidth;
+	private double avgOpenHeight;
+	private double sumVis;
 	
 	
 	/*
@@ -521,13 +526,16 @@ public class PPP{
 			System.out.printf("Magnitude: %.2f\n", this.visibilityMagnitude);
 			System.out.println("\nWeighted Sum");
 			//System.out.printf("Magnitude: %.2f\n", this.visibilityMagnitude);
-			System.out.printf("Obstacle use: %.2f ==> (1- %.2f)= %.2f\n", this.obstaclesUsePercentage, this.obstaclesUsePercentage, 1-this.obstaclesUsePercentage);
+			System.out.printf("Vis Sum: %.2f\n", this.sumVis);
+			System.out.printf("Obstacle use: %.2f ==> (1- %.2f)= %.2f\n", this.obstaclesUsePercentage, this.obstaclesUsePercentage, 2*(1-this.obstaclesUsePercentage));
 			int turns = this.bestSV.getTurn();
-			System.out.printf("Turns: %d ==> (1-%d)=%d\n", turns, turns, 1-turns);
+			System.out.printf("Turns: %d\n", turns);
 			System.out.printf("Total: %.2f\n", this.visibilityWeighted);
 			System.out.printf("Reachable cells %d\n", this.reachableCells);
 			System.out.printf("Unreachable Cells %d\n of which obstacles: %d\n", this.unreachableCells, 2*this.obsUsed);
-			System.out.printf("Ratio %.2f:1\n", this.reachableRatio);
+			System.out.printf(" Ratio %.2f:1\n", this.reachableRatio);
+			System.out.printf("Max open width: %d, Avg Max Open: %.2f\n", this.maxOpenWidth, this.avgOpenWidth);
+			System.out.printf("Max open height: %d, Avg Max Open: %.2f\n", this.maxOpenHeight, this.avgOpenHeight);
 			System.out.println("");
 		} else
 			System.out.println("The destination is unreachable!");
@@ -894,15 +902,11 @@ public class PPP{
 	}
 	
 	public void evaluateDifficulty(){
-		//this.drawMap();
 		this.goalVisibleCells       = this.evaluateVisibilityFromPosition(col-2, row-2, false);
 		this.startVisibleCells      = this.evaluateVisibilityFromPosition(1, 1, false);
 		this.centreVisibleCells     = this.evaluateVisibilityFromPosition(size, size/2, false);
 		this.topRightVisibleCells   = this.evaluateVisibilityFromPosition(col-2, 1, false);
 		this.bottomLeftVisibleCells = this.evaluateVisibilityFromPosition(1, row-2, false);
-//		int test = this.evaluateVisibilityFromPosition(0, 1, true);
-//		int test2 = this.evaluateVisibilityFromPosition(1, 0, true);
-		//this.displayMap();
 		
 		this.goalVisiblePercentage  = this.goalVisibleCells / (double)this.totalCells;
 		this.startVisiblePercentage = this.startVisibleCells / (double)this.totalCells;
@@ -936,21 +940,16 @@ public class PPP{
 		double visSum = 0.0;
 		double visSumInverted = 0.0;
 		//Increase important of start, goal by higher weight
-		//TODO ignore centre pos as often blocked?
 		double[] visSumLst = {2.5*this.goalVisiblePercentage, 1.5*this.startVisiblePercentage, this.centreVisiblePercentage,
 				this.topRightVisiblePercentage, this.bottomLeftVisiblePercentage};
 		for (double d: visSumLst){
 			visSum += d;
 			visSumInverted += (1-d);
-			//System.out.printf("%.2f -- %.2f\n", d, 1-d);
 		}
-		//System.out.printf("sum %.2f\n", visSum);
-		//System.out.printf("sumInverted %.2f\n", visSumInverted);
+		this.sumVis = visSum;
 		this.visibilityWeighted = visSum;
 		// Penalise lack of obstacles
 		this.visibilityWeighted += 2*(1-this.obstaclesUsePercentage);
-		// Penalise lack of turns
-		//this.visibilityWeighted += (1-this.bestSV.getTurn());
 		
 		Memory mem = new Memory(this);
 		this.reachableCells = mem.checkReachability(this.occ);
@@ -958,7 +957,6 @@ public class PPP{
 		//Double obsUsed as that is the count of '3' in Occ, ie. the left peice of an obstacle
 		//But our reachability is counting occ as double width, so we need to account for the '4' right hand occ.
 		this.reachableRatio = (float)this.reachableCells/(float)(this.unreachableCells-(2*this.obsUsed));
-		//mem.prettyPrintRoute(null, true);
 		
 		//try encouraging visMag around 0.6
 //		double goal = 0.6;
@@ -967,28 +965,71 @@ public class PPP{
 ////		if (visMagDiff > 0.3){
 ////			this.visibilityWeighted += 2;
 ////		}
-//		//Try encouraging more than 1 turn
-//		if (this.bestSV.getTurn() == 1){
-//			this.visibilityWeighted += 2;
-//		}
-		
-		//measure visibility from more points across map
-		int width = this.size*2;
-		int[] xPoints = {width/4, width/2, 3*width/4};
-		int[] yPoints = {size/4,  size/2, 3*size/4};
-		int[] xWeights = {1,1,1};
-		int[] yWeights = {1,1,1};
-		double total = 0.0;
-		for(int yIndex = 0; yIndex < yPoints.length; yIndex++){
-			for(int xIndex=0; xIndex < xPoints.length; xIndex++){
-				int x = xPoints[xIndex];
-				int y = yPoints[yIndex];
-				double cellsVisible = this.evaluateVisibilityFromPosition(x, y, false);
-				double score = cellsVisible / (double)this.totalCells;
-				total += score*xWeights[xIndex]*yWeights[yIndex];
-			}
+		//Try encouraging more than 1 turn
+		if (this.bestSV.getTurn() == 1){
+			this.visibilityWeighted += 2;
 		}
-		this.visibilityWeighted += total;
+		
+//		//measure visibility from more points across map
+//		int width = this.size*2;
+//		int[] xPoints = {width/4, width/2, 3*width/4};
+//		int[] yPoints = {size/4,  size/2, 3*size/4};
+//		int[] xWeights = {1,1,1};
+//		int[] yWeights = {1,1,1};
+//		double total = 0.0;
+//		for(int yIndex = 0; yIndex < yPoints.length; yIndex++){
+//			for(int xIndex=0; xIndex < xPoints.length; xIndex++){
+//				int x = xPoints[xIndex];
+//				int y = yPoints[yIndex];
+//				double cellsVisible = this.evaluateVisibilityFromPosition(x, y, false);
+//				double score = cellsVisible / (double)this.totalCells;
+//				total += score*xWeights[xIndex]*yWeights[yIndex];
+//			}
+//		}
+//		this.visibilityWeighted += total;
+		
+		this.maxOpenWidth = 0;
+		this.avgOpenWidth = 0.0;
+		for (int y = 1; y < this.occ.length-1; y++){
+			int open = 0;
+			int rowMax = 0;
+			for(int x = 1; x < this.occ[0].length; x++){
+				short ob = this.occ[y][x];
+				if ((ob == 3)||(ob == 1) || (ob==4)){
+					//obstacle, run broken
+					this.maxOpenWidth = this.maxOpenWidth < open ? open : this.maxOpenWidth;
+					rowMax = open > rowMax ? open : rowMax;
+					open = 0;
+				} else {
+					open++;
+				}
+			}
+			this.avgOpenWidth += rowMax;
+		}
+		//avg over rows
+		this.avgOpenWidth = this.avgOpenWidth / (this.occ.length-2);
+		//Represent as a % of max possible width
+		this.avgOpenWidth = this.avgOpenWidth / (this.size*2);
+		this.visibilityWeighted += 2*this.avgOpenWidth;
+		
+		this.maxOpenHeight = 0;
+		this.avgOpenHeight = 0.0;
+		for (int x = 1; x < this.occ[0].length-1; x++){
+			int open = 0;
+			int colMax = 0;
+			for (int y = 1; y < this.occ.length; y++){
+				short ob = this.occ[y][x];
+				if ((ob == 3)||(ob == 1) || (ob==4)){
+					this.maxOpenHeight = this.maxOpenHeight < open ? open : this.maxOpenHeight;
+					colMax = open > colMax ? open : colMax;
+					open = 0;
+				} else {
+					open++;
+				}
+			}
+			this.avgOpenHeight += colMax;
+		}
+		this.avgOpenHeight = this.avgOpenHeight / (2*this.occ.length);
 	}
 	
 	/**
@@ -1072,6 +1113,22 @@ public class PPP{
 	
 	public int getUnreachableCells(){
 		return this.unreachableCells-(2*this.obsUsed);
+	}
+	
+	public int getOpenW(){
+		return this.maxOpenWidth;
+	}
+	
+	public int getOpenH(){
+		return this.maxOpenHeight;
+	}
+	
+	public double getAvgOpenW(){
+		return this.avgOpenWidth;
+	}
+	
+	public double getAvgOpenH(){
+		return this.avgOpenHeight;
 	}
 
 }
