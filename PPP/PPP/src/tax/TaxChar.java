@@ -18,6 +18,7 @@ public class TaxChar {
 	private short sObs;				// obstruction for toString
 	private String name;			// name for the TaxChar
 	private boolean isMerge = false;
+	private boolean isRoot = false;
 	private int id=0;
 	/*
 	 * 	The constructor for TaxChar by passing each values in int
@@ -138,6 +139,14 @@ public class TaxChar {
 		return this.isMerge;
 	}
 	
+	public void setRoot(){
+		this.isRoot = true;
+	}
+	
+	public boolean isRoot(){
+		return this.isRoot;
+	}
+	
 	/*
 	 * 	toString
 	 */
@@ -148,7 +157,8 @@ public class TaxChar {
 	}
 	
 	public String toJson(){
-		return String.format("{\"name\":\"%s\"}", this.name);
+		String nodeType = this.isMerge ? "merge" : "leaf";
+		return String.format("{\"name\":\"%s\", \"node\":\"%s\"}", this.name, nodeType);
 	}
 	
 	public void setId(int id){

@@ -9,6 +9,20 @@ circle {
   cursor: pointer;
 }
 
+circle.leaf {
+    fill: #0f0;
+    stroke: green;
+    stroke-width: 1.5px;
+    cursor: pointer;
+}
+
+circle.merge {
+    fill: #f00;
+    stroke: darkred;
+    stroke-width: 1.5px;
+    cursor: pointer;
+}
+
 line {
   fill: none;
   stroke: #ccc;
@@ -36,8 +50,10 @@ var width = 1200,
 var fill = d3.scale.category20();
 
 var force = d3.layout.force()
+    .gravity(.10)
     .charge(-250)
-    .linkDistance(30)
+    .chargeDistance(250)
+    .distance(50)
     .size([width, height]);
 
 var svg = d3.select("body").append("svg")
@@ -60,8 +76,10 @@ d3.json("graph.json", function(error, json) {
 
   var node = gnodes.append("circle")
       .attr("r", radius - .75)
-      .style("fill", function(d) { return fill(d.group); })
-      .style("stroke", function(d) { return d3.rgb(fill(d.group)).darker(); });
+      .attr("class", function(d) {
+            if(d.node == "leaf") { return "leaf";}
+            else if(d.node == "merge") { return "merge";}
+        });
 
   var labels = gnodes.append("text")
         .text(function(d) { return "___"+d.name; });
@@ -88,6 +106,7 @@ d3.json("graph.json", function(error, json) {
     });
   }
 });
+
 
 </script>
 
