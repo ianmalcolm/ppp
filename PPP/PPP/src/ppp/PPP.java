@@ -1030,6 +1030,7 @@ public class PPP{
 			this.avgOpenHeight += colMax;
 		}
 		this.avgOpenHeight = this.avgOpenHeight / (2*this.occ.length);
+//		this.visibilityWeighted += 2*this.avgOpenHeight;
 	}
 	
 	/**
