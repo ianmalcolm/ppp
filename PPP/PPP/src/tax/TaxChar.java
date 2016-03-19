@@ -1,5 +1,7 @@
 package tax;
 
+import java.util.ArrayList;
+
 import state.StateValue;
 
 /*
@@ -20,6 +22,8 @@ public class TaxChar {
 	private boolean isMerge = false;
 	private boolean isRoot = false;
 	private int id=0;
+	private String parent;
+	public ArrayList<String> children;
 	/*
 	 * 	The constructor for TaxChar by passing each values in int
 	 * 	Notes: move = advance + turn
@@ -32,6 +36,7 @@ public class TaxChar {
 		this.turn = (float) turn;
 		this.move = (float)(advance + turn);
 		this.obstruction = (float) obstruction;
+		this.children = new ArrayList<String>();
 		normalizeTC();
 	}
 	/*
@@ -46,6 +51,7 @@ public class TaxChar {
 		this.turn = turn;
 		this.move = advance + turn;
 		this.obstruction = obstruction;
+		this.children = new ArrayList<String>();
 		normalizeTC();
 	}
 	/*
@@ -60,6 +66,7 @@ public class TaxChar {
 		this.turn = (float) sv.getTurn();
 		this.move = (float) sv.getMove();
 		this.obstruction = (float) obstruction;
+		this.children = new ArrayList<String>();
 		normalizeTC();
 	}
 	/*
@@ -156,9 +163,14 @@ public class TaxChar {
 		return result;
 	}
 	
-	public String toJson(){
+	public String toForceJson(){
 		String nodeType = this.isMerge ? "merge" : "leaf";
 		return String.format("{\"name\":\"%s\", \"node\":\"%s\"}", this.name, nodeType);
+	}
+	
+	public String toTreeJson(){
+		String parent = this.parent == null ? "null" : this.parent;
+		return String.format("{\"name\": \"%s\", \"parent\":\"%s\"", this.name, parent);
 	}
 	
 	public void setId(int id){
@@ -167,5 +179,21 @@ public class TaxChar {
 	
 	public int getId(){
 		return this.id;
+	}
+	
+	public void setParent(String p){
+		this.parent = p;
+	}
+	
+	public String getParent(){
+		return this.parent;
+	}
+	
+	public void addChild(String c){
+		this.children.add(c);
+	}
+	
+	public ArrayList<String> getChildren(){
+		return this.children;
 	}
 }

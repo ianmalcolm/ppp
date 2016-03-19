@@ -32,18 +32,20 @@ public class Sim {
 //		for (String f : folders){
 //			testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/"+f, false);
 //		}
-		//testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Openness", false);
-		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Openness", false);
-		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness/PPP21.ppp", false);
-		//displayPPP(map);
-		
+		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
+		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
+		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
+		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
+//		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness/PPP21.ppp", false);
+//		displayPPP(map);
+//		
 //		map.drawMap();
 //		map.evaluateDifficulty();
 //		map.displayMap();
 
 //		int LimitedMemRange = (2*sensorRange)+1;
 		//Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
-		//Bot ob = new OmniscientBot(new Memory(map), sensorRange);
+//		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
 		//Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//Bot ran = new RandomBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
@@ -53,7 +55,7 @@ public class Sim {
 		//Bot bump = new DecisionBumper(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//expN.setSensorNoise(0.1);
 //
-		//singleTest(map, bump, true, true);
+//		singleTest(map, ob, true, true);
 		//test(map, bump, 1000, true, false);
 		
 		//singleTest(map, ob, true, false);
@@ -203,8 +205,8 @@ public class Sim {
 			}
 		}
 		tree.calUPGMA();
-		tree.writeJson(folder);
-		System.out.println("Graph JSON written to " + folder + "/graph.json");
+		tree.writeForceJson(folder);
+		tree.writeTreeJson(folder);
 		if (unreachable > 0){
 			System.out.printf("\n%d Unreachable PPPs in test set were skipped!\n", unreachable);
 		}

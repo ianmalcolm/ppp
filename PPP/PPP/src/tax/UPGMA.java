@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import sim.agent.represenation.Node;
-
 /*
  * 	Author:	Hao Wei
  * 	Time:	24/05/2013
@@ -71,10 +69,19 @@ public class UPGMA {
 			Pair temp = calDistance();
 			taxaPair.add(temp);
 			TaxChar newTC = mergeTC(fixTaxa[temp.getX()], fixTaxa[temp.getY()]);
-			newTC.setName(fixTaxa[temp.getX()].getName());
+			TaxChar first = fixTaxa[temp.getX()];
+			TaxChar second = fixTaxa[temp.getY()];
+			newTC.setName(first.getName());
 			newTC.setMerged();
+			newTC.setParent(first.getParent());
+			newTC.addChild(second.getName());
+			for(String c: first.getChildren()){
+				newTC.addChild(c);
+			}
 			fixTaxa[temp.getX()] = newTC;
-			fixTaxa[temp.getY()].setWaste();
+			second.setWaste();
+			second.setParent(newTC.getName());
+			fixTaxa[temp.getY()] = second;
 		}
 	}
 	/*
@@ -188,7 +195,59 @@ public class UPGMA {
 		System.out.println("");
 	}
 	
-	public void writeJson(String folder){
+	private void writeChild(TaxChar node, Writer writer, HashMap<String, TaxChar> nodes, String indent) throws IOException{
+		if (!node.getChildren().isEmpty()){
+			writer.write(",\n"+indent+"\"children\":[\n");
+			boolean firstPrinted = false;
+			for (String c : node.getChildren()){
+				TaxChar child = nodes.get(c);
+				if (!firstPrinted){
+					writer.write(indent+child.toTreeJson());
+					firstPrinted = true;
+				} else {
+					writer.write(","+indent+child.toTreeJson());
+				}
+				this.writeChild(child, writer, nodes, indent+"  ");
+			}
+			writer.write("]");
+		}
+		writer.write("}");
+	}
+	
+	public void writeTreeJson(String folder){
+		HashMap<String, TaxChar> nodes = new HashMap<String, TaxChar>();
+		TaxChar root = null;
+		
+		int id = 0;
+		//Find the root node
+		for (TaxChar tc : fixTaxa){
+			tc.setId(id);
+			id++;
+			nodes.put(tc.getName(), tc);
+			if (tc.getParent()==null){
+				root = tc;
+			}
+		}
+		//Write out tree structure descending from root
+		Writer writer = null;
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(
+			          new FileOutputStream(folder+"/tree_graph.json"), "utf-8"));
+			writer.write("[");
+			writer.write(root.toTreeJson());
+			this.writeChild(root, writer, nodes, "  ");
+			writer.write("]");
+		} catch (IOException ex){
+			System.err.println("Folder :" + folder + ", File " + "tree_graph.json");
+			ex.printStackTrace();
+			System.exit(1);
+		} finally {
+			   try {writer.close();} catch (Exception ex) {ex.printStackTrace();}
+		}
+		System.out.println("Graph JSON written to " + folder + "/tree_graph.json");
+	}
+	
+	public void writeForceJson(String folder){
 		Writer writer = null;
 		HashMap<String, Integer> nodes = new HashMap<String, Integer>();
 		int id = 0;
@@ -196,7 +255,7 @@ public class UPGMA {
 		
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(
-			          new FileOutputStream(folder+"/graph.json"), "utf-8"));
+			          new FileOutputStream(folder+"/force_graph.json"), "utf-8"));
 			writer.write("{\n");
 			writer.write("  \"nodes\": [");
 			for(TaxChar tc : fixTaxa){
@@ -204,10 +263,10 @@ public class UPGMA {
 				id++;
 				nodes.put(tc.getName(), tc.getId());
 				if (!firstPrinted){
-					writer.write("    "+tc.toJson());
+					writer.write("    "+tc.toForceJson());
 					firstPrinted = true;
 				} else {
-					writer.write(",\n    "+tc.toJson());
+					writer.write(",\n    "+tc.toForceJson());
 				}
 			}
 			writer.write("\n  ]");
@@ -230,12 +289,13 @@ public class UPGMA {
 			writer.write("\n}");
 			
 		} catch (IOException ex){
-			System.err.println("Folder :" + folder + ", File " + "graph.json");
+			System.err.println("Folder :" + folder + ", File " + "force_graph.json");
 			ex.printStackTrace();
 			System.exit(1);
 		} finally {
 			   try {writer.close();} catch (Exception ex) {ex.printStackTrace();}
 		}
+		System.out.println("Graph JSON written to " + folder + "/force_graph.json");
 	}
 	
 }
