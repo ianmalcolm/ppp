@@ -1,10 +1,5 @@
 package sim.agent.represenation;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import sim.agent.represenation.Memory.Cell;
-
 /**
  * Limited Size memory, providing finite window onto the PPP
  * This class maps functions back onto Memory within the constrained view

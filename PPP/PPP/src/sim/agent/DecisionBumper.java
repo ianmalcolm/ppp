@@ -1,8 +1,5 @@
 package sim.agent;
 
-import java.util.HashSet;
-import java.util.List;
-
 import sim.agent.represenation.Memory;
 import sim.agent.represenation.Node;
 
