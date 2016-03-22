@@ -274,14 +274,14 @@ public class PPPManager {
 	 * Two most fit PPPs in Tournament
 	 */
 	private short[] mostFit(){
-		short most1 = this.maxTurns();
-		short most2 = this.maxTurns();
+//		short most1 = this.maxTurns();
+//		short most2 = this.maxTurns();
 //		short most1 = this.minGoalVisibility();
 //		short most2 = this.minGoalVisibility();
 //		short most1 = this.minVisibilityMagnitude();
 //		short most2 = this.minVisibilityMagnitude();
-//		short most1 = this.minVisibilityWeightedSum();
-//		short most2 = this.minVisibilityWeightedSum();
+		short most1 = this.minVisibilityWeightedSum();
+		short most2 = this.minVisibilityWeightedSum();
 		return new short[] {most1, most2};
 	}
 	
@@ -289,14 +289,14 @@ public class PPPManager {
 	 * Two least fit PPPs in Tournament
 	 */
 	private short[] leastFit(){
-		short least1 = this.minTurns();
-		short least2 = this.minTurns();
+//		short least1 = this.minTurns();
+//		short least2 = this.minTurns();
 		//short least1 = this.maxGoalVisibility();
 		//short least2 = this.maxGoalVisibility();
 //		short least1 = this.maxVisibilityMagnitude();
 //		short least2 = this.maxVisibilityMagnitude();
-//		short least1 =this.maxVisibilityWeightedSum();
-//		short least2 =this.maxVisibilityWeightedSum();
+		short least1 =this.maxVisibilityWeightedSum();
+		short least2 =this.maxVisibilityWeightedSum();
 		return new short[] {least1, least2};
 	}
 	

@@ -2,6 +2,7 @@ package main;
 
 import ppp.PPP;
 import ppp.PPPManager;
+import sim.main.Sim;
 
 public class Main {
 	private final static int size = 20;
@@ -10,6 +11,8 @@ public class Main {
 
 	public static void main(String[] args){
 		tournament();
+		Sim.testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/new", false);
+		Sim.runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/new", false);
 		//singlePPP();
 	}
 	

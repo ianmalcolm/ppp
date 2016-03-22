@@ -32,12 +32,13 @@ public class Sim {
 //		for (String f : folders){
 //			testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/"+f, false);
 //		}
-		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
-		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
-		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
-		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
-//		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness/PPP21.ppp", false);
-//		displayPPP(map);
+//		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
+//		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
+//		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
+//		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
+		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/OpennessHeight/PPP32.ppp", false);
+		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/new/PPP47.ppp", false);
+		displayPPP(map);
 //		
 //		map.drawMap();
 //		map.evaluateDifficulty();
