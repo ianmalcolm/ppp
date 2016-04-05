@@ -1,0 +1,34 @@
+\select@language {british}
+\contentsline {chapter}{List of Figures}{9}{chapter*.2}
+\contentsline {chapter}{List of Tables}{10}{chapter*.3}
+\contentsline {part}{\numberline {I}Preliminaries}{11}{part.1}
+\contentsline {chapter}{\numberline {1}Introduction}{13}{chapter.1}
+\contentsline {section}{\numberline {1.1}Motivation}{13}{section.1.1}
+\contentsline {section}{\numberline {1.2}Background}{14}{section.1.2}
+\contentsline {section}{\numberline {1.3}Project Aims}{14}{section.1.3}
+\contentsline {section}{\numberline {1.4}Document Structure}{14}{section.1.4}
+\contentsline {section}{\numberline {1.5}Statement of Ethics}{15}{section.1.5}
+\contentsline {chapter}{\numberline {2}Literature Review}{16}{chapter.2}
+\contentsline {section}{\numberline {2.1}Testing Autonomous Robots}{16}{section.2.1}
+\contentsline {section}{\numberline {2.2}Path Planning Problems}{16}{section.2.2}
+\contentsline {section}{\numberline {2.3}Factors of Difficulty}{16}{section.2.3}
+\contentsline {section}{\numberline {2.4}Exploration}{16}{section.2.4}
+\contentsline {part}{\numberline {II}Research}{17}{part.2}
+\contentsline {chapter}{\numberline {3}Problem Analysis}{18}{chapter.3}
+\contentsline {section}{\numberline {3.1}Introduction}{18}{section.3.1}
+\contentsline {section}{\numberline {3.2}Task Definition}{19}{section.3.2}
+\contentsline {section}{\numberline {3.3}Difficulty}{19}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Occupancy Grid}{19}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Difficult PPPs}{20}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.3}Measurement of Difficulty}{20}{subsection.3.3.3}
+\contentsline {subsection}{\numberline {3.3.4}Application and Diversity}{20}{subsection.3.3.4}
+\contentsline {section}{\numberline {3.4}Generator Requirements}{21}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Rationale}{21}{subsection.3.4.1}
+\contentsline {section}{\numberline {3.5}Simulator Requirements}{21}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Rationale}{21}{subsection.3.5.1}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{22}{chapter.4}
+\contentsline {chapter}{\numberline {5}Evaluation}{23}{chapter.5}
+\contentsline {part}{\numberline {III}Closing Remarks}{24}{part.3}
+\contentsline {chapter}{\numberline {6}Conclusion}{25}{chapter.6}
+\contentsline {chapter}{\numberline {7}Future Work}{26}{chapter.7}
+\contentsline {chapter}{\numberline {8}Bibliography}{27}{chapter.8}
