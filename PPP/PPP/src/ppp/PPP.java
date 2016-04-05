@@ -902,7 +902,7 @@ public class PPP{
 	}
 	
 	public void evaluateDifficulty(){
-		this.goalVisibleCells       = this.evaluateVisibilityFromPosition(col-2, row-2, false);
+		this.goalVisibleCells       = this.evaluateVisibilityFromPosition(col-2, row-2, true);
 		this.startVisibleCells      = this.evaluateVisibilityFromPosition(1, 1, false);
 		this.centreVisibleCells     = this.evaluateVisibilityFromPosition(size, size/2, false);
 		this.topRightVisibleCells   = this.evaluateVisibilityFromPosition(col-2, 1, false);
