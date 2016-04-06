@@ -9,26 +9,27 @@
 \contentsline {section}{\numberline {1.4}Document Structure}{14}{section.1.4}
 \contentsline {section}{\numberline {1.5}Statement of Ethics}{15}{section.1.5}
 \contentsline {chapter}{\numberline {2}Literature Review}{16}{chapter.2}
-\contentsline {section}{\numberline {2.1}Testing Autonomous Robots}{16}{section.2.1}
-\contentsline {section}{\numberline {2.2}Path Planning Problems}{16}{section.2.2}
-\contentsline {section}{\numberline {2.3}Factors of Difficulty}{16}{section.2.3}
-\contentsline {section}{\numberline {2.4}Exploration}{16}{section.2.4}
-\contentsline {part}{\numberline {II}Research}{17}{part.2}
-\contentsline {chapter}{\numberline {3}Problem Analysis}{18}{chapter.3}
-\contentsline {section}{\numberline {3.1}Introduction}{18}{section.3.1}
-\contentsline {section}{\numberline {3.2}Task Definition}{19}{section.3.2}
-\contentsline {section}{\numberline {3.3}Difficulty}{19}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Occupancy Grid}{19}{subsection.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}Difficult PPPs}{20}{subsection.3.3.2}
-\contentsline {subsection}{\numberline {3.3.3}Measurement of Difficulty}{20}{subsection.3.3.3}
-\contentsline {subsection}{\numberline {3.3.4}Application and Diversity}{20}{subsection.3.3.4}
-\contentsline {section}{\numberline {3.4}Generator Requirements}{21}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}Rationale}{21}{subsection.3.4.1}
-\contentsline {section}{\numberline {3.5}Simulator Requirements}{21}{section.3.5}
-\contentsline {subsection}{\numberline {3.5.1}Rationale}{21}{subsection.3.5.1}
-\contentsline {chapter}{\numberline {4}Design and Implementation}{22}{chapter.4}
-\contentsline {chapter}{\numberline {5}Evaluation}{23}{chapter.5}
-\contentsline {part}{\numberline {III}Closing Remarks}{24}{part.3}
-\contentsline {chapter}{\numberline {6}Conclusion}{25}{chapter.6}
-\contentsline {chapter}{\numberline {7}Future Work}{26}{chapter.7}
-\contentsline {chapter}{\numberline {8}Bibliography}{27}{chapter.8}
+\contentsline {section}{\numberline {2.1}Introduction}{16}{section.2.1}
+\contentsline {section}{\numberline {2.2}Testing Autonomous Robots}{16}{section.2.2}
+\contentsline {section}{\numberline {2.3}Path Planning Problems}{17}{section.2.3}
+\contentsline {section}{\numberline {2.4}Factors of Difficulty}{19}{section.2.4}
+\contentsline {section}{\numberline {2.5}Exploration}{20}{section.2.5}
+\contentsline {part}{\numberline {II}Research}{24}{part.2}
+\contentsline {chapter}{\numberline {3}Problem Analysis}{25}{chapter.3}
+\contentsline {section}{\numberline {3.1}Introduction}{25}{section.3.1}
+\contentsline {section}{\numberline {3.2}Task Definition}{26}{section.3.2}
+\contentsline {section}{\numberline {3.3}Difficulty}{26}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Occupancy Grid}{26}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Difficult PPPs}{27}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.3}Measurement of Difficulty}{27}{subsection.3.3.3}
+\contentsline {subsection}{\numberline {3.3.4}Application and Diversity}{27}{subsection.3.3.4}
+\contentsline {section}{\numberline {3.4}Generator Requirements}{28}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Rationale}{28}{subsection.3.4.1}
+\contentsline {section}{\numberline {3.5}Simulator Requirements}{28}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Rationale}{29}{subsection.3.5.1}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{30}{chapter.4}
+\contentsline {chapter}{\numberline {5}Evaluation}{31}{chapter.5}
+\contentsline {part}{\numberline {III}Closing Remarks}{32}{part.3}
+\contentsline {chapter}{\numberline {6}Conclusion}{33}{chapter.6}
+\contentsline {chapter}{\numberline {7}Future Work}{34}{chapter.7}
+\contentsline {chapter}{\numberline {8}Bibliography}{35}{chapter.8}
