@@ -28,8 +28,28 @@
 \contentsline {section}{\numberline {3.5}Simulator Requirements}{28}{section.3.5}
 \contentsline {subsection}{\numberline {3.5.1}Rationale}{29}{subsection.3.5.1}
 \contentsline {chapter}{\numberline {4}Design and Implementation}{30}{chapter.4}
-\contentsline {chapter}{\numberline {5}Evaluation}{31}{chapter.5}
-\contentsline {part}{\numberline {III}Closing Remarks}{32}{part.3}
-\contentsline {chapter}{\numberline {6}Conclusion}{33}{chapter.6}
-\contentsline {chapter}{\numberline {7}Future Work}{34}{chapter.7}
-\contentsline {chapter}{\numberline {8}Bibliography}{35}{chapter.8}
+\contentsline {section}{\numberline {4.1}Methodology}{30}{section.4.1}
+\contentsline {section}{\numberline {4.2}Programming Language}{31}{section.4.2}
+\contentsline {section}{\numberline {4.3}Architecture}{31}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Component 1: Simulator}{31}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Component 2: Test Agents}{32}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}Component 3: Extension of the Generator}{32}{subsection.4.3.3}
+\contentsline {section}{\numberline {4.4}Simulator}{33}{section.4.4}
+\contentsline {section}{\numberline {4.5}Test Agents}{34}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}A* Bot}{34}{subsection.4.5.1}
+\contentsline {subsection}{\numberline {4.5.2}Random Bot}{35}{subsection.4.5.2}
+\contentsline {subsection}{\numberline {4.5.3}Wallfollower}{35}{subsection.4.5.3}
+\contentsline {subsection}{\numberline {4.5.4}Explorer and Long Term Explorer}{35}{subsection.4.5.4}
+\contentsline {subsection}{\numberline {4.5.5}Bumper and Decision Bumper}{35}{subsection.4.5.5}
+\contentsline {section}{\numberline {4.6}Test Agent Faults}{35}{section.4.6}
+\contentsline {section}{\numberline {4.7}Extension of the Generator}{36}{section.4.7}
+\contentsline {subsection}{\numberline {4.7.1}Goal Visibility}{36}{subsection.4.7.1}
+\contentsline {subsection}{\numberline {4.7.2}Visibility Magnitude}{37}{subsection.4.7.2}
+\contentsline {subsection}{\numberline {4.7.3}Weighted Sum Function}{40}{subsection.4.7.3}
+\contentsline {subsection}{\numberline {4.7.4}Final Evaluation Function}{44}{subsection.4.7.4}
+\contentsline {section}{\numberline {4.8}Third Party Libraries}{44}{section.4.8}
+\contentsline {chapter}{\numberline {5}Evaluation}{45}{chapter.5}
+\contentsline {part}{\numberline {III}Closing Remarks}{46}{part.3}
+\contentsline {chapter}{\numberline {6}Conclusion}{47}{chapter.6}
+\contentsline {chapter}{\numberline {7}Future Work}{48}{chapter.7}
+\contentsline {chapter}{\numberline {8}Bibliography}{49}{chapter.8}

@@ -1,5 +1,7 @@
 \documentclass[authoryearcitations]{UoYCSproject}
 \usepackage[nottoc,numbib]{tocbibind}
+\usepackage{graphicx}
+\usepackage{amsmath}
 \author{Stephen Lewis Webb}
 \title{Assessing the Difficulty of a Generated Path-Planning Problem}
 \date{April 5th 2016}
@@ -222,6 +224,208 @@ Wei's work laid out a .ppp file format for generated PPPs. S01 ensures the simul
 \chapter{Design and Implementation}
 \label{cha:Design}
 
+This chapter describes the methodology, architecture, design decisions and implementation of both the extensions to the PPP generator and the simulator. First, high level decisions are detailed, such as development methodology and the programming language used. Following this, the architecture of the the project will be discussed. Finally, I will focus on design decisions encountered during the development of the deliverables, justifying choices made.
+
+\section{Methodology}
+\label{sec:da_1}
+
+The goal of this project is to extend an existing system with a new set of features, making use of a simulator environment to evaluate these features. The requirements as stated in chapter \ref{cha:ProbAnalysis} serve to guide development of these features and the simulator.
+
+Given that the features to be introduced to the system will require a cycle of adjustment, evaluation, readjustment, due to the moving-goal nature of fitness functions, development methods such as Waterfall are not appropriate. Instead, a methodology which suits the incremental nature of these features would be far more suitable.
+
+I identified two such methods; Spiral and Agile. Agile methodology \cite{agile} seeks to develop and implement milestones in sprints - for example, a facet of the difficulty evaluation. Each sprint then builds upon the previous one, producing the final product incrementally. Each sprint should leave the generator in a stable state, such that changes may be assessed and the goals of the next sprint identified. In particular, a central tenet of Agile is responding to change; this aligns closely with the way the fitness function would need to be implemented and honed over the course of the project.
+
+Spiral methodology \cite{spiral} functions extremely similarly; goals are identified and implemented iteratively. However, Spiral focuses heavily on risk analysis to guide development. This can be difficult to assess and would not work well for a project seeking to implement many small components, as opposed to large scale engineering projects. For this reason, I chose to use Agile.
+
+
+\section{Programming Language}
+\label{sec:da_2}
+
+This project builds upon Wei's generator, which has been implemented in Java. This project therefore uses Java, rather than reimplementing or interfacing with existing code via another language. This allowed me to quickly move ahead with the project. In addition, some Javascript and HTML is used to visualise the output trees of the UPGMA functionality.
+
+
+\section{Architecture}
+\label{sec:da_3}
+
+As discussed in the chapter \ref{cha:ProbAnalysis}, this project is divided into three components: a simulator for the use of evaluating PPP files, a representative set of test agents, and extensions to the generator to measure and evolve for difficulty in the PPPs. The architecture of each will be detailed below.
+
+\subsection{Component 1: Simulator}
+\label{sec:da_3_1}
+I initially chose to focus on the simulator, such that the framework and methodology to evaluate the changes made to the generator was available before I began this work. This would allow me to rapidly evaluate the changes and iteratively improve upon them. 
+
+I chose not to make use of a third party simulator framework such as NetLogo and MASON. This is because the PPPs and therefore the environment to be simulated are currently extremely simple, requiring only basic sensor functionality and an extremely simple two dimensional environment. The algorithms required to sense in this grid environment are also simple, requiring basic linear interpolation and line drawing. In addition, much of the environment representation could be produced by reusing Wei's code with minor additions such as the ability to load a PPP from a saved textual representation. Finally, regardless of the simulator, I had to implement the agents and their path finding algorithms.
+
+I therefore chose to implement a simple simulator myself, which assisted me in learning Wei's code ahead of making my own additions and changes to it. I felt this was more valuable than spending time and effort to bring in a more advanced and feature-heavy simulator package as it would take me far longer to learn how to use it and interface with Wei's code and the PPP representations.
+
+\subsection{Component 2: Test Agents}
+\label{sec:da_3_2}
+
+The simulator required a set of test agents with representative faults such that the PPPs could be evaluated for their ability to find these faults. Seven such agents were produced, detailed later in this chapter.
+
+\subsection{Component 3: Extension of the Generator}
+\label{sec:da_3_3}
+As this project is built upon Wei's existing code, the majority of the architecture for this component of the project is already in place. As such, this component will consist of extensions and additions to the current architecture and will seek to avoid structural changes.
+
+Currently, the generator is capable of evolving for PPPs favouring an optimal route with many turns or many advance moves, as measured by the reimplementation of Ashlock's DPA algorithm. PPPs are evaluated at creation, or when they are altered by a mating event or mutation.
+
+As such, I will implement new functions which will be used as part of these evaluations, measuring the difficulty of the PPP. Following this, I will implement a fitness function in the same manner as Wei, which will select high fitness PPPs for mating events and low fitness PPPs for mutation. As such, the generator function as before, with additional methods of evaluation and selection.
+
+The result of these extensions should be that the tournament  generator is capable of producing a range of PPPs with diverse 'difficulties' as measured by the difficulty evaluation functions, such that these PPPs improve the fault finding capabilities of the simulator over Wei's original PPPs.
+
+As changes were made to my new fitness function, it may be that the goalposts move and tweaks and additions will be required. As such, I began with a simple measure of difficulty. I then used the altered generator to produce a set of 60 PPPs with several hundred mating events. This number was chosen to ensure generation time was quick; though the number of mating events is small, it could be reasonably expected that results would improve with further events, and thus this allowed for rapid 'prototyping' of the new PPPs. I could then evaluate these PPPs using the simulator and by observation to identify good and bad features. This knowledge could then be used to further improve the fitness function.
+
+\section{Simulator}
+\label{sec:da_4}
+A high level overview of the simulator architecture is provided in figure \ref{fig:sim_uml}.
+
+\begin{figure}
+\graphicspath{ {DesignImpPics/} }
+\includegraphics[width=1\textwidth]{SimUML.png}
+\caption{Simulator Architecture Overview}
+\label{fig:sim_uml}
+\end{figure}
+
+The simulator makes use of Wei's existing PPP classes and UPGMA tools to load a textual description of a PPP from disk, representing it as it was when it was first generated. In addition, the simulator makes use of Wei's UPGMA tool and its relevant classes to run the UPGMA algorithm, producing a JSON file describing the resulting tree structure. This is used for visualisation alongside D3.js. In addition, a CSV of the agent’s results is produced.
+
+Test agents are represented by the Bot class, which defines an interface the simulator uses to have the agent sense, plan and move at each simulation step. The seven subclasses agents each use different planning methods, and have different faults as discussed in section \ref{sec:da_6}.
+
+The bot class makes use of several component classes to provide state and functionality to the agents. Wei's AgentState and StateValue classes, used in his DPA implementation, are reused to store the bot's current location, moves made, and so on. In addition, a Node class was produced to describe positions into which an agent might plan to move, whilst a Sensor class provides functionality to describe lines of sight and thus what may be sensed from a location. The PathPlanner class is used to allow generic access to path planning methods such as A*, though not all of the agents make use of these methods. Finally, the Memory class acts as an occupancy grid that is updated over time as the agents move and sense. Plans are made based on this memory, though the simulator tracks movement against the PPP to ensure erroneous plans do not allow the agent to move through walls or out of bounds. This makes use of an occupancy class to describe what a grid cell represents - for example, an empty space or boundary wall.
+
+The LimitedMemory subclass is used to handicap an agent, allowing them a restricted memory space such that visited locations that leave the memory space are forgotten. In addition, the sensor class allows for a noise handicap to be set, which results in erroneous data to be randomly returned when sensing. This chance scales as the noise is set higher.
+
+\section{Test Agents}
+\label{sec:da_5}
+This section details the test agents produced and their faults. The extensions made to the generator will be evaluated on their ability to discover these faults in the agents in comparison to Wei's existing generator. As described above, each agent may be handicapped with sensor noise and by limiting their memory space. As I intended to incorporate elements of exploration into the measurement of difficulty, I drew several of these agents from exploration tactics as described in the literature review. In addition, I reimplemented agents described in Wei's paper to provide more direct comparisons to his results.
+
+\subsection{A* Bot}
+\label{sec:da_5_1}
+This agent uses A* with full prior knowledge of the PPP to find the optimal route. As such, if the goal is reachable, it will always complete the PPP in the optimal number of advances and turns. This agent has no intended fault, and is present as a comparison point to the routes of other agents.
+
+\subsection{Random Bot}
+\label{sec:da_5_2}
+The random bot moves randomly, including potentially staying still. As such, it is easily defeated by most PPPs, with a 4.4\% pass rate on empty 20x20 PPPs.
+
+\subsection{Wallfollower}
+\label{sec:da_5_3}
+This agent implements a very simple exploration tactic, following a wall and attempting to ensure its next move keeps the wall on the chosen side of the agent. This produces a simple fault - when the walls lead the agent in a cycle, it is not capable of taking alternative routes.
+
+\subsection{Explorer and Long Term Explorer}
+\label{sec:da_5_4}
+These agents seek to maximise the number of cells explored, and therefore move to positions that maximise the number of new cells sensed. This leads, for example, to the agent moving away from walls to make use of its full sensor range. The basic explorer does not plan far ahead, however, and may wander aimlessly in fully explored areas. The long term explorer may recognise when it cannot explore further, and will seek to path via A* to a new unknown area. However, this is not very guided and may result in the agent moving far away to explore single cells though there may be areas with a large number of unexplored cells.
+
+\subsection{Bumper and Decision Bumper}
+\label{sec:da_5_5}
+These agents are reimplementation of two of Wei's agents. Both move in straight lines until they bump into a wall. At this point, a new direction is chosen at random. This may lead to both being trapped in areas where the only exit is not in a position such that they will path into it. The decision bumper records its directions at each 'bump', and will exhaust unused choices before choosing randomly.
+
+\section{Test Agent Faults}
+\label{sec:da_6}
+The set of faults in the test agents, while simple, is a worthwhile set as they represent faults which would be faced by real world agents implementing these simple exploration and movement tactics. If a fault may be uncovered due to an agent only planning one step ahead, then it can be reasonably expected that similar faults might be uncovered if the agent only planned two or three steps ahead (and so on) though they might be rarer. As such, I argue that they represent the 'worst case' of a set of related faults - planning further ahead should result in a better pass rate for a given agent. The faults in the agents described are therefore fairly representative of real world faults.
+
+In addition, as noted in the chapter \ref{cha:LitReview}, a common issue facing autonomous robotics is that of accurately sensing the world through multiple sensors, each with different capabilities and viewing positions. This is usually tackled via one of the many methods of sensor fusion. While the agents and simulator implemented are very simple, each having a single sensor which operates by line of sight rules from the agent out to its range, the sensor noise handicap goes some way to better representing real world agents by modelling the imperfections in a real sensor suite. As the PPPs themselves are very simple, I did not consider it necessary to implement a more complex sensor model in the simulator; in particular it should be noticed that sensor noise obscures the measure of difficulty as I could not be sure if the PPP was difficult due to its layout or the effect of sensor noise. However, it should be clear that a noisy sensor should reduce the pass rate of an agent.
+
+\section{Extension of the Generator}
+\label{sec:da_7}
+As discussed above, extensions to the generator would take place through the addition of new evaluation functions to the PPP class and the addition of new fitness functions to the PPP Generator class which would draw upon these evaluations. 
+
+The result of these extensions should be that the tournament generator is capable of producing a range of PPP with diverse 'difficulties' as measured by the difficulty evaluation functions, such that these PPPs improve the fault finding capabilities of the simulator over Wei's original PPPs.
+
+\subsection{Goal Visibility}
+\label{sec:goal_vis}
+I began with a simple measure of difficulty - a measurement of the number of cells in the PPP from which the goal position was visible, taking into account lines of sight due to obstacles. This would be measured with a perfect sensor - that is, one with zero noise and a range capable of sensing the entire environment. Clearly it would be the case that inferior sensors would further increase the difficulty - sensor noise would cause incorrect measurements, whilst reduced range would reduce the number of cells from which the goal was visible. Hence, a perfect sensor provides a base case.
+
+The premise behind this measurement is that PPPs that are difficult to navigate must necessarily place obstacles such that the optimal route is obscured. If this was not the case, the optimal route would be a direct path to the goal position. As there would be obstacles between the start and goal positions, the optimal route must necessarily circumvent these obstructions. If this is the case, then even in cases where the PPP is known beforehand, the route ought to be longer and harder to navigate than a simple, unobstructed route.
+
+The sensor and memory classes from the Simulator were reused to produce these measurements, as the line of sight functionality was already present. Lines of sight are generated from the goal position across the PPP. Each line is then followed, counting the number of new cells explored. If an obstacle is met, the remainder of the line is discarded. This measurement can therefore be applied regardless of goal position. The fitness function then selects for PPPs with lower goal visibility measurements.
+
+An example of a PPP generated under this fitness function is provided in figure \ref{fig:goal_vis_ppp}.
+
+\begin{figure}
+\graphicspath{ {DesignImpPics/} }
+\includegraphics[width=1\textwidth]{visFromGoal.png}
+\caption{A PPP with 8\% Goal visibility. 'v' symbols represent the squares from which the goal is visible to a perfect sensor.}
+\label{fig:goal_vis_ppp}
+\end{figure}
+
+After prototyping a set of PPPs with this fitness function, I noted that the generator was encouraged to place obstacles in clusters around the goal position such that the greatest number of cells were obscured. Placing obstacles further away is less attractive, as it leaves many cells on the side of the goal which can still 'see' into the goal. As a result, chromosomes which produce obstacles further from the goal tend to be bred out over the course of the tournament. At the extreme, this resulted in PPPs which were mostly empty with the exception of these blocking obstacles, and thus were easy to traverse.
+
+\subsection{Visibility Magnitude}
+\label{sec:visMag}
+To attempt to encourage the generator to spread obstacles across the PPP, I added additional measurements of visibility to the function. These measurements would take into account the visibility from each of the four corners and the centre of the PPP, in hope that the generator would be encouraged to spread the obstacles more evenly throughout the PPP. These five measurements would then be treated as a vector and the magnitude used as the final evaluation, acting as a measurement of the balance of visibilities from each position.
+
+The fitness function was then tweaked to minimise this visibility; an example PPP produced under this function is provided in figure \ref{fig:vis_mag_ppp}.
+
+\begin{figure}
+\graphicspath{ {DesignImpPics/} }
+\includegraphics[width=1\textwidth]{visMag.png}
+\caption{A PPP generated under Visibility Magnitude (Score=0.57).}
+\label{fig:vis_mag_ppp}
+\end{figure}
+
+After prototyping a set of PPPs under this fitness function, I noted that many PPPs did indeed seem to spread obstacles more evenly across the environment. Furthermore, the additional viewpoints had forced the generator to make use of more of the budget of obstacles. 
+
+However, the generator only protects the start and goal positions - that is, it ensures these positions are never blocked by an obstacle. The other three measurement positions were not under this protection; hence, a large fitness reward could be received by simply placing a single obstacle on each of these positions. In the worst case, this resulted in PPPs with obstacles clustered tightly around the start and goal corners, with single obstacles on the other three measurement positions. In addition, given that five measurements made up the vector, it was not intuitive to identify a difficult PPP given the magnitudes alone. Furthermore, it was not clear how to add measurements of other features of the PPP to this vector. As a result, I decided it was not a sufficient description of a PPP's difficulty.
+
+\subsection{Weighted Sum Function}
+\label{sec:weighted_sum}
+In order to address the issue of incorporating measurements of many features of a PPP into a single evaluation, I reworked the visibility magnitude function into a sum of visibilities. This would allow additional feature measurements to be added as terms to this function; a more intuitive description than the vector. Furthermore, terms of the function could be weighted to influence the generator to focus more or less on each feature. As noted, the visibility measurements would make up one feature of this function.
+
+A particular flaw of the previous measurements I had implemented was that a PPP could receive a good score while using few obstacles. This left the PPP environment wide open, resulting in high pass rates that were not reflective of the score given to them by the fitness function. I therefore introduced a cost to using few obstacles to the weighted sum, hoping to encourage the generator to use more of the budget of obstacles given to a PPP producing a less open environment. This term is described as a percentage of the maximum obstacles per PPP, which is a configurable generator parameter.
+
+With this basic function in place, I continued prototyping PPPs and investigating to identify good and bad features. This led me, for example, to weighting the start and goal visibilities more highly such that the generator considered them more important than the other viewpoints. An example of a PPP generated with these weights is presented in figure \ref{fig:weighted_sum_ppp}.
+
+\begin{figure}
+\graphicspath{ {DesignImpPics/} }
+\includegraphics[width=1\textwidth]{goalStartVis.png}
+\caption{A PPP with low start and goal position visibility.}
+\label{fig:weighted_sum_ppp}
+\end{figure}
+
+In addition, I added new feature measurements to the function. I observed that many PPPs were generating with only one turn needed to reach the goal along the optimal path - this meant that the path was the same as an empty PPP. See figure \ref{fig:one_turn_ppp} for an example of such a PPP. I therefore penalised PPPs with one turn in the fitness function. Furthermore, I noted that many PPPs with high pass rates across the agent set were often very open - obstacles were clustered up or usage was low, such that much of the environment was wide 'plains' rather than a more maze-like structure. I therefore measured the maximum openness horizontally and vertically across each row and column - that is, the maximum number of cells an agent could move in each without meeting an obstacle. I then averaged this across all rows and columns to produce a measurement of the average vertical and horizontal 'openness' of the PPP. Figure \ref{fig:open_ppp} shows an example PPP which is very open on both axes. I also experimented with other features, but removed them as the prototype results were worsened.
+
+\begin{figure}
+\graphicspath{ {DesignImpPics/} }
+\includegraphics[width=1\textwidth]{oneTurn.png}
+\caption{ A PPP with one turn on the optimal path, marked.}
+\label{fig:one_turn_ppp}
+\end{figure}
+
+\begin{figure}
+\graphicspath{ {DesignImpPics/} }
+\includegraphics[width=1\textwidth]{wide_plain.png}
+\caption{ A very open PPP.}
+\label{fig:open_ppp}
+\end{figure}
+
+\subsection{Final Evaluation Function}
+\label{sec:function}
+After the tweaks, weights and additional measurements had been added, the fitness function was finalised into the form given in equation \ref{eq:fitness_func}. The generator seeks to minimise this function, a result of it being built initially upon the idea of minimising visibilities.
+
+\begin{multline}
+\sum(VisibilityFunction + 2\times(1-ObstacleUse)\\ + 2\times(AvgHorizonalOpenness) + 2\times(AvgVerticalOpenness)\\+ (2 \text{ if } OptimalTurns \equiv 1 \text{ else } 0))
+\label{eq:fitness_func}
+\end{multline}
+
+Where 'VisibilityFunction' is the function given in equation  \ref{eq:vis_function}, denoting the weighted sum of the number of cells visible from each position named:
+\begin{equation}
+\resizebox{0.9\textwidth}{!}{$
+1.5 \times \text{Start}+\text{Centre}+\text{Top Right}+\text{Bottom Left}+2.5 \times \text{Goal}
+$}
+\label{eq:vis_function}
+\end{equation}
+
+\section{Third Party Libraries}
+\label{sec:tplibs}
+The following third party libraries were used during the project.
+
+\textbf{D3.js 3.5.16 \cite{d3js}}\\
+A javascript library for manipulating documents based on data. This is used for visualisation of UPGMA tree structures, alongside a tree graph document produced by modifying an example graph.\\
+
+\textbf{A* Path planning \cite{aStar}}\\
+Pseudocode implementation of the A* algorithm, slightly modified to make use of the simulator data structures.\\
+
+\textbf{Line Drawing on Grids \cite{lineDrawing}}\\
+Implementation of Linear Interpolation and Line drawing on grids used to produce lines of sight by the agent's sensor components. As above, slightly modified to make use of simulator data structures.\\
+
 \chapter{Evaluation}
 \label{cha:Evaluation}
 
@@ -331,6 +535,34 @@ Wei's work laid out a .ppp file format for generated PPPs. S01 ensures the simul
 	Proc. IEEE Robotics and Automation,
 	San Diego, CA,
 	May 1994
+	
+\bibitem{d3js}
+	M. Bostock
+	D3.js 3.5.16,
+	Available: https://d3js.org/
+
+\bibitem{aStar}
+	A. Patel,
+	A* Implementation Notes [Online]
+	Available: http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html
+
+\bibitem{lineDrawing}
+	Red Blob Games,
+	Line Drawing on Grids [Online].
+	Available: http://www.redblobgames.com/grids/line-drawing.html
+	
+\bibitem{agile}
+	K. Beck et al.,
+	(2001, Feb.)
+	Agile Manifesto [Online].
+	Available: http://agilemanifesto.org/
+	
+\bibitem{spiral}
+	B. W. Boehm
+	"A spiral model of software development and enhancement"
+	Computer, 
+	Vol. 21, no. 5, pp. 61-72, 
+	May 1988.
 
 \end{thebibliography}
 

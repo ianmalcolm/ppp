@@ -27,8 +27,28 @@
 \BOOKMARK [1][-]{section.3.5}{Simulator Requirements}{chapter.3}% 27
 \BOOKMARK [2][-]{subsection.3.5.1}{Rationale}{section.3.5}% 28
 \BOOKMARK [0][-]{chapter.4}{Design and Implementation}{part.2}% 29
-\BOOKMARK [0][-]{chapter.5}{Evaluation}{part.2}% 30
-\BOOKMARK [-1][-]{part.3}{Closing Remarks}{}% 31
-\BOOKMARK [0][-]{chapter.6}{Conclusion}{part.3}% 32
-\BOOKMARK [0][-]{chapter.7}{Future Work}{part.3}% 33
-\BOOKMARK [0][-]{chapter.8}{Bibliography}{part.3}% 34
+\BOOKMARK [1][-]{section.4.1}{Methodology}{chapter.4}% 30
+\BOOKMARK [1][-]{section.4.2}{Programming Language}{chapter.4}% 31
+\BOOKMARK [1][-]{section.4.3}{Architecture}{chapter.4}% 32
+\BOOKMARK [2][-]{subsection.4.3.1}{Component 1: Simulator}{section.4.3}% 33
+\BOOKMARK [2][-]{subsection.4.3.2}{Component 2: Test Agents}{section.4.3}% 34
+\BOOKMARK [2][-]{subsection.4.3.3}{Component 3: Extension of the Generator}{section.4.3}% 35
+\BOOKMARK [1][-]{section.4.4}{Simulator}{chapter.4}% 36
+\BOOKMARK [1][-]{section.4.5}{Test Agents}{chapter.4}% 37
+\BOOKMARK [2][-]{subsection.4.5.1}{A* Bot}{section.4.5}% 38
+\BOOKMARK [2][-]{subsection.4.5.2}{Random Bot}{section.4.5}% 39
+\BOOKMARK [2][-]{subsection.4.5.3}{Wallfollower}{section.4.5}% 40
+\BOOKMARK [2][-]{subsection.4.5.4}{Explorer and Long Term Explorer}{section.4.5}% 41
+\BOOKMARK [2][-]{subsection.4.5.5}{Bumper and Decision Bumper}{section.4.5}% 42
+\BOOKMARK [1][-]{section.4.6}{Test Agent Faults}{chapter.4}% 43
+\BOOKMARK [1][-]{section.4.7}{Extension of the Generator}{chapter.4}% 44
+\BOOKMARK [2][-]{subsection.4.7.1}{Goal Visibility}{section.4.7}% 45
+\BOOKMARK [2][-]{subsection.4.7.2}{Visibility Magnitude}{section.4.7}% 46
+\BOOKMARK [2][-]{subsection.4.7.3}{Weighted Sum Function}{section.4.7}% 47
+\BOOKMARK [2][-]{subsection.4.7.4}{Final Evaluation Function}{section.4.7}% 48
+\BOOKMARK [1][-]{section.4.8}{Third Party Libraries}{chapter.4}% 49
+\BOOKMARK [0][-]{chapter.5}{Evaluation}{part.2}% 50
+\BOOKMARK [-1][-]{part.3}{Closing Remarks}{}% 51
+\BOOKMARK [0][-]{chapter.6}{Conclusion}{part.3}% 52
+\BOOKMARK [0][-]{chapter.7}{Future Work}{part.3}% 53
+\BOOKMARK [0][-]{chapter.8}{Bibliography}{part.3}% 54
