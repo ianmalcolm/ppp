@@ -123,6 +123,7 @@ public class TaxChar {
 		this.centreVis = centreVis;
 		this.topRightVis = topRightVis;
 		this.bottomLeftVis = bottomLeftVis;
+		if (obsUsage > 1) { obsUsage = 1;}
 		this.obsUsage = obsUsage;
 		this.reachableCellRatio = reachableRatio;
 		this.avgHorizontalOpenness = openH;
@@ -261,6 +262,14 @@ public class TaxChar {
 		String result;
 		result = name+ "("+sAdvance+"-"+sTurn+"-"+sObs+")";
 		return result;
+	}
+	
+	public void printDebugInfo(){
+		System.out.printf("adv %.2f turn %.2f obs %.2f\n", advance, this.turn, this.obstruction);
+		System.out.printf("gv %.2f cv %.2f sv %.2f\n", this.goalVis, this.centreVis, this.startVis);
+		System.out.printf("trv %.2f blv %.2f oU %.2f\n", this.topRightVis, this.bottomLeftVis, this.obsUsage);
+		System.out.printf("RC %.2f hO %.2f vO %.2f\n", this.reachableCellRatio, this.getHOpen(), this.getVOpen());
+		System.out.printf("normaliser %.2f\n", this.norm);
 	}
 	
 	public String toForceJson(){
