@@ -961,7 +961,7 @@ public class PPP{
 		if (unreachable == 0){
 			this.reachablePercent = 1;
 		} else {
-			this.reachablePercent = (float)this.reachableCells/(float)(unreachable);
+			this.reachablePercent = (float)this.reachableCells/(this.totalCells-(2*this.obsUsed));
 		}
 		this.reachableRatio = (float)this.reachableCells/(float)(unreachable);
 		
@@ -1138,7 +1138,7 @@ public class PPP{
 		return this.avgOpenWidth;
 	}
 	
-	public double getReachabilePercent(){
+	public double getReachablePercent(){
 		return this.reachablePercent;
 	}
 	

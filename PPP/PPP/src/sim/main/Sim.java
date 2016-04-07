@@ -35,11 +35,11 @@ public class Sim {
 //		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
 //		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
 //		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
-		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Test", false);
-//		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP38.ppp", false);
-//		displayPPP(map);
-//		PPP map2 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP51.ppp", false);
-//		displayPPP(map2);
+//		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
+		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP17.ppp", false);
+		displayPPP(map);
+		PPP map2 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP7.ppp", false);
+		displayPPP(map2);
 //		PPP map3 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP40.ppp", false);
 //		displayPPP(map3);
 //		
@@ -205,12 +205,13 @@ public class Sim {
 				TaxChar tc = new TaxChar(map.getAdvance(), map.getTurn(), map.getObsUsed());
 				tc.addExtraCharacters(map.getGoalVisibility(), map.getStartVisibility(), map.getCentreVisibility(),
 						map.getTopRightVisibility(), map.getBottomLeftVisiblity(), map.getObstacleUse(),
-						map.getReachabilePercent(), map.getAvgOpenH(), map.getAvgOpenW());
+						0, map.getAvgOpenH(), map.getAvgOpenW());
 				tc.normalizeTC();
 				
 				String mapName = fileName.substring(0, fileName.indexOf("."));
 				tc.setName(mapName);
 				tree.addTC(tc);
+				//tc.printDebugInfo();
 			}
 		}
 		tree.calUPGMA();
