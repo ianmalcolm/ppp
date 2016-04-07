@@ -66,6 +66,7 @@ public class PPP{
 	private double obstaclesUsePercentage;
 	private double visibilityWeighted;
 	private double reachableRatio;
+	private double reachablePercent;
 	private double avgOpenWidth;
 	private double avgOpenHeight;
 	private double sumVis;
@@ -956,7 +957,14 @@ public class PPP{
 		this.unreachableCells = this.totalCells-this.reachableCells;
 		//Double obsUsed as that is the count of '3' in Occ, ie. the left peice of an obstacle
 		//But our reachability is counting occ as double width, so we need to account for the '4' right hand occ.
-		this.reachableRatio = (float)this.reachableCells/(float)(this.unreachableCells-(2*this.obsUsed));
+		double unreachable = this.unreachableCells-(2*this.obsUsed);
+		if (unreachable == 0){
+			this.reachablePercent = 1;
+		} else {
+			this.reachablePercent = (float)this.reachableCells/(float)(unreachable);
+		}
+		this.reachableRatio = (float)this.reachableCells/(float)(unreachable);
+		
 		
 		//try encouraging visMag around 0.6
 //		double goal = 0.6;
@@ -1128,6 +1136,10 @@ public class PPP{
 	
 	public double getAvgOpenW(){
 		return this.avgOpenWidth;
+	}
+	
+	public double getReachabilePercent(){
+		return this.reachablePercent;
 	}
 	
 	public double getAvgOpenH(){

@@ -14,6 +14,19 @@ public class TaxChar {
 	private float turn;			// the number of turns
 	private float move;		 	// the number of moves
 	private float obstruction;		// the number of obstructions
+	private float goalVis;
+	private float startVis;
+	private float centreVis;
+	private float topRightVis;
+	private float bottomLeftVis;
+	private float obsUsage;
+	private float reachableCellRatio;
+	private float avgHorizontalOpenness;
+	private float avgVerticalOpenness;
+	private float norm;
+	//private float difficulty;
+	
+	
 	private boolean wasted = false;	// whether this TaxChar is wasted.
 	private short sAdvance;			// advance for toString
 	private short sTurn;				// turn for toString
@@ -37,7 +50,16 @@ public class TaxChar {
 		this.move = (float)(advance + turn);
 		this.obstruction = (float) obstruction;
 		this.children = new ArrayList<String>();
-		normalizeTC();
+		this.goalVis = 0;
+		this.startVis = 0;
+		this.centreVis = 0;
+		this.topRightVis = 0;
+		this.bottomLeftVis = 0;
+		this.obsUsage = 0;
+		this.reachableCellRatio = 0;
+		this.avgHorizontalOpenness = 0;
+		this.avgVerticalOpenness = 0;
+		//normalizeTC();
 	}
 	/*
 	 * 	The constructor for TaxChar by passing each values int double
@@ -52,7 +74,16 @@ public class TaxChar {
 		this.move = advance + turn;
 		this.obstruction = obstruction;
 		this.children = new ArrayList<String>();
-		normalizeTC();
+		this.goalVis = 0;
+		this.startVis = 0;
+		this.centreVis = 0;
+		this.topRightVis = 0;
+		this.bottomLeftVis = 0;
+		this.obsUsage = 0;
+		this.reachableCellRatio = 0;
+		this.avgHorizontalOpenness = 0;
+		this.avgVerticalOpenness = 0;
+		//normalizeTC();
 	}
 	/*
 	 * 	The constructor for TaxChar by passing the StateValue
@@ -67,19 +98,62 @@ public class TaxChar {
 		this.move = (float) sv.getMove();
 		this.obstruction = (float) obstruction;
 		this.children = new ArrayList<String>();
-		normalizeTC();
+		this.goalVis = 0;
+		this.startVis = 0;
+		this.centreVis = 0;
+		this.topRightVis = 0;
+		this.bottomLeftVis = 0;
+		this.obsUsage = 0;
+		this.reachableCellRatio = 0;
+		this.avgHorizontalOpenness = 0;
+		this.avgVerticalOpenness = 0;
+		//normalizeTC();
 	}
-	/*
-	 * 	Normalize the vector
-	 */
-	private void normalizeTC(){
-		float norm = (float)Math.sqrt(advance*advance + turn*turn +
-				move*move + obstruction*obstruction);
-		advance = advance/norm;
-		turn = turn/norm;
-		move = move/norm;
-		obstruction = obstruction/norm;
+	
+	public void addExtraCharacters(double goalVis, double startVis, double centreVis, double topRightVis, 
+			double bottomLeftVis, double obsUsage, double reachableRatio, double openH, double openV){
+		this.addExtraCharacters((float)goalVis, (float)startVis, (float)centreVis, (float)topRightVis, (float)bottomLeftVis,
+				(float)obsUsage, (float)reachableRatio, (float)openH, (float)openV);
 	}
+	
+	public void addExtraCharacters(float goalVis, float startVis, float centreVis, float topRightVis, 
+			float bottomLeftVis, float obsUsage, float reachableRatio, float openH, float openV){
+		this.goalVis = goalVis;
+		this.startVis = startVis;
+		this.centreVis = centreVis;
+		this.topRightVis = topRightVis;
+		this.bottomLeftVis = bottomLeftVis;
+		this.obsUsage = obsUsage;
+		this.reachableCellRatio = reachableRatio;
+		this.avgHorizontalOpenness = openH;
+		this.avgVerticalOpenness = openV;
+	}
+	
+	//Renormalise after adding extra chars
+	public void normalizeTC(){
+		float[] arr = {advance, turn, move, obstruction};//, goalVis, startVis, centreVis, topRightVis, bottomLeftVis,
+					   //obsUsage, reachableCellRatio, avgHorizontalOpenness, avgVerticalOpenness};
+		float total = 0;
+		for(float f : arr){
+			total += (float) Math.pow(f, 2);
+		}
+		this.norm = (float) Math.sqrt(total);
+		
+		advance = advance / norm;
+		turn = turn / norm;
+		move = move / norm;
+		obstruction = obstruction / norm;
+//		goalVis = goalVis / norm;
+//		startVis = startVis / norm;
+//		centreVis = centreVis / norm;
+//		topRightVis = topRightVis / norm;
+//		bottomLeftVis = bottomLeftVis / norm;
+//		obsUsage = obsUsage / norm;
+//		reachableCellRatio = reachableCellRatio / norm;
+//		avgHorizontalOpenness = avgHorizontalOpenness / norm;
+//		avgVerticalOpenness = avgVerticalOpenness / norm;
+	}
+
 	/*
 	 * 	Calculate the Euclidian Distance between two TaxChar
 	 */
@@ -88,7 +162,21 @@ public class TaxChar {
 		float q2 = turn - tc.getTurn();
 		float q3 = move - tc.getMove();
 		float q4 = obstruction - tc.getObs();
-		return (float)Math.sqrt(q1*q1 + q2*q2 + q3*q3 + q4*q4);
+		float q5 = goalVis - tc.getGoalVis();
+		float q6 = startVis - tc.getStartVis();
+		float q7 = centreVis - tc.getCentreVis();
+		float q13 = topRightVis - tc.getTopRVis();
+		float q8 = bottomLeftVis - tc.getBottomLeftVis();
+		float q9 = obsUsage - tc.getObsUsage();
+		float q10 = reachableCellRatio - tc.getReachableCellRatio();
+		float q11 = avgHorizontalOpenness - tc.getHOpen();
+		float q12 = avgVerticalOpenness - tc.getVOpen();
+		float[] arr = {q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13};
+		float total = 0;
+		for (float f : arr){
+			total += Math.pow(f, 2);
+		}
+		return (float)Math.sqrt(total);
 	}
 	/*
 	 * 	return advance
@@ -114,6 +202,18 @@ public class TaxChar {
 	public float getObs(){
 		return obstruction;
 	}
+	
+	public float getReachableCellRatio(){return this.reachableCellRatio;}
+	public float getObsUsage(){return this.obsUsage;}
+	public float getBottomLeftVis(){return this.bottomLeftVis;}
+	public float getTopRVis(){return this.topRightVis;}
+	public float getGoalVis(){ return this.goalVis;}
+	public float getStartVis(){ return this.startVis;}
+	public float getCentreVis(){ return this.centreVis;}
+	public float getVOpen(){ return this.avgVerticalOpenness;}
+	public float getHOpen(){ return this.avgHorizontalOpenness;}
+	public float getNorm(){ return this.norm;}
+	
 	/*
 	 * 	Determine whether this TaxChar is wasted
 	 * 	return true if it is wasted

@@ -35,14 +35,17 @@ public class Sim {
 //		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
 //		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
 //		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
-//		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
-		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Design Results 2/Goal Vis/PPP59.ppp", false);
-		//PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/PPP/new/PPP47.ppp", false);
+		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Test", false);
+//		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP38.ppp", false);
 //		displayPPP(map);
+//		PPP map2 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP51.ppp", false);
+//		displayPPP(map2);
+//		PPP map3 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP40.ppp", false);
+//		displayPPP(map3);
 //		
-		map.drawMap();
-		map.evaluateDifficulty();
-		map.displayMap();
+//		map.drawMap();
+//		map.evaluateDifficulty();
+//		map.displayMap();
 
 //		int LimitedMemRange = (2*sensorRange)+1;
 		//Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
@@ -200,6 +203,11 @@ public class Sim {
 				}
 				maps.add(map);
 				TaxChar tc = new TaxChar(map.getAdvance(), map.getTurn(), map.getObsUsed());
+				tc.addExtraCharacters(map.getGoalVisibility(), map.getStartVisibility(), map.getCentreVisibility(),
+						map.getTopRightVisibility(), map.getBottomLeftVisiblity(), map.getObstacleUse(),
+						map.getReachabilePercent(), map.getAvgOpenH(), map.getAvgOpenW());
+				tc.normalizeTC();
+				
 				String mapName = fileName.substring(0, fileName.indexOf("."));
 				tc.setName(mapName);
 				tree.addTC(tc);

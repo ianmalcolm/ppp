@@ -41,7 +41,18 @@ public class UPGMA {
 		float a = (tc1.getAdvance() + tc2.getAdvance())/2;
 		float t = (tc1.getTurn() + tc2.getTurn())/2;
 		float o = (tc1.getObs()+tc2.getObs())/2;
+		float gv = (tc1.getGoalVis() - tc2.getGoalVis())/2;
+		float sv = (tc1.getStartVis() - tc2.getStartVis())/2;
+		float cv = (tc1.getCentreVis() - tc2.getCentreVis())/2;
+		float tv = (tc1.getTopRVis() - tc2.getTopRVis())/2;
+		float bv = (tc1.getBottomLeftVis() - tc2.getBottomLeftVis())/2;
+		float ou = (tc1.getObsUsage()- tc2.getObsUsage())/2;
+		float rc = (tc1.getReachableCellRatio() - tc2.getReachableCellRatio())/2;
+		float oh = (tc1.getHOpen()- tc2.getHOpen())/2;
+		float ov = (tc1.getVOpen()- tc2.getVOpen())/2;
 		TaxChar ret = new TaxChar(a,t,o);
+		ret.addExtraCharacters(gv, sv, cv, tv, bv, ou, rc, oh, ov);
+		ret.normalizeTC();
 		return ret;
 	}
 	/*
@@ -94,6 +105,7 @@ public class UPGMA {
 			if(!fixTaxa[i].wasted())
 				left++;
 		}
+		System.out.printf("%d TC left\n", left);
 		if(left>=2)
 			return true;
 		else
@@ -106,7 +118,7 @@ public class UPGMA {
 	private Pair calDistance(){
 		short first = 0;			// the first index of the smallest distance PPPs
 		short sec = 0;			// the second index of the smallest distance PPPs
-		float smallest = 1;	// the smallest distance between two PPPs
+		float smallest = 999999;	// the smallest distance between two PPPs
 		float tempSmall = 1;		// the temporary smallest distance between two PPPs
 		for(short i=0; i<count; i++){
 			for(short j=(short)(i+1); j<count; j++){
@@ -126,11 +138,12 @@ public class UPGMA {
 	 * 	Calculate the Euclidian Distance
 	 */
 	private float Euclidian(TaxChar tc1, TaxChar tc2) {
-		float q1 = tc1.getAdvance() - tc2.getAdvance();
-		float q2 = tc1.getTurn() - tc2.getTurn();
-		float q3 = tc1.getMove() - tc2.getMove();
-		float q4 = tc1.getObs() - tc2.getObs();
-		return (float)Math.sqrt(q1*q1 + q2*q2 + q3*q3 + q4*q4);
+		return tc1.EuclidianDistance(tc2);
+//		float q1 = tc1.getAdvance() - tc2.getAdvance();
+//		float q2 = tc1.getTurn() - tc2.getTurn();
+//		float q3 = tc1.getMove() - tc2.getMove();
+//		float q4 = tc1.getObs() - tc2.getObs();
+//		return (float)Math.sqrt(q1*q1 + q2*q2 + q3*q3 + q4*q4);
 	}
 	/*
 	 * 	Print the taxaPair onto the console
