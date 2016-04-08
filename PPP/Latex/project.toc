@@ -1,56 +1,72 @@
 \select@language {british}
-\contentsline {chapter}{List of Figures}{9}{chapter*.2}
-\contentsline {chapter}{List of Tables}{10}{chapter*.3}
-\contentsline {part}{\numberline {I}Preliminaries}{11}{part.1}
-\contentsline {chapter}{\numberline {1}Introduction}{13}{chapter.1}
-\contentsline {section}{\numberline {1.1}Motivation}{13}{section.1.1}
-\contentsline {subsection}{\numberline {1.1.1}Test Methods}{13}{subsection.1.1.1}
-\contentsline {subsection}{\numberline {1.1.2}Difficulty}{14}{subsection.1.1.2}
-\contentsline {section}{\numberline {1.2}Project Aims}{15}{section.1.2}
-\contentsline {section}{\numberline {1.3}Document Structure}{15}{section.1.3}
-\contentsline {section}{\numberline {1.4}Statement of Ethics}{16}{section.1.4}
-\contentsline {chapter}{\numberline {2}Literature Review}{17}{chapter.2}
-\contentsline {section}{\numberline {2.1}Introduction}{17}{section.2.1}
-\contentsline {section}{\numberline {2.2}Testing Autonomous Robots}{17}{section.2.2}
-\contentsline {section}{\numberline {2.3}Path Planning Problems}{18}{section.2.3}
-\contentsline {section}{\numberline {2.4}Factors of Difficulty}{20}{section.2.4}
-\contentsline {section}{\numberline {2.5}Exploration}{21}{section.2.5}
-\contentsline {part}{\numberline {II}Research}{25}{part.2}
-\contentsline {chapter}{\numberline {3}Problem Analysis}{26}{chapter.3}
-\contentsline {section}{\numberline {3.1}Introduction}{26}{section.3.1}
-\contentsline {section}{\numberline {3.2}Task Definition}{27}{section.3.2}
-\contentsline {section}{\numberline {3.3}Difficulty}{27}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Occupancy Grid}{27}{subsection.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}Difficult PPPs}{28}{subsection.3.3.2}
-\contentsline {subsection}{\numberline {3.3.3}Measurement of Difficulty}{28}{subsection.3.3.3}
-\contentsline {subsection}{\numberline {3.3.4}Application and Diversity}{28}{subsection.3.3.4}
-\contentsline {section}{\numberline {3.4}Generator Requirements}{29}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}Rationale}{29}{subsection.3.4.1}
-\contentsline {section}{\numberline {3.5}Simulator Requirements}{29}{section.3.5}
-\contentsline {subsection}{\numberline {3.5.1}Rationale}{30}{subsection.3.5.1}
-\contentsline {chapter}{\numberline {4}Design and Implementation}{31}{chapter.4}
-\contentsline {section}{\numberline {4.1}Methodology}{31}{section.4.1}
-\contentsline {section}{\numberline {4.2}Programming Language}{32}{section.4.2}
-\contentsline {section}{\numberline {4.3}Architecture}{32}{section.4.3}
-\contentsline {subsection}{\numberline {4.3.1}Component 1: Simulator}{32}{subsection.4.3.1}
-\contentsline {subsection}{\numberline {4.3.2}Component 2: Test Agents}{33}{subsection.4.3.2}
-\contentsline {subsection}{\numberline {4.3.3}Component 3: Extension of the Generator}{33}{subsection.4.3.3}
-\contentsline {section}{\numberline {4.4}Simulator}{34}{section.4.4}
-\contentsline {section}{\numberline {4.5}Test Agents}{35}{section.4.5}
-\contentsline {subsection}{\numberline {4.5.1}A* Bot}{35}{subsection.4.5.1}
-\contentsline {subsection}{\numberline {4.5.2}Random Bot}{36}{subsection.4.5.2}
-\contentsline {subsection}{\numberline {4.5.3}Wallfollower}{36}{subsection.4.5.3}
-\contentsline {subsection}{\numberline {4.5.4}Explorer and Long Term Explorer}{36}{subsection.4.5.4}
-\contentsline {subsection}{\numberline {4.5.5}Bumper and Decision Bumper}{36}{subsection.4.5.5}
-\contentsline {section}{\numberline {4.6}Test Agent Faults}{36}{section.4.6}
-\contentsline {section}{\numberline {4.7}Extension of the Generator}{37}{section.4.7}
-\contentsline {subsection}{\numberline {4.7.1}Goal Visibility}{37}{subsection.4.7.1}
-\contentsline {subsection}{\numberline {4.7.2}Visibility Magnitude}{38}{subsection.4.7.2}
-\contentsline {subsection}{\numberline {4.7.3}Weighted Sum Function}{41}{subsection.4.7.3}
-\contentsline {subsection}{\numberline {4.7.4}Final Evaluation Function}{45}{subsection.4.7.4}
-\contentsline {section}{\numberline {4.8}Third Party Libraries}{45}{section.4.8}
-\contentsline {chapter}{\numberline {5}Evaluation}{46}{chapter.5}
-\contentsline {part}{\numberline {III}Closing Remarks}{47}{part.3}
-\contentsline {chapter}{\numberline {6}Conclusion}{48}{chapter.6}
-\contentsline {chapter}{\numberline {7}Future Work}{49}{chapter.7}
-\contentsline {chapter}{\numberline {8}Bibliography}{50}{chapter.8}
+\contentsline {chapter}{List of Figures}{10}{chapter*.2}
+\contentsline {chapter}{List of Tables}{11}{chapter*.3}
+\contentsline {part}{\numberline {I}Preliminaries}{13}{part.1}
+\contentsline {chapter}{\numberline {1}Introduction}{15}{chapter.1}
+\contentsline {section}{\numberline {1.1}Motivation}{15}{section.1.1}
+\contentsline {subsection}{\numberline {1.1.1}Test Methods}{15}{subsection.1.1.1}
+\contentsline {subsection}{\numberline {1.1.2}Difficulty}{16}{subsection.1.1.2}
+\contentsline {section}{\numberline {1.2}Project Aims}{17}{section.1.2}
+\contentsline {section}{\numberline {1.3}Document Structure}{17}{section.1.3}
+\contentsline {section}{\numberline {1.4}Statement of Ethics}{18}{section.1.4}
+\contentsline {chapter}{\numberline {2}Literature Review}{19}{chapter.2}
+\contentsline {section}{\numberline {2.1}Introduction}{19}{section.2.1}
+\contentsline {section}{\numberline {2.2}Testing Autonomous Robots}{19}{section.2.2}
+\contentsline {section}{\numberline {2.3}Path Planning Problems}{20}{section.2.3}
+\contentsline {section}{\numberline {2.4}Factors of Difficulty}{22}{section.2.4}
+\contentsline {section}{\numberline {2.5}Exploration}{23}{section.2.5}
+\contentsline {part}{\numberline {II}Research}{27}{part.2}
+\contentsline {chapter}{\numberline {3}Problem Analysis}{28}{chapter.3}
+\contentsline {section}{\numberline {3.1}Introduction}{28}{section.3.1}
+\contentsline {section}{\numberline {3.2}Task Definition}{29}{section.3.2}
+\contentsline {section}{\numberline {3.3}Difficulty}{29}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Occupancy Grid}{29}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Difficult PPPs}{30}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.3}Measurement of Difficulty}{30}{subsection.3.3.3}
+\contentsline {subsection}{\numberline {3.3.4}Application and Diversity}{30}{subsection.3.3.4}
+\contentsline {section}{\numberline {3.4}Generator Requirements}{31}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Rationale}{31}{subsection.3.4.1}
+\contentsline {section}{\numberline {3.5}Simulator Requirements}{31}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Rationale}{32}{subsection.3.5.1}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{33}{chapter.4}
+\contentsline {section}{\numberline {4.1}Methodology}{33}{section.4.1}
+\contentsline {section}{\numberline {4.2}Programming Language}{34}{section.4.2}
+\contentsline {section}{\numberline {4.3}Architecture}{34}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Component 1: Simulator}{34}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Component 2: Test Agents}{35}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}Component 3: Extension of the Generator}{35}{subsection.4.3.3}
+\contentsline {subsection}{\numberline {4.3.4}Component 4: Taxonomic Characters for UPGMA}{36}{subsection.4.3.4}
+\contentsline {section}{\numberline {4.4}Simulator}{36}{section.4.4}
+\contentsline {section}{\numberline {4.5}Test Agents}{38}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}A* Bot}{38}{subsection.4.5.1}
+\contentsline {subsection}{\numberline {4.5.2}Random Bot}{38}{subsection.4.5.2}
+\contentsline {subsection}{\numberline {4.5.3}Wallfollower}{38}{subsection.4.5.3}
+\contentsline {subsection}{\numberline {4.5.4}Explorer and Long Term Explorer}{38}{subsection.4.5.4}
+\contentsline {subsection}{\numberline {4.5.5}Bumper and Decision Bumper}{39}{subsection.4.5.5}
+\contentsline {section}{\numberline {4.6}Test Agent Faults}{39}{section.4.6}
+\contentsline {section}{\numberline {4.7}Extension of the Generator}{40}{section.4.7}
+\contentsline {subsection}{\numberline {4.7.1}Goal Visibility}{40}{subsection.4.7.1}
+\contentsline {subsection}{\numberline {4.7.2}Visibility Magnitude}{42}{subsection.4.7.2}
+\contentsline {subsection}{\numberline {4.7.3}Weighted Sum Function}{42}{subsection.4.7.3}
+\contentsline {subsection}{\numberline {4.7.4}Final Evaluation Function}{44}{subsection.4.7.4}
+\contentsline {section}{\numberline {4.8}Taxonomic Characters}{48}{section.4.8}
+\contentsline {section}{\numberline {4.9}Third Party Libraries}{48}{section.4.9}
+\contentsline {chapter}{\numberline {5}Evaluation}{49}{chapter.5}
+\contentsline {section}{\numberline {5.1}Analysis of Requirements}{49}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}Simulator Requirements Evaluation}{49}{subsection.5.1.1}
+\contentsline {subsection}{\numberline {5.1.2}Generator Requirements Evaluation}{49}{subsection.5.1.2}
+\contentsline {section}{\numberline {5.2}Extensions to the Generator}{50}{section.5.2}
+\contentsline {subsection}{\numberline {5.2.1}Methodology}{50}{subsection.5.2.1}
+\contentsline {subsection}{\numberline {5.2.2}Results}{51}{subsection.5.2.2}
+\contentsline {section}{\numberline {5.3}Evaluation of Diversity}{53}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}Methodology}{53}{subsection.5.3.1}
+\contentsline {part}{\numberline {III}Closing Remarks}{55}{part.3}
+\contentsline {chapter}{\numberline {6}Conclusion}{56}{chapter.6}
+\contentsline {subsection}{\numberline {6.0.2}Fault finding}{56}{subsection.6.0.2}
+\contentsline {subsection}{\numberline {6.0.3}Diversity}{56}{subsection.6.0.3}
+\contentsline {chapter}{\numberline {7}Future Work}{57}{chapter.7}
+\contentsline {chapter}{\numberline {8}Bibliography}{58}{chapter.8}
+\contentsline {chapter}{Appendices}{60}{section*.4}
+\contentsline {chapter}{\numberline {A}Appendix A: Generator Evaluation Results}{61}{Appendix.1.A}
+\contentsline {section}{\numberline {A.1}Simulation results of Wei's PPPs}{61}{section.1.A.1}
+\contentsline {section}{\numberline {A.2}Simulation results of Difficulty PPPs}{61}{section.1.A.2}

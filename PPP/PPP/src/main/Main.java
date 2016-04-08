@@ -34,8 +34,9 @@ public class Main {
 		PPPManager manager = new PPPManager((short) size, (short)descriptors, (short) obstacles);
 		manager.checkPopReachable();
 		System.out.println("Running tournament");
-		//manager.hundredME();
-		manager.fullRun();
+		for(int i = 0; i < 10; i++){
+			manager.fullRun();
+		}
 		manager.describePopulation();
 		manager.writePopulation("new");
 	}
