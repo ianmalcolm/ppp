@@ -128,7 +128,7 @@ The second category is metric maps in which the position of obstacles is stored 
 
 There are two approaches to updating a metric map; a backward model wherein the probability of a cell being occupied is calculated via sensor readings, and a forward model where the calculated probability of a sensor reading informs the map that would produce such a reading. There is some evidence to suggest the forward model produces a better map, though it is more sensitive to change in the environment and is prohibitively expensive for real time application \cite{thrun}.
 
-Given a representation of the environment, there are many approaches to deciding where to move and explore. In \cite{lee}, Lee describes several such approaches. A reactive approach holds little internal state, reacting quickly to incoming sensor information, and is suitable for simple exploration methods such as wall following. Another approach is to simply go to the least explored region. A further approach is to "go where it's interesting", basing decisions on the latest map. This attempts to systematically reduce uncertainty in the map, often using the occupancy grid as a method of describing uncertainty. Under this representation, an 'interesting' area is an area with occupation uncertainty close to the background uncertainty - these regions are unexplored, or have very little data gathered upon them. The robot would therefore path to these areas as the pay-off in information to be gathered is higher.
+Given a representation of the environment, there are many approaches to deciding where to move and explore. In \cite[chapter 4, p.~37]{lee}, Lee describes several such approaches. A reactive approach holds little internal state, reacting quickly to incoming sensor information, and is suitable for simple exploration methods such as wall following. Another approach is to simply go to the least explored region. A further approach is to "go where it's interesting", basing decisions on the latest map. This attempts to systematically reduce uncertainty in the map, often using the occupancy grid as a method of describing uncertainty. Under this representation, an 'interesting' area is an area with occupation uncertainty close to the background uncertainty - these regions are unexplored, or have very little data gathered upon them. The robot would therefore path to these areas as the pay-off in information to be gathered is higher.
 
 A further, well investigated approach is SLAM - Simultaneous Localization and Mapping - the problem of placing a robot in an unknown environment and having it produce a consistent map whilst simultaneously locating itself within said map\cite[p.~99]{slam}. There are a large number of approaches to SLAM, a few of which are open source \cite[p.~107]{slam}. SLAM is, however, computationally expensive and complicated and therefore likely to be too heavyweight for the purpose of this project.
 
@@ -255,7 +255,7 @@ This project builds upon Wei's generator, which has been implemented in Java. Th
 \section{Architecture}
 \label{sec:da_3}
 
-As discussed in the chapter \ref{cha:ProbAnalysis}, this project is divided into three components: a simulator for the use of evaluating PPP files, a representative set of test agents, and extensions to the generator to measure and evolve for difficulty in the PPPs. The architecture of each will be detailed below.
+As discussed in the chapter \ref{cha:ProbAnalysis}, this project is divided into two components: a simulator for the use of evaluating PPP files, and extensions to to the generator to measure and evolve for difficulty in the PPPs. In addition, I further divide these components into a representative set of test agents for the simulator and improvements to the taxonomic characters used in the generator's UPGMA algorithm. The architecture of each will be detailed below.
 
 \subsection{Component 1: Simulator}
 \label{sec:da_3_1}
@@ -276,11 +276,17 @@ As this project is built upon Wei's existing code, the majority of the architect
 
 Currently, the generator is capable of evolving for PPPs favouring an optimal route with many turns or many advance moves, as measured by the reimplementation of Ashlock's DPA algorithm. PPPs are evaluated at creation, or when they are altered by a mating event or mutation.
 
-As such, I will implement new functions which will be used as part of these evaluations, measuring the difficulty of the PPP. Following this, I will implement a fitness function in the same manner as Wei, which will select high fitness PPPs for mating events and low fitness PPPs for mutation. As such, the generator function as before, with additional methods of evaluation and selection.
+As such, I will implement new evaluation functions measuring the difficulty of the PPP. Following this, I will implement a fitness function in the same manner as Wei, which will select high fitness PPPs for mating events and low fitness PPPs for mutation. As such, the generator function as before, with additional methods of evaluation and selection.
 
 The result of these extensions should be that the tournament  generator is capable of producing a range of PPPs with diverse 'difficulties' as measured by the difficulty evaluation functions, such that these PPPs improve the fault finding capabilities of the simulator over Wei's original PPPs.
 
 As changes were made to my new fitness function, it may be that the goalposts move and tweaks and additions will be required. As such, I began with a simple measure of difficulty. I then used the altered generator to produce a set of 60 PPPs with several hundred mating events. This number was chosen to ensure generation time was quick; though the number of mating events is small, it could be reasonably expected that results would improve with further events, and thus this allowed for rapid 'prototyping' of the new PPPs. I could then evaluate these PPPs using the simulator and by observation to identify good and bad features. This knowledge could then be used to further improve the fitness function.
+
+\subsection{Component 4: Taxonomic Characters for UPGMA}
+\label{sec:da_3_4}
+Wei notes that the diversity of the generated set of PPPs, even with the use of a UPGMA tree, must be tested by eye \cite[p.66]{wei}. Chiefly, this is because the existing set of taxonomic characters - number of turns, advances, total moves, and obstructions - is very simple and does not precisely describe the environment, nor the differences between one PPP and another. For example, two PPPs may be grouped as similar via these characters, though the actual layout of the maps may be radically different, simply because they require a similar number of turns and advances to reach the goal.
+
+The development of the evaluation functions for the PPP will produce new variables describing the environment. These will be implemented as taxonomic characters to improve the grouping of PPPs with the aim of producing groups which are in fact similar to the eye.
 
 \section{Simulator}
 \label{sec:da_4}
@@ -420,6 +426,12 @@ Where 'VisibilityFunction' is the function given in equation  \ref{eq:vis_functi
 $}
 \label{eq:vis_function}
 \end{equation}
+
+\section{Taxonomic Characters}
+\label{sec:taxchar_design}
+As described in section \ref{sec:da_7}, many new features of the environment of a PPP are now quantitatively evaluated as part of the process of difficulty evaluation. These features are stored individually as variables, and have been added to the existing taxonomic character classes to improve their ability to describe the environment.
+
+Wei normalised his existing characters to a 0-1 range to ensure no taxonomic character dominated the others. Where necessary, this has been carried out. In addition, 
 
 \section{Third Party Libraries}
 \label{sec:tplibs}
