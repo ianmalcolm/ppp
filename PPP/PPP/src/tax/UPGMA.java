@@ -20,6 +20,7 @@ public class UPGMA {
 	private TaxChar[] fixTaxa;				// the array for implementing the UPGMA
 	private ArrayList<Pair> taxaPair;		// the array list of pair of PPP.
 	private int current_id = 0;
+	private boolean extra_chars = false;
 	/*
 	 * 	Constructor for UPGMA
 	 */
@@ -33,6 +34,9 @@ public class UPGMA {
 	public void addTC(TaxChar tx){
 		taxa.add(tx);
 		count++;
+		if (tx.hasExtraChars()){
+			this.extra_chars = true;
+		}
 	}
 	/*
 	 * 	Merge two vectors together to create a new one
@@ -51,7 +55,9 @@ public class UPGMA {
 		float oh = (tc1.getHOpen()- tc2.getHOpen())/2;
 		float ov = (tc1.getVOpen()- tc2.getVOpen())/2;
 		TaxChar ret = new TaxChar(a,t,o);
-		ret.addExtraCharacters(gv, sv, cv, tv, bv, ou, rc, oh, ov);
+		if (this.extra_chars){
+			ret.addExtraCharacters(gv, sv, cv, tv, bv, ou, rc, oh, ov);
+		}
 		ret.normalizeTC();
 		return ret;
 	}
@@ -139,11 +145,6 @@ public class UPGMA {
 	 */
 	private float Euclidian(TaxChar tc1, TaxChar tc2) {
 		return tc1.EuclidianDistance(tc2);
-//		float q1 = tc1.getAdvance() - tc2.getAdvance();
-//		float q2 = tc1.getTurn() - tc2.getTurn();
-//		float q3 = tc1.getMove() - tc2.getMove();
-//		float q4 = tc1.getObs() - tc2.getObs();
-//		return (float)Math.sqrt(q1*q1 + q2*q2 + q3*q3 + q4*q4);
 	}
 	/*
 	 * 	Print the taxaPair onto the console

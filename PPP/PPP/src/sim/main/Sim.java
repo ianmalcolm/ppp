@@ -35,12 +35,12 @@ public class Sim {
 //		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
 //		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
 //		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
-//		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
-		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP17.ppp", false);
-		displayPPP(map);
-		PPP map2 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP7.ppp", false);
-		displayPPP(map2);
-//		PPP map3 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP40.ppp", false);
+		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
+//		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP21.ppp", false);
+//		displayPPP(map);
+//		PPP map2 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP50.ppp", false);
+//		displayPPP(map2);
+//		PPP map3 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP58.ppp", false);
 //		displayPPP(map3);
 //		
 //		map.drawMap();
@@ -203,15 +203,18 @@ public class Sim {
 				}
 				maps.add(map);
 				TaxChar tc = new TaxChar(map.getAdvance(), map.getTurn(), map.getObsUsed());
-				tc.addExtraCharacters(map.getGoalVisibility(), map.getStartVisibility(), map.getCentreVisibility(),
-						map.getTopRightVisibility(), map.getBottomLeftVisiblity(), map.getObstacleUse(),
-						0, map.getAvgOpenH(), map.getAvgOpenW());
+//				tc.addExtraCharacters(map.getGoalVisibility(), map.getStartVisibility(), map.getCentreVisibility(),
+//						map.getTopRightVisibility(), map.getBottomLeftVisiblity(), map.getObstacleUse(),
+//						0, map.getAvgOpenW(), map.getAvgOpenH());
+//				tc.addExtraCharacters(map.getGoalVisibleCells(), map.getStartVisibleCells(), map.getCentreVisibleCells(),
+//				map.getTRVisibleCells(), map.getBottomLeftVisiblity(), map.getObstacleUse(),
+//				0, map.getAvgOpenCellsW(), map.getAvgOpenCellsV());
 				tc.normalizeTC();
 				
 				String mapName = fileName.substring(0, fileName.indexOf("."));
 				tc.setName(mapName);
 				tree.addTC(tc);
-				//tc.printDebugInfo();
+				tc.printDebugInfo();
 			}
 		}
 		tree.calUPGMA();

@@ -24,6 +24,7 @@ public class TaxChar {
 	private float avgHorizontalOpenness;
 	private float avgVerticalOpenness;
 	private float norm;
+	private boolean extra_chars = false;
 	//private float difficulty;
 	
 	
@@ -128,12 +129,16 @@ public class TaxChar {
 		this.reachableCellRatio = reachableRatio;
 		this.avgHorizontalOpenness = openH;
 		this.avgVerticalOpenness = openV;
+		this.extra_chars = true;
 	}
 	
 	//Renormalise after adding extra chars
 	public void normalizeTC(){
-		float[] arr = {advance, turn, move, obstruction};//, goalVis, startVis, centreVis, topRightVis, bottomLeftVis,
-					   //obsUsage, reachableCellRatio, avgHorizontalOpenness, avgVerticalOpenness};
+		float[] arr = {advance, turn, move, obstruction};
+//		if (this.extra_chars){
+//			arr = new float[]{advance, turn, move, obstruction, goalVis, startVis, centreVis, topRightVis, bottomLeftVis,
+//					obsUsage, reachableCellRatio, avgHorizontalOpenness, avgVerticalOpenness};
+//		}
 		float total = 0;
 		for(float f : arr){
 			total += (float) Math.pow(f, 2);
@@ -144,6 +149,7 @@ public class TaxChar {
 		turn = turn / norm;
 		move = move / norm;
 		obstruction = obstruction / norm;
+		
 //		goalVis = goalVis / norm;
 //		startVis = startVis / norm;
 //		centreVis = centreVis / norm;
@@ -172,7 +178,10 @@ public class TaxChar {
 		float q10 = reachableCellRatio - tc.getReachableCellRatio();
 		float q11 = avgHorizontalOpenness - tc.getHOpen();
 		float q12 = avgVerticalOpenness - tc.getVOpen();
-		float[] arr = {q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13};
+		float[] arr = {q1, q2, q3, q4};
+		if (this.extra_chars){
+			arr = new float[]{q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13};
+		}
 		float total = 0;
 		for (float f : arr){
 			total += Math.pow(f, 2);
@@ -214,6 +223,7 @@ public class TaxChar {
 	public float getVOpen(){ return this.avgVerticalOpenness;}
 	public float getHOpen(){ return this.avgHorizontalOpenness;}
 	public float getNorm(){ return this.norm;}
+	public boolean hasExtraChars(){return this.extra_chars;}
 	
 	/*
 	 * 	Determine whether this TaxChar is wasted
@@ -266,10 +276,12 @@ public class TaxChar {
 	
 	public void printDebugInfo(){
 		System.out.printf("adv %.2f turn %.2f obs %.2f\n", advance, this.turn, this.obstruction);
-		System.out.printf("gv %.2f cv %.2f sv %.2f\n", this.goalVis, this.centreVis, this.startVis);
-		System.out.printf("trv %.2f blv %.2f oU %.2f\n", this.topRightVis, this.bottomLeftVis, this.obsUsage);
-		System.out.printf("RC %.2f hO %.2f vO %.2f\n", this.reachableCellRatio, this.getHOpen(), this.getVOpen());
-		System.out.printf("normaliser %.2f\n", this.norm);
+		if (this.extra_chars){
+			System.out.printf("gv %.2f cv %.2f sv %.2f\n", this.goalVis, this.centreVis, this.startVis);
+			System.out.printf("trv %.2f blv %.2f oU %.2f\n", this.topRightVis, this.bottomLeftVis, this.obsUsage);
+			System.out.printf("RC %.2f hO %.2f vO %.2f\n", this.reachableCellRatio, this.getHOpen(), this.getVOpen());
+		}
+		System.out.printf("normaliser %.2f extra chars %s\n", this.norm, this.hasExtraChars());
 	}
 	
 	public String toForceJson(){

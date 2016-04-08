@@ -55,6 +55,8 @@ public class PPP{
 	private int unreachableCells;
 	private int maxOpenWidth;
 	private int maxOpenHeight;
+	private double avgOpenCellsW;
+	private double avgOpenCellsV;
 	
 	private double goalVisiblePercentage;
 	private double startVisiblePercentage;
@@ -1017,6 +1019,7 @@ public class PPP{
 		//avg over rows
 		this.avgOpenWidth = this.avgOpenWidth / (this.occ.length-2);
 		//Represent as a % of max possible width
+		this.avgOpenCellsW = this.avgOpenWidth;
 		this.avgOpenWidth = this.avgOpenWidth / (this.size*2);
 		this.visibilityWeighted += 2*this.avgOpenWidth;
 		
@@ -1037,6 +1040,7 @@ public class PPP{
 			}
 			this.avgOpenHeight += colMax;
 		}
+		this.avgOpenCellsV = this.avgOpenHeight;
 		this.avgOpenHeight = this.avgOpenHeight / (2*this.occ.length);
 		//Represent as a % of max possible height
 		this.avgOpenHeight = this.avgOpenHeight / (this.size);
@@ -1093,6 +1097,13 @@ public class PPP{
 	public double getGoalVisibility(){
 		return this.goalVisiblePercentage;
 	}
+	public int getGoalVisibleCells(){return this.goalVisibleCells;}
+	public int getStartVisibleCells(){return this.startVisibleCells;}
+	public int getCentreVisibleCells(){return this.centreVisibleCells;}
+	public int getTRVisibleCells(){return this.topRightVisibleCells;}
+	public int getBLVisibleCells(){return this.bottomLeftVisibleCells;}
+	public double getAvgOpenCellsW(){return this.avgOpenCellsW;}
+	public double getAvgOpenCellsV(){return this.avgOpenCellsV;}
 	
 	public double getCentreVisibility(){
 		return this.centreVisiblePercentage;
