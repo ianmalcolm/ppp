@@ -135,10 +135,10 @@ public class TaxChar {
 	//Renormalise after adding extra chars
 	public void normalizeTC(){
 		float[] arr = {advance, turn, move, obstruction};
-//		if (this.extra_chars){
-//			arr = new float[]{advance, turn, move, obstruction, goalVis, startVis, centreVis, topRightVis, bottomLeftVis,
-//					obsUsage, reachableCellRatio, avgHorizontalOpenness, avgVerticalOpenness};
-//		}
+		if (this.extra_chars){
+			arr = new float[]{0, turn, move, obstruction, goalVis, startVis, centreVis, topRightVis, bottomLeftVis,
+					obsUsage, reachableCellRatio, avgHorizontalOpenness, avgVerticalOpenness};
+		}
 		float total = 0;
 		for(float f : arr){
 			total += (float) Math.pow(f, 2);
@@ -150,22 +150,22 @@ public class TaxChar {
 		move = move / norm;
 		obstruction = obstruction / norm;
 		
-//		goalVis = goalVis / norm;
-//		startVis = startVis / norm;
-//		centreVis = centreVis / norm;
-//		topRightVis = topRightVis / norm;
-//		bottomLeftVis = bottomLeftVis / norm;
-//		obsUsage = obsUsage / norm;
-//		reachableCellRatio = reachableCellRatio / norm;
-//		avgHorizontalOpenness = avgHorizontalOpenness / norm;
-//		avgVerticalOpenness = avgVerticalOpenness / norm;
+		goalVis = goalVis / norm;
+		startVis = startVis / norm;
+		centreVis = centreVis / norm;
+		topRightVis = topRightVis / norm;
+		bottomLeftVis = bottomLeftVis / norm;
+		obsUsage = obsUsage / norm;
+		reachableCellRatio = reachableCellRatio / norm;
+		avgHorizontalOpenness = avgHorizontalOpenness / norm;
+		avgVerticalOpenness = avgVerticalOpenness / norm;
 	}
 
 	/*
 	 * 	Calculate the Euclidian Distance between two TaxChar
 	 */
 	public float EuclidianDistance(TaxChar tc){
-		float q1 = advance - tc.getAdvance();
+		float q1 = 0;//advance - tc.getAdvance();
 		float q2 = turn - tc.getTurn();
 		float q3 = move - tc.getMove();
 		float q4 = obstruction - tc.getObs();

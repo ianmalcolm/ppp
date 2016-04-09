@@ -36,12 +36,12 @@ public class Sim {
 //		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Openness", false);
 //		testMapsInFolder("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
 //		runUPGMA("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei", false);
-//		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP32.ppp", false);
-//		displayPPP(map);
-		PPP map2 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/OpennessHeight/PPP46.ppp", false);
-		displayPPP(map2);
-//		PPP map3 = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP58.ppp", false);
-//		displayPPP(map3);
+		//12 53
+		//24 42 52
+		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP27.ppp", false);
+		displayPPP(map);
+		displayPPP(loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP32.ppp", false));
+		displayPPP(loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP46.ppp", false));
 //		
 //		map.drawMap();
 //		map.evaluateDifficulty();
@@ -203,9 +203,9 @@ public class Sim {
 				}
 				maps.add(map);
 				TaxChar tc = new TaxChar(map.getAdvance(), map.getTurn(), map.getObsUsed());
-//				tc.addExtraCharacters(map.getGoalVisibility(), map.getStartVisibility(), map.getCentreVisibility(),
-//						map.getTopRightVisibility(), map.getBottomLeftVisiblity(), map.getObstacleUse(),
-//						0, map.getAvgOpenW(), map.getAvgOpenH());
+				tc.addExtraCharacters(map.getGoalVisibility(), map.getStartVisibility(), map.getCentreVisibility(),
+						map.getTopRightVisibility(), map.getBottomLeftVisiblity(), map.getObstacleUse(),
+						0, map.getAvgOpenW(), map.getAvgOpenH());
 //				tc.addExtraCharacters(map.getGoalVisibleCells(), map.getStartVisibleCells(), map.getCentreVisibleCells(),
 //				map.getTRVisibleCells(), map.getBottomLeftVisiblity(), map.getObstacleUse(),
 //				0, map.getAvgOpenCellsW(), map.getAvgOpenCellsV());
