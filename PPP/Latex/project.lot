@@ -2,13 +2,15 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Generator Requirements}}{28}{table.3.1}
-\contentsline {table}{\numberline {3.2}{\ignorespaces Simulator Requirements}}{29}{table.3.2}
+\contentsline {table}{\numberline {3.1}{\ignorespaces Generator Requirements}}{21}{table.3.1}
+\contentsline {table}{\numberline {3.2}{\ignorespaces Simulator Requirements}}{22}{table.3.2}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Results for Wei's PPPs}}{46}{table.5.1}
-\contentsline {table}{\numberline {5.2}{\ignorespaces Results for Difficulty PPPs}}{47}{table.5.2}
+\contentsline {table}{\numberline {5.1}{\ignorespaces Results for Wei's PPPs}}{34}{table.5.1}
+\contentsline {table}{\numberline {5.2}{\ignorespaces Results for my PPPs}}{34}{table.5.2}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {table}{\numberline {A.1}{\ignorespaces Simulation Results for Wei's PPPs}}{45}{table.1.A.1}
+\contentsline {table}{\numberline {A.2}{\ignorespaces Simulation Results for My PPPs}}{46}{table.1.A.2}

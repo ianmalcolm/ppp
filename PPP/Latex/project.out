@@ -43,7 +43,7 @@
 \BOOKMARK [2][-]{subsection.4.5.4}{Explorer and Long Term Explorer}{section.4.5}% 43
 \BOOKMARK [2][-]{subsection.4.5.5}{Bumper and Decision Bumper}{section.4.5}% 44
 \BOOKMARK [1][-]{section.4.6}{Test Agent Faults}{chapter.4}% 45
-\BOOKMARK [1][-]{section.4.7}{Extension of the Generator}{chapter.4}% 46
+\BOOKMARK [1][-]{section.4.7}{Extension and Improvement of the Generator}{chapter.4}% 46
 \BOOKMARK [2][-]{subsection.4.7.1}{Goal Visibility}{section.4.7}% 47
 \BOOKMARK [2][-]{subsection.4.7.2}{Visibility Magnitude}{section.4.7}% 48
 \BOOKMARK [2][-]{subsection.4.7.3}{Weighted Sum Function}{section.4.7}% 49
@@ -54,7 +54,7 @@
 \BOOKMARK [1][-]{section.5.1}{Analysis of Requirements}{chapter.5}% 54
 \BOOKMARK [2][-]{subsection.5.1.1}{Simulator Requirements Evaluation}{section.5.1}% 55
 \BOOKMARK [2][-]{subsection.5.1.2}{Generator Requirements Evaluation}{section.5.1}% 56
-\BOOKMARK [1][-]{section.5.2}{Extensions to the Generator}{chapter.5}% 57
+\BOOKMARK [1][-]{section.5.2}{Evaluation of the Generator}{chapter.5}% 57
 \BOOKMARK [2][-]{subsection.5.2.1}{Methodology}{section.5.2}% 58
 \BOOKMARK [2][-]{subsection.5.2.2}{Results}{section.5.2}% 59
 \BOOKMARK [1][-]{section.5.3}{Evaluation of Diversity}{chapter.5}% 60
@@ -68,5 +68,3 @@
 \BOOKMARK [0][-]{chapter.8}{Bibliography}{part.3}% 68
 \BOOKMARK [0][-]{section*.4}{Appendices}{part.3}% 69
 \BOOKMARK [0][-]{Appendix.1.A}{Appendix A: Generator Evaluation Results}{part.3}% 70
-\BOOKMARK [1][-]{section.1.A.1}{Simulation results of Wei's PPPs}{Appendix.1.A}% 71
-\BOOKMARK [1][-]{section.1.A.2}{Simulation results of Difficulty PPPs}{Appendix.1.A}% 72
