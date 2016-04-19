@@ -22,10 +22,11 @@
 \supervisor{Dr. Rob Alexander}
 \protect\BEng
 
-\wordcount{10938}
+\wordcount{10991}
 %10957 via texcount
 %
-\includes{Appendix \ref{cha:gen_eval_appendix}}
+%\includes{Appendix \ref{cha:gen_eval_appendix}}
+\excludes{Appendix \ref{cha:gen_eval_appendix}}
 
 \abstract{
 This project attempts to make improvements to an automatic problem generator to allow it to evaluate and evolve for difficulty in Path Planning Problems. The 'difficulty' of such a problem is evaluated according to multiple factors. This project then proceeds to test problems evolved for difficulty against a simpler fitness function. It will be shown that evolving for difficulty does not improve the ability of these problems to discover faults in a set of simulated test agents. However, it will also show the factors used to assess difficulty lend themselves well to describing the environment of a path planning problem, thus improving the ability of the user to select a diverse range of problems given a tree grouping the problems according to similarity.}
@@ -252,16 +253,15 @@ The goal of this project is to extend an existing system with a new set of featu
 
 Given that the features to be introduced to the system will require a cycle of adjustment, evaluation, readjustment, due to the moving-goal nature of fitness functions, development methods such as Waterfall are not appropriate. Instead, a methodology which suits the incremental nature of these features would be far more suitable.
 
-I identified two such methods; Spiral and Agile. Agile methodology \cite{agile} seeks to develop and implement milestones in sprints --- for example, a facet of the difficulty evaluation. Each sprint then builds upon the previous one, producing the final product incrementally. Each sprint should leave the generator in a stable state, such that changes may be assessed and the goals of the next sprint identified. In particular, a central tenet of Agile is responding to change; this aligns closely with the way the fitness function would need to be implemented and honed over the course of the project.
+I identified two such methodologies; Spiral and Agile. Agile methodology \cite{agile} seeks to develop and implement milestones in sprints --- for example, a facet of the difficulty evaluation. Each sprint then builds upon the previous one, producing the final product incrementally. Each sprint should leave the generator in a stable state, such that changes may be assessed and the goals of the next sprint identified. In particular, a central tenet of Agile is responding to change; this aligns closely with the way the fitness function would need to be implemented and honed over the course of the project.
 
-Spiral methodology \cite{spiral} functions extremely similarly; goals are identified and implemented iteratively. However, Spiral focuses heavily on risk analysis to guide development. This can be difficult to assess and would not work well for a project seeking to implement many small components, as opposed to large scale engineering projects. For this reason, I chose to use Agile.
+Spiral methodology \cite{spiral} functions extremely similarly; goals are identified and implemented iteratively. However, Spiral focuses heavily on risk analysis to guide development. This can be difficult to assess and would not work well for a project seeking to implement many small components, as opposed to large scale engineering projects. For this reason, I chose to follow an Agile methodology, carrying out short, incremental development cycles as described above.
 
 
 \section{Programming Language}
 \label{sec:da_2}
 
 This project builds upon Wei's generator, which has been implemented in Java. This project therefore uses Java, rather than reimplementing or interfacing with existing code via another language. This allowed me to quickly move ahead with the project. In addition, some JavaScript and HTML is used to visualise the output trees of the UPGMA functionality.
-
 
 \section{Architecture}
 \label{sec:da_3}
@@ -348,7 +348,7 @@ These agents are reimplementation of two of Wei's agents. Both move in straight 
 \label{sec:da_6}
 The set of faults in the test agents, while simple, is a worthwhile set as they represent faults which would be faced by real world agents implementing these simple exploration and movement tactics. If a fault may be uncovered due to an agent only planning one step ahead, then it can be reasonably expected that similar faults might be uncovered if the agent only planned two or three steps ahead (and so on) though they might be rarer. As such, I argue that they represent the 'worst case' of a set of related faults --- planning further ahead should result in a better pass rate for a given agent. Furthermore, the simplicity of the current PPP environments does not lend itself well to simulating agents with physical faults, such as faulty locomotion, and these are thus ignored in the test agents. The faults in the agents described are therefore fairly representative of real world algorithmic faults.
 
-In addition, as noted in the chapter \ref{cha:LitReview}, a common issue facing autonomous robotics is that of accurately sensing the world through multiple sensors, each with different capabilities and viewing positions. This is usually tackled via one of the many methods of sensor fusion. While the agents and simulator implemented are very simple, each having a single sensor which operates by line of sight rules from the agent out to its range, the sensor noise handicap goes some way to better representing real world agents by modelling the imperfections in a real sensor suite. As the PPPs themselves are very simple, I did not consider it necessary to implement a more complex sensor model in the simulator; in particular it should be noticed that sensor noise obscures the measure of difficulty as I could not be sure if the PPP was difficult due to its layout or the effect of sensor noise. However, it should be clear that a noisy sensor should reduce the pass rate of an agent.
+In addition, as noted in the chapter \ref{cha:LitReview}, a common issue facing autonomous robotics is that of accurately sensing the world through multiple sensors, each with different capabilities and viewing positions. This is usually tackled via one of the many methods of sensor fusion. While the agents and simulator implemented are very simple, each having a single sensor which operates by line of sight rules from the agent out to its range, the sensor noise handicap goes some way to better representing real world agents by modelling the imperfections in a real sensor suite. As the PPPs themselves are very simple, I did not consider it necessary to implement a more complex sensor model in the simulator. It should be noted that sensor noise introduces more non-determinism to behaviour of the test agents, and therefore many test runs should be carried out to average the effect. However, it should be clear that a noisy sensor should reduce the pass rate of an agent.
 
 \section{Extension and Improvement of the Generator}
 \label{sec:da_7}
@@ -377,7 +377,7 @@ After prototyping a set of PPPs with this fitness function, I noted that the gen
 
 \subsection{Visibility Magnitude}
 \label{sec:visMag}
-To attempt to encourage the generator to spread obstacles across the PPP, I added additional measurements of visibility to the function. These measurements would take into account the visibility from each of the four corners and the centre of the PPP, in hope that the generator would be encouraged to spread the obstacles more evenly throughout the PPP. These five measurements would then be treated as a vector and the magnitude used as the final evaluation, acting as a measurement of the balance of visibilities from each position.
+To attempt to encourage the generator to spread obstacles across the PPP, I added additional measurements of visibility to the function. These measurements would take into account the visibility from each of the four corners and the centre of the PPP, in hope that the generator would be encouraged to spread the obstacles more evenly throughout the PPP. These five measurements would then be treated as a vector and the magnitude used as the final evaluation, intended to act as a description of the 'balance' of visibilities from each position.
 
 The fitness function was then tweaked to minimise this visibility; an example PPP produced under this function is provided in figure \ref{fig:vis_mag_ppp}.
 
@@ -390,7 +390,7 @@ The fitness function was then tweaked to minimise this visibility; an example PP
 
 After prototyping a set of PPPs under this fitness function, I noted that many PPPs did indeed seem to spread obstacles more evenly across the environment. Furthermore, the additional viewpoints had forced the generator to make use of more of the budget of obstacles. 
 
-However, the generator only protects the start and goal positions --- that is, it ensures these positions are never blocked by an obstacle. The other three measurement positions were not under this protection; hence, a large fitness reward could be received by simply placing a single obstacle on each of these positions. In the worst case, this resulted in PPPs with obstacles clustered tightly around the start and goal corners, with single obstacles on the other three measurement positions. In addition, given that five measurements made up the vector, it was not intuitive to identify a difficult PPP given the magnitudes alone. Furthermore, it was not clear how to add measurements of other features of the PPP to this vector. As a result, I decided it was not a sufficient description of a PPP's difficulty.
+However, the generator only protects the start and goal positions --- that is, it ensures these positions are never blocked by an obstacle. These positions are currently always in the top left and bottom right corners respectively. The other three measurement positions were not under this protection; hence, a large fitness reward could be received by simply placing a single obstacle on each of these positions. In the worst case, this resulted in PPPs with obstacles clustered tightly around the start and goal corners, with single obstacles on the other three measurement positions. In addition, given that five measurements made up the vector, it was not intuitive to identify a difficult PPP given the magnitudes alone. Furthermore, it was not clear how to add measurements of other features of the PPP to this vector. As a result, I decided it was not a sufficient description of a PPP's difficulty.
 
 \subsection{Weighted Sum Function}
 \label{sec:weighted_sum}
@@ -493,9 +493,9 @@ In this section, I will evaluate the ability of the extensions made to the gener
 \subsection{Methodology}
 \label{sec:gen_eval_method}
 
-The extensions to the generator were evaluated by producing a set of 60 PPPs using the new fitness function. In addition, a set of 60 PPPs was generated using Wei's "number of turns" fitness function. Both sets were generated via 10,000 mating events before being saved to disk.
+The extensions to the generator were evaluated by producing a set of 60 PPPs using the new fitness function. In addition, a set of 60 PPPs was generated using Wei's "number of turns" fitness function. Both sets were generated via 10,000 mating events before being saved to disk. This number of PPPs and events ensures a large mating pool and should produce good diversity under both fitness functions.
 
-The simulator I developed was used to test the ability of the generated PPPs to discover the faults in the test agents. Each agent was tested on each PPP 1,000 times and the percentage of passes --- when the agent reached the goal position --- recorded. This was to make the impact of non-determinism in the path planning algorithms, where tie-breaks occurred, negligible. In addition, various features of the PPP were recorded as evaluated by the generator functions. This data was written to a CSV file.
+The simulator I developed was used to test the ability of the generated PPPs to discover the faults in the test agents. Each agent was tested on each PPP 1,000 times and the percentage of passes --- when the agent reached the goal position --- recorded. This number of tests was chosen to make the impact of non-determinism in the path planning algorithms negligible. For example, an agent with sensor noise would be included and several of the agent's path planning algorithms included non-deterministic tie breaking functions. A large number therefore minimises the impact of these effects. In addition, various features of the PPP were recorded as evaluated by the generator functions. This data was written to a CSV file.
 
 The test agents, as described in section \ref{sec:da_5} were used to evaluate these PPPs. For all agents, their sensor range was set to two --- that is, they could see two cells in all directions around them. Two Wallfollower agents were used, following walls to their left and right respectively. In addition, an explorer handicapped with a 5x5 limited memory and an explorer with a sensor noise of 0.1 were added, with the expectation that these agents would have lower pass rates in comparison to the unhandicapped explorer.
 
@@ -604,7 +604,7 @@ Finally, let us briefly consider the grouping of PPPs between the two trees. Con
 \label{fig:ppp_46}
 \end{figure}
 
-In the extended taxonomy tree, PPP46 is instead grouped with PPP32 (see figure \ref{fig:ppp_32}). These PPPs have more similar layouts, with a high number of turns and a concentration of obstacles in the top half of the map. This suggests the extended taxonomy better classifies the PPPs.
+In the extended taxonomy tree, PPP46 is instead grouped with PPP32 (see figure \ref{fig:ppp_32}). These PPPs have more similar layouts, with a high number of turns and a concentration of obstacles in the top half of the map. This suggests the extended taxonomy better classifies the PPPs, and I found similar groupings by inspection of both taxonomy trees and the respective PPPs.
 
 \begin{figure}[H]
 \graphicspath{ {EvalPics/} }
@@ -612,7 +612,6 @@ In the extended taxonomy tree, PPP46 is instead grouped with PPP32 (see figure \
 \caption{PPP32, grouped with PPP46 via the extended taxonomy.}
 \label{fig:ppp_32}
 \end{figure}
-
 
 \part{Closing Remarks}
 \label{sec:close}
@@ -729,9 +728,8 @@ Furthermore, it is still difficult to deduce the diversity of the produced set o
 	Sept. 2003
 	
 \bibitem{lee}
-	The Map Building and Exploration Strategies of a Simple Sonar-Equipped Mobile Robot
-	D. Lee
-	Cambridge University Press, 1996
+	D. Lee,
+	"Approaches to Exploration" in The Map Building and Exploration Strategies of a Simple Sonar-Equipped Mobile Robot, 1st Ed, Cambridge, UK, 1996, cha. 4 pp. 37-47
 	
 \bibitem{slam}
 	H. Durrant-Whyte, T. Bailey,

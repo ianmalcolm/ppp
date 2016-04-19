@@ -32,23 +32,23 @@
 \contentsline {section}{\numberline {4.1}Methodology}{23}{section.4.1}
 \contentsline {section}{\numberline {4.2}Programming Language}{23}{section.4.2}
 \contentsline {section}{\numberline {4.3}Architecture}{23}{section.4.3}
-\contentsline {subsection}{\numberline {4.3.1}Component 1: Simulator}{23}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.1}Component 1: Simulator}{24}{subsection.4.3.1}
 \contentsline {subsection}{\numberline {4.3.2}Component 2: Test Agents}{24}{subsection.4.3.2}
 \contentsline {subsection}{\numberline {4.3.3}Component 3: Extension of the Generator}{24}{subsection.4.3.3}
-\contentsline {subsection}{\numberline {4.3.4}Component 4: Taxonomic Characters for UPGMA}{24}{subsection.4.3.4}
+\contentsline {subsection}{\numberline {4.3.4}Component 4: Taxonomic Characters for UPGMA}{25}{subsection.4.3.4}
 \contentsline {section}{\numberline {4.4}Simulator}{25}{section.4.4}
 \contentsline {section}{\numberline {4.5}Test Agents}{26}{section.4.5}
 \contentsline {subsection}{\numberline {4.5.1}A* Bot}{26}{subsection.4.5.1}
 \contentsline {subsection}{\numberline {4.5.2}Random Bot}{26}{subsection.4.5.2}
 \contentsline {subsection}{\numberline {4.5.3}Wallfollower}{26}{subsection.4.5.3}
 \contentsline {subsection}{\numberline {4.5.4}Explorer and Long Term Explorer}{26}{subsection.4.5.4}
-\contentsline {subsection}{\numberline {4.5.5}Bumper and Decision Bumper}{26}{subsection.4.5.5}
+\contentsline {subsection}{\numberline {4.5.5}Bumper and Decision Bumper}{27}{subsection.4.5.5}
 \contentsline {section}{\numberline {4.6}Test Agent Faults}{27}{section.4.6}
 \contentsline {section}{\numberline {4.7}Extension and Improvement of the Generator}{27}{section.4.7}
 \contentsline {subsection}{\numberline {4.7.1}Goal Visibility}{27}{subsection.4.7.1}
 \contentsline {subsection}{\numberline {4.7.2}Visibility Magnitude}{28}{subsection.4.7.2}
 \contentsline {subsection}{\numberline {4.7.3}Weighted Sum Function}{29}{subsection.4.7.3}
-\contentsline {subsection}{\numberline {4.7.4}Final Evaluation Function}{29}{subsection.4.7.4}
+\contentsline {subsection}{\numberline {4.7.4}Final Evaluation Function}{31}{subsection.4.7.4}
 \contentsline {section}{\numberline {4.8}Taxonomic Characters}{31}{section.4.8}
 \contentsline {section}{\numberline {4.9}Third Party Libraries}{31}{section.4.9}
 \contentsline {chapter}{\numberline {5}Evaluation}{32}{chapter.5}
@@ -57,7 +57,7 @@
 \contentsline {subsection}{\numberline {5.1.2}Generator Requirements Evaluation}{32}{subsection.5.1.2}
 \contentsline {section}{\numberline {5.2}Evaluation of the Generator}{32}{section.5.2}
 \contentsline {subsection}{\numberline {5.2.1}Methodology}{32}{subsection.5.2.1}
-\contentsline {subsection}{\numberline {5.2.2}Results}{34}{subsection.5.2.2}
+\contentsline {subsection}{\numberline {5.2.2}Results}{33}{subsection.5.2.2}
 \contentsline {section}{\numberline {5.3}Evaluation of Diversity}{34}{section.5.3}
 \contentsline {subsection}{\numberline {5.3.1}Methodology}{34}{subsection.5.3.1}
 \contentsline {subsection}{\numberline {5.3.2}Results}{34}{subsection.5.3.2}

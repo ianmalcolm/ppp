@@ -39,27 +39,27 @@ public class Sim {
 		//12 53
 		//24 42 52
 		PPP map = loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP27.ppp", false);
-		displayPPP(map);
-		displayPPP(loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP32.ppp", false));
-		displayPPP(loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP46.ppp", false));
+//		displayPPP(map);
+//		displayPPP(loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP32.ppp", false));
+//		displayPPP(loadPPP("/usr/userfs/s/slw546/w2k/workspace/ppp/PPP/Evaluation/Wei/PPP46.ppp", false));
 //		
-//		map.drawMap();
+		map.drawMap();
 //		map.evaluateDifficulty();
-//		map.displayMap();
+		map.displayMap();
 
 //		int LimitedMemRange = (2*sensorRange)+1;
-		//Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
+		Bot wf = new WallFollowerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange, 'l');
 //		Bot ob = new OmniscientBot(new Memory(map), sensorRange);
-		//Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		Bot exp = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//Bot lte = new LongTermExplorer(new Memory(2+(map.size*2), 2+map.size), sensorRange);
-		//Bot ran = new RandomBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
+		Bot ran = new RandomBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//Bot lexp = new ExplorerBot(new LimitedMemory(LimitedMemRange,LimitedMemRange, sensorRange), sensorRange);
 		//Bot expN = new ExplorerBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//Bot bump = new BumperBot(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//Bot bump = new DecisionBumper(new Memory(2+(map.size*2), 2+map.size), sensorRange);
 		//expN.setSensorNoise(0.1);
 //
-//		singleTest(map, ob, true, true);
+		singleTest(map, ran, true, true);
 		//test(map, bump, 1000, true, false);
 		
 		//singleTest(map, ob, true, false);

@@ -28,7 +28,7 @@ class InvalidMoveError extends Exception {
  */
 public abstract class Bot {
 	private final String BOT_NAME = "Bot";
-	private final int STEP_TIME = 100;
+	private final int STEP_TIME = 250;
 
 	protected ArrayList<String> name_suffixes;
 	protected AgentState state;
