@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.9.19)  19 APR 2016 13:23
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.16)  21 APR 2016 12:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -600,27 +600,27 @@ Package geometry Warning: Over-specification in `h'-direction.
 (./project.aux)
 \openout1 = `project.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 40.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 40.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 38.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 38.
  (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Info: Redefining \microtypecontext on input line 40.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Info: Redefining \microtypecontext on input line 38.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -650,7 +650,7 @@ File: mt-ppl.cfg 2005/11/16 v1.6 microtype config. file: Palatino (RS)
 )
 \c@lstlisting=\count138
 \AtBeginShipoutBox=\box35
-Package hyperref Info: Link coloring OFF on input line 40.
+Package hyperref Info: Link coloring OFF on input line 38.
  (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
@@ -659,9 +659,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count139
 )
-LaTeX Info: Redefining \ref on input line 40.
-LaTeX Info: Redefining \pageref on input line 40.
-LaTeX Info: Redefining \nameref on input line 40.
+LaTeX Info: Redefining \ref on input line 38.
+LaTeX Info: Redefining \pageref on input line 38.
+LaTeX Info: Redefining \nameref on input line 38.
 
 (./project.out) (./project.out)
 \@outlinefile=\write3
@@ -691,14 +691,14 @@ e
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: twoside 
-* h-part:(L,W,R)=(56.9055pt, 483.69687pt, 56.9055pt)
+* h-part:(L,W,R)=(85.35826pt, 426.79135pt, 85.35826pt)
 * v-part:(T,H,B)=(56.9055pt, 731.23582pt, 56.90552pt)
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
-* \textwidth=483.69687pt
+* \textwidth=426.79135pt
 * \textheight=731.23582pt
-* \oddsidemargin=-15.36449pt
-* \evensidemargin=-15.36449pt
+* \oddsidemargin=13.08827pt
+* \evensidemargin=13.08827pt
 * \topmargin=-52.7645pt
 * \headheight=17.0pt
 * \headsep=20.40001pt
@@ -718,53 +718,53 @@ e
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    Font shape `T1/pplj/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/pplj/b/n' tried instead on input line 41.
+(Font)              Font shape `T1/pplj/b/n' tried instead on input line 39.
 LaTeX Font Info:    Font shape `T1/pplj/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/pplj/b/n' tried instead on input line 41.
+(Font)              Font shape `T1/pplj/b/n' tried instead on input line 39.
 LaTeX Font Info:    Font shape `T1/pplj/bx/n' in size <12> not available
-(Font)              Font shape `T1/pplj/b/n' tried instead on input line 41.
-LaTeX Font Info:    Try loading font information for T1+phv on input line 41.
+(Font)              Font shape `T1/pplj/b/n' tried instead on input line 39.
+LaTeX Font Info:    Try loading font information for T1+phv on input line 39.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 9.85492pt on input line 41.
+(Font)              scaled to size 9.85492pt on input line 39.
 Package microtype Info: Loading generic settings for font family
 (microtype)             `phv' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 41.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 39.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 9.85492pt on input line 41.
+(Font)              scaled to size 9.85492pt on input line 39.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <20.74> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 41.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 39.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 18.66588pt on input line 41.
-LaTeX Font Info:    Try loading font information for OT1+ppl on input line 41.
+(Font)              scaled to size 18.66588pt on input line 39.
+LaTeX Font Info:    Try loading font information for OT1+ppl on input line 39.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ppl.fd
 File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
 )
-LaTeX Font Info:    Try loading font information for OML+zplm on input line 41.
+LaTeX Font Info:    Try loading font information for OML+zplm on input line 39.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
-LaTeX Font Info:    Try loading font information for OMS+zplm on input line 41.
+LaTeX Font Info:    Try loading font information for OMS+zplm on input line 39.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
-LaTeX Font Info:    Try loading font information for OMX+zplm on input line 41.
+LaTeX Font Info:    Try loading font information for OMX+zplm on input line 39.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
-LaTeX Font Info:    Try loading font information for OT1+zplm on input line 41.
+LaTeX Font Info:    Try loading font information for OT1+zplm on input line 39.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1zplm.fd
@@ -775,7 +775,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 10.79993pt on input line 41.
+(Font)              scaled to size 10.79993pt on input line 39.
  [1
 
 
@@ -786,44 +786,41 @@ LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 ] [3] [4
 
 
-] [5] [6
-
-
 ]
-Package tocbasic Info: character protrusion at toc deactivated on input line 41
+Package tocbasic Info: character protrusion at toc deactivated on input line 39
 .
  (./project.toc
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <12> not available
 (Font)              Font shape `T1/phv/b/n' tried instead on input line 4.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 10.79993pt on input line 4.
- [7
+ [5
 
 ])
 \tf@toc=\write4
 \openout4 = `project.toc'.
 
 LaTeX Font Info:    Font shape `T1/pplj/m/sl' in size <10.95> not available
-(Font)              Font shape `T1/pplj/m/it' tried instead on input line 42.
-
-[8] (./project.lof)
+(Font)              Font shape `T1/pplj/m/it' tried instead on input line 40.
+ [6]
+(./project.lof)
 \tf@lof=\write5
 \openout5 = `project.lof'.
 
- [9
+ [7
 
 ] (./project.lot)
 \tf@lot=\write6
 \openout6 = `project.lot'.
 
- [10
+ [8
 
 ]
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 46.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 44.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 22.39185pt on input line 46.
- [11
+(Font)              scaled to size 22.39185pt on input line 44.
+ [9
 
 ]
 Chapter 1.
@@ -843,133 +840,146 @@ Class scrreprt Warning: \float@addtolists detected!
 (scrreprt)              deprecated \float@addtolist interface .
 
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 55.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 53.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 12.9599pt on input line 55.
-[12
+(Font)              scaled to size 12.9599pt on input line 53.
+[10
 
-] [13]
+] [11] [12]
 Chapter 2.
-[14
+[13
 
 ]
-Underfull \vbox (badness 1024) has occurred while \output is active []
+Underfull \vbox (badness 1769) has occurred while \output is active []
+
+ [14]
+Underfull \vbox (badness 4505) has occurred while \output is active []
 
  [15]
-[16] [17] [18] [19
+[16] [17] [18
 
 ]
 Chapter 3.
-[20
+[19
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 223--224
+Overfull \hbox (29.94737pt too wide) in paragraph at lines 200--211
+[][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 221--222
 
  []
 
-[21pdfTeX warning (ext4): destination with the same identifier (name{table.3.1}
+
+Overfull \hbox (29.94737pt too wide) in paragraph at lines 224--234
+[][]
+ []
+
+[20pdfTeX warning (ext4): destination with the same identifier (name{table.3.1}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.243 
-      ] [22pdfTeX warning (ext4): destination with the same identifier (name{ta
-ble.3.2}) has been already used, duplicate ignored
+l.236 \end{table}
+                 ] [21pdfTeX warning (ext4): destination with the same identifi
+er (name{table.3.2}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.244 \chapter
+l.242 \chapter
               {Design and Implementation}]
 Chapter 4.
-[23
+[22
 
-] [24] <DesignImpPics/SimUML.png, id=549, 735.74875pt x 504.88625pt>
+] [23] <DesignImpPics/SimUML.png, id=545, 735.74875pt x 504.88625pt>
 File: DesignImpPics/SimUML.png Graphic file (type png)
 
 <use DesignImpPics/SimUML.png>
-Package pdftex.def Info: DesignImpPics/SimUML.png used on input line 310.
-(pdftex.def)             Requested size: 483.69687pt x 331.93167pt.
- [25pdfTeX warning (ext4): destination with the same identifier (name{figure.4.
+Package pdftex.def Info: DesignImpPics/SimUML.png used on input line 308.
+(pdftex.def)             Requested size: 426.79135pt x 292.88043pt.
+ [24pdfTeX warning (ext4): destination with the same identifier (name{figure.4.
 1}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.320 
-       <./DesignImpPics/SimUML.png>] [26] [27]
-<DesignImpPics/visFromGoal.png, id=568, 343.2825pt x 320.19624pt>
+l.314 
+       <./DesignImpPics/SimUML.png>] [25] [26]
+<DesignImpPics/visFromGoal.png, id=564, 343.2825pt x 320.19624pt>
 File: DesignImpPics/visFromGoal.png Graphic file (type png)
 
 <use DesignImpPics/visFromGoal.png>
-Package pdftex.def Info: DesignImpPics/visFromGoal.png used on input line 371.
+Package pdftex.def Info: DesignImpPics/visFromGoal.png used on input line 369.
 (pdftex.def)             Requested size: 223.13097pt x 208.12508pt.
-
-<DesignImpPics/visMag.png, id=570, 347.2975pt x 321.2pt>
-File: DesignImpPics/visMag.png Graphic file (type png)
-
-<use DesignImpPics/visMag.png>
-Package pdftex.def Info: DesignImpPics/visMag.png used on input line 386.
-(pdftex.def)             Requested size: 225.74069pt x 208.77753pt.
- [28pdfTeX warning (ext4): destination with the same identifier (name{figure.4.
+ [27pdfTeX warning (ext4): destination with the same identifier (name{figure.4.
 2}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.394 
-       <./DesignImpPics/visFromGoal.png>]
-<DesignImpPics/goalStartVis.png, id=578, 349.305pt x 320.19624pt>
-File: DesignImpPics/goalStartVis.png Graphic file (type png)
+l.376 \subsection
+                 {Visibility Magnitude} <./DesignImpPics/visFromGoal.png>]
+<DesignImpPics/visMag.png, id=571, 347.2975pt x 321.2pt>
+File: DesignImpPics/visMag.png Graphic file (type png)
 
-<use DesignImpPics/goalStartVis.png>
-Package pdftex.def Info: DesignImpPics/goalStartVis.png used on input line 405.
-
-(pdftex.def)             Requested size: 227.04555pt x 208.12508pt.
-
-<DesignImpPics/oneTurn.png, id=581, 349.305pt x 322.20375pt>
-File: DesignImpPics/oneTurn.png Graphic file (type png)
-
-<use DesignImpPics/oneTurn.png>
-Package pdftex.def Info: DesignImpPics/oneTurn.png used on input line 414.
-(pdftex.def)             Requested size: 227.04555pt x 209.42995pt.
-
-<DesignImpPics/wide_plain.png, id=582, 354.32375pt x 319.1925pt>
-File: DesignImpPics/wide_plain.png Graphic file (type png)
-
-<use DesignImpPics/wide_plain.png>
-Package pdftex.def Info: DesignImpPics/wide_plain.png used on input line 421.
-(pdftex.def)             Requested size: 230.3077pt x 207.47266pt.
- [29pdfTeX warning (ext4): destination with the same identifier (name{figure.4.
+<use DesignImpPics/visMag.png>
+Package pdftex.def Info: DesignImpPics/visMag.png used on input line 384.
+(pdftex.def)             Requested size: 225.74069pt x 208.77753pt.
+ [28pdfTeX warning (ext4): destination with the same identifier (name{figure.4.
 3}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.429 
-       <./DesignImpPics/visMag.png>] [30pdfTeX warning (ext4): destination with
- the same identifier (name{figure.4.4}) has been already used, duplicate ignore
-d
+l.396 
+       <./DesignImpPics/visMag.png>]
+<DesignImpPics/goalStartVis.png, id=579, 349.305pt x 320.19624pt>
+File: DesignImpPics/goalStartVis.png Graphic file (type png)
+
+<use DesignImpPics/goalStartVis.png>
+Package pdftex.def Info: DesignImpPics/goalStartVis.png used on input line 403.
+
+(pdftex.def)             Requested size: 227.04555pt x 208.12508pt.
+
+<DesignImpPics/oneTurn.png, id=582, 349.305pt x 322.20375pt>
+File: DesignImpPics/oneTurn.png Graphic file (type png)
+
+<use DesignImpPics/oneTurn.png>
+Package pdftex.def Info: DesignImpPics/oneTurn.png used on input line 412.
+(pdftex.def)             Requested size: 227.04555pt x 209.42995pt.
+
+<DesignImpPics/wide_plain.png, id=583, 354.32375pt x 319.1925pt>
+File: DesignImpPics/wide_plain.png Graphic file (type png)
+
+<use DesignImpPics/wide_plain.png>
+Package pdftex.def Info: DesignImpPics/wide_plain.png used on input line 419.
+(pdftex.def)             Requested size: 230.3077pt x 207.47266pt.
+ [29pdfTeX warning (ext4): destination with the same identifier (name{figure.4.
+4}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.429 
-      pdfTeX warning (ext4): destination with the same identifier (name{figure.
-4.5}) has been already used, duplicate ignored
+l.431 \end{multline}
+                     <./DesignImpPics/goalStartVis.png>] [30pdfTeX warning (ext
+4): destination with the same identifier (name{figure.4.5}) has been already us
+ed, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.429 
-      pdfTeX warning (ext4): destination with the same identifier (name{figure.
-4.6}) has been already used, duplicate ignored
+l.431 \end{multline}
+                    pdfTeX warning (ext4): destination with the same identifier
+ (name{figure.4.6}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.429 
-       <./DesignImpPics/goalStartVis.png> <./DesignImpPics/oneTurn.png> <./Desi
-gnImpPics/wide_plain.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 455--457
+l.431 \end{multline}
+                     <./DesignImpPics/oneTurn.png> <./DesignImpPics/wide_plain.
+png>]
+Underfull \hbox (badness 10000) in paragraph at lines 453--455
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 458--460
+Underfull \hbox (badness 10000) in paragraph at lines 456--458
 
  []
 
@@ -977,22 +987,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 458--460
 Chapter 5.
 [32
 
-] <EvalPics/wei_26.png, id=632, 349.305pt x 320.19624pt>
+] <EvalPics/wei_26.png, id=633, 349.305pt x 320.19624pt>
 File: EvalPics/wei_26.png Graphic file (type png)
 
 <use EvalPics/wei_26.png>
 Package pdftex.def Info: EvalPics/wei_26.png used on input line 506.
 (pdftex.def)             Requested size: 227.04555pt x 208.12508pt.
 
-<EvalPics/openh_46.png, id=633, 350.30875pt x 319.1925pt>
+<EvalPics/openh_46.png, id=634, 350.30875pt x 319.1925pt>
 File: EvalPics/openh_46.png Graphic file (type png)
 
 <use EvalPics/openh_46.png>
 Package pdftex.def Info: EvalPics/openh_46.png used on input line 513.
 (pdftex.def)             Requested size: 227.69798pt x 207.47266pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 553--554
-
+Overfull \hbox (31.15924pt too wide) in paragraph at lines 527--534
+[][]
  []
 
 [33pdfTeX warning (ext4): destination with the same identifier (name{figure.5.1
@@ -1000,41 +1010,59 @@ Underfull \hbox (badness 10000) in paragraph at lines 553--554
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.554 
+l.537 
+       <./EvalPics/wei_26.png>]
+Overfull \hbox (32.06807pt too wide) in paragraph at lines 539--547
+[][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 553--554
+
+ []
+
+
+Underfull \vbox (badness 4492) has occurred while \output is active []
+
+ [34pdfTeX warning (ext4): destination with the same identifier (name{figure.5.
+2}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.566 
       pdfTeX warning (ext4): destination with the same identifier (name{table.5
 .1}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.554 
-       <./EvalPics/wei_26.png>]
-<EvalPics/wei_tree.png, id=648, 776.9025pt x 854.19125pt>
+l.566 
+      pdfTeX warning (ext4): destination with the same identifier (name{table.5
+.2}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.566 
+       <./EvalPics/openh_46.png>]
+<EvalPics/wei_tree.png, id=654, 776.9025pt x 854.19125pt>
 File: EvalPics/wei_tree.png Graphic file (type png)
 
 <use EvalPics/wei_tree.png>
 Package pdftex.def Info: EvalPics/wei_tree.png used on input line 577.
 (pdftex.def)             Requested size: 388.45029pt x 427.09459pt.
 
-<EvalPics/new_tree.png, id=649, 915.42pt x 867.24pt>
+<EvalPics/new_tree.png, id=655, 915.42pt x 867.24pt>
 File: EvalPics/new_tree.png Graphic file (type png)
 
 <use EvalPics/new_tree.png>
 Package pdftex.def Info: EvalPics/new_tree.png used on input line 584.
 (pdftex.def)             Requested size: 457.70888pt x 433.61894pt.
- [34pdfTeX warning (ext4): destination with the same identifier (name{figure.5.
-2}) has been already used, duplicate ignored
 
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.590 
-      pdfTeX warning (ext4): destination with the same identifier (name{table.5
-.2}) has been already used, duplicate ignored
+Overfull \hbox (30.91753pt too wide) in paragraph at lines 584--585
+[][]
+ []
 
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.590 
-       <./EvalPics/openh_46.png>] [35pdfTeX warning (ext4): destination with th
-e same identifier (name{figure.5.3}) has been already used, duplicate ignored
+[35pdfTeX warning (ext4): destination with the same identifier (name{figure.5.3
+}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
@@ -1046,27 +1074,24 @@ e same identifier (name{figure.5.4}) has been already used, duplicate ignored
                                                   \fi \fi 
 l.590 
        <./EvalPics/new_tree.png>]
-<EvalPics/ppp27.png, id=669, 365.365pt x 318.18875pt>
+<EvalPics/ppp27.png, id=670, 365.365pt x 318.18875pt>
 File: EvalPics/ppp27.png Graphic file (type png)
  <use EvalPics/ppp27.png>
 Package pdftex.def Info: EvalPics/ppp27.png used on input line 595.
 (pdftex.def)             Requested size: 237.48444pt x 206.82022pt.
 
-<EvalPics/ppp46.png, id=670, 361.35pt x 321.2pt>
+<EvalPics/ppp46.png, id=671, 361.35pt x 321.2pt>
 File: EvalPics/ppp46.png Graphic file (type png)
  <use EvalPics/ppp46.png>
 Package pdftex.def Info: EvalPics/ppp46.png used on input line 602.
 (pdftex.def)             Requested size: 234.87471pt x 208.77753pt.
 
-<EvalPics/ppp32.png, id=672, 356.33125pt x 320.19624pt>
+<EvalPics/ppp32.png, id=673, 356.33125pt x 320.19624pt>
 File: EvalPics/ppp32.png Graphic file (type png)
 
 <use EvalPics/ppp32.png>
 Package pdftex.def Info: EvalPics/ppp32.png used on input line 611.
 (pdftex.def)             Requested size: 231.61256pt x 208.12508pt.
-
-Underfull \vbox (badness 3590) has occurred while \output is active []
-
  [37pdfTeX warning (ext4): destination with the same identifier (name{figure.5.
 5}) has been already used, duplicate ignored
 
@@ -1096,36 +1121,52 @@ Package hyperref Warning: Difference (2) between bookmark levels is greater
 
 [40
 
-]
+] [41]
 Chapter 7.
-[41
+[42
 
 ]
 Chapter 8.
 
-Underfull \hbox (badness 2035) in paragraph at lines 658--662
-[]\T1/pplj/m/n/10.95 (+20) E. Guizzo. (2011, Oct. 18). How Googles Self Driv-in
-g Car Works [On-line]. Avail-
+Underfull \hbox (badness 10000) in paragraph at lines 754--757
+[]\T1/pplj/m/n/10.95 (+20) A. Pa-tel, A* Im-ple-ment-a-tion Notes [On-line] Ava
+il-able:
  []
 
+[43
 
+]
 Underfull \hbox (badness 10000) in paragraph at lines 759--762
 []\T1/pplj/m/n/10.95 (+20) Red Blob Games, Line Draw-ing on Grids [On-line]. Av
 ail-able:
  []
 
-[42
 
-] [43]
+Underfull \hbox (badness 10000) in paragraph at lines 764--768
+[]\T1/pplj/m/n/10.95 (+20) K. Beck et al., (2001, Feb.) Agile Mani-festo [On-li
+ne]. Avail-able:
+ []
+
+[44]
 LaTeX Font Info:    Font shape `T1/pplj/bx/n' in size <24.88> not available
 (Font)              Font shape `T1/pplj/b/n' tried instead on input line 783.
- [44
+ [45
 
 
 ]
 Appendix A.
+
+Overfull \hbox (38.47253pt too wide) in paragraph at lines 789--855
+[][]
+ []
+
+
+Overfull \hbox (38.47253pt too wide) in paragraph at lines 860--926
+[][]
+ []
+
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 931.
-[45
+[46
 
 pdfTeX warning (ext4): destination with the same identifier (name{table.1.A.1})
  has been already used, duplicate ignored
@@ -1133,7 +1174,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{table.1.A.1})
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.931 \end{document}
-                    ] [46pdfTeX warning (ext4): destination with the same ident
+                    ] [47pdfTeX warning (ext4): destination with the same ident
 ifier (name{table.1.A.2}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1149,13 +1190,13 @@ Package rerunfilecheck Info: File `project.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 931.
  ) 
 Here is how much of TeX's memory you used:
- 13165 strings out of 493304
- 199704 string characters out of 6139871
- 467278 words of memory out of 5000000
+ 13166 strings out of 493304
+ 199711 string characters out of 6139871
+ 467224 words of memory out of 5000000
  15953 multiletter control sequences out of 15000+600000
  78650 words of font info for 285 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 51i,10n,69p,1329b,569s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 51i,10n,69p,1329b,557s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/
@@ -1166,10 +1207,10 @@ usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/te
 xlive/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-
 dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/palatino/uplri8a.pfb>
-Output written on project.pdf (46 pages, 441030 bytes).
+Output written on project.pdf (47 pages, 443278 bytes).
 PDF statistics:
- 797 PDF objects out of 1000 (max. 8388607)
- 705 compressed objects within 8 object streams
- 160 named destinations out of 1000 (max. 500000)
+ 802 PDF objects out of 1000 (max. 8388607)
+ 709 compressed objects within 8 object streams
+ 161 named destinations out of 1000 (max. 500000)
  44146 words of extra memory for PDF output out of 51595 (max. 10000000)
 
